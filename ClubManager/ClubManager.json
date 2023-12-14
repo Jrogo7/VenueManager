@@ -1,0 +1,12 @@
+{
+  "Author": "Jrogo",
+  "Name": "Club Manager",
+  "Punchline": "See who is visiting your club",
+  "Description": "Guest list and doorbell for your club",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/Jrogo7/ClubManager",
+  "Tags": [
+    "club",
+    "guests"
+  ]
+}

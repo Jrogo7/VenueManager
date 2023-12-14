@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Dalamud.Plugin.Bootstrap.targets" />
+
+  <PropertyGroup>
+    <Authors>Jrogo</Authors>
+    <Company></Company>
+    <Version>0.1.0</Version>
+    <Description>Guest list and doorbell for your club</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/Jrogo7/ClubManager</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <IsPackable>false</IsPackable>
+    <Title>ClubManager</Title>
+    <RepositoryUrl>https://github.com/Jrogo7/ClubManager</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
