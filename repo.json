@@ -18,7 +18,7 @@
   "LoadSync": false,
   "CanUnloadAsync": false,
   "LoadPriority": 0,
-  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/logo.png",
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/icon.png",
   "Punchline": "See who is visiting your club",
   "AcceptsFeedback": true
 }]
