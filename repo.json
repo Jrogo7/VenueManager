@@ -2,7 +2,7 @@
   "Author": "Jrogo",
   "Name": "Club Manager",
   "InternalName": "ClubManager",
-  "AssemblyVersion": "0.3.0",
+  "AssemblyVersion": "0.3.0.0",
   "Description": "Guest list and doorbell for your club",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/ClubManager",
