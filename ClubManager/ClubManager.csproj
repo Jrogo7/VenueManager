@@ -17,9 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ContentWithTargetPath Include="..\images\icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>\images\icon.png</TargetPath>
-    </ContentWithTargetPath>
+    <Content Include="..\images\icon.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
