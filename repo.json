@@ -19,5 +19,6 @@
   "AcceptsFeedback": true,
   "DownloadLinkInstall": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
   "DownloadLinkUpdate": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip"
+  "DownloadLinkTesting": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/logo.png"
 }]

@@ -2,11 +2,12 @@
   "Author": "Jrogo",
   "Name": "Club Manager",
   "Punchline": "See who is visiting your club",
-  "Description": "Guest list and doorbell for your club",
+  "Description": "Guest list and doorbell for your club. Icon by Silv :)",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/ClubManager",
   "Tags": [
     "club",
     "guests"
-  ]
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/logo.png"
 }
