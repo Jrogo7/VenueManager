@@ -11,6 +11,9 @@ namespace ClubManager
         public int Version { get; set; } = 0;
         // Should chat message alerts be printed to the chat
         public bool showChatAlerts { get; set; } = true; 
+        // Should sound alerts be played when new players join the house 
+        public bool soundAlerts { get; set; } = true; 
+        public float soundVolume { get; set; } = 1; 
         // Is the current user in the house
         public bool userInHouse { get; set; } = false;
         // Territory that the current user is in

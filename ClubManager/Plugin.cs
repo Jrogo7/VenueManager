@@ -23,7 +23,7 @@ namespace ClubManager
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
         [PluginService] public static IChatGui Chat { get; private set; } = null!;
 
-        private DalamudPluginInterface PluginInterface { get; init; }
+        public DalamudPluginInterface PluginInterface { get; init; }
         private ICommandManager CommandManager { get; init; }
         public Configuration Configuration { get; init; }
 
@@ -31,6 +31,7 @@ namespace ClubManager
         public WindowSystem WindowSystem = new("ClubManager");
         private MainWindow MainWindow { get; init; }
         private Stopwatch stopwatch = new();
+        private Sound doorbell;
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -59,6 +60,10 @@ namespace ClubManager
             ClientState.TerritoryChanged += OnTerritoryChanged;
             Framework.Update += OnFrameworkUpdate;
 
+            // Load Sound 
+            doorbell = new Sound(this, Sound.DOORBELL_TYPE.DOORBELL);
+            doorbell.load();
+
             // Run territory change one time on boot to register current location 
             OnTerritoryChanged(ClientState.TerritoryType);
         }
@@ -69,6 +74,9 @@ namespace ClubManager
             Framework.Update -= OnFrameworkUpdate;
             // Remove territory change listener 
             ClientState.TerritoryChanged -= OnTerritoryChanged;
+
+            // Dispose our sound file 
+            doorbell.disposeFile();
 
             this.WindowSystem.RemoveAllWindows();
 
@@ -112,8 +120,8 @@ namespace ClubManager
         {
           // Every second we are in a house. Process players and see what has changed 
           if (Configuration.userInHouse && stopwatch.ElapsedMilliseconds > 1000) {
-            Log.Info("Process Players");
             bool configUpdated = false;
+            bool playerArrived = false;
             foreach (var o in Objects)
             {
               if (o is not PlayerCharacter pc) continue;
@@ -122,6 +130,7 @@ namespace ClubManager
               if (!this.Configuration.guests.ContainsKey(o.ObjectId)) {
                 this.Configuration.guests.Add(o.ObjectId, player);
                 configUpdated = true;
+                playerArrived = true;
                 
                 if (Configuration.showChatAlerts) {
                   // Message Chat for player arriving 
@@ -138,11 +147,24 @@ namespace ClubManager
               }
             }
 
+            // Only play doorbell sound once if there were multiple new people 
+            if (Configuration.soundAlerts && playerArrived) {
+              doorbell.play();
+            }
+
             if (configUpdated) this.Configuration.Save();
 
             stopwatch.Restart();
           }
             
         }
+
+      public void playDoorbell() {
+        doorbell.play();
+      }
+
+      public void reloadDoorbell() {
+        doorbell.load();
+      }
     }
 }
