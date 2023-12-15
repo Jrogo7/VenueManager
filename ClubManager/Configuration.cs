@@ -11,8 +11,7 @@ namespace ClubManager
     public class Configuration : IPluginConfiguration
     {
         public int Version { get; set; } = 0;
-
-        public bool SomePropertyToBeSavedAndWithADefault { get; set; } = true; 
+        public bool showChatAlerts { get; set; } = true; 
         public bool userInHouse { get; set; } = false;
         public ushort territory { get; set; } = 0;
 

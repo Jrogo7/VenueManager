@@ -37,21 +37,22 @@ public class MainWindow : Window, IDisposable
             "You are in a " + TerritoryUtils.getHouseType(this.configuration.territory) + " in " + TerritoryUtils.getHouseLocation(this.configuration.territory) : 
             "You are not in a house.");
           ImGui.Text("Guests:");
-          ImGui.Indent(55);
+          ImGui.Indent(20);
           foreach (var guest in this.configuration.guests) {
             ImGui.Text(guest.Value.Name);
           }
-          ImGui.Unindent(55);
+          ImGui.Unindent(20);
 
           ImGui.EndTabItem();
         }
         // Render Settings Tab if selected 
         if (ImGui.BeginTabItem("Settings")) {
-          ImGui.Text($"The random config bool is {this.plugin.Configuration.SomePropertyToBeSavedAndWithADefault}");
-
-          if (ImGui.Button("Show Settings"))
+          // can't ref a property, so use a local copy
+          var configValue = this.configuration.showChatAlerts;
+          if (ImGui.Checkbox("Show chat alerts", ref configValue))
           {
-              this.plugin.DrawConfigUI();
+              this.configuration.showChatAlerts = configValue;
+              this.configuration.Save();
           }
 
           ImGui.EndTabItem();

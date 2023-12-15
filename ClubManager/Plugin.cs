@@ -29,7 +29,6 @@ namespace ClubManager
 
         // Windows 
         public WindowSystem WindowSystem = new("ClubManager");
-        private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
         private Stopwatch stopwatch = new();
 
@@ -45,10 +44,8 @@ namespace ClubManager
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            ConfigWindow = new ConfigWindow(this);
             MainWindow = new MainWindow(this);
 
-            WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
 
             this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
@@ -57,7 +54,6 @@ namespace ClubManager
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
             // Bind territory changed listener to client 
             ClientState.TerritoryChanged += OnTerritoryChanged;
@@ -76,7 +72,6 @@ namespace ClubManager
 
             this.WindowSystem.RemoveAllWindows();
 
-            ConfigWindow.Dispose();
             MainWindow.Dispose();
 
             this.CommandManager.RemoveHandler(CommandName);
@@ -91,11 +86,6 @@ namespace ClubManager
         private void DrawUI()
         {
             this.WindowSystem.Draw();
-        }
-
-        public void DrawConfigUI()
-        {
-            ConfigWindow.IsOpen = true;
         }
 
         private void OnTerritoryChanged(ushort territory)
@@ -133,16 +123,18 @@ namespace ClubManager
                 this.Configuration.guests.Add(o.ObjectId, player);
                 configUpdated = true;
                 
-                // Message Chat for player arriving 
-                var messageBuilder = new SeStringBuilder();
-                messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
-                messageBuilder.AddText($"[{Name}] ");
-                messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-                messageBuilder.AddText(" has entered the " + TerritoryUtils.getHouseType(this.Configuration.territory));
-                var entry = new XivChatEntry() {
-                  Message = messageBuilder.Build()
-                };
-                Chat.Print(entry);
+                if (Configuration.showChatAlerts) {
+                  // Message Chat for player arriving 
+                  var messageBuilder = new SeStringBuilder();
+                  messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+                  messageBuilder.AddText($"[{Name}] ");
+                  messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+                  messageBuilder.AddText(" has entered the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+                  var entry = new XivChatEntry() {
+                    Message = messageBuilder.Build()
+                  };
+                  Chat.Print(entry);
+                }
               }
             }
 
