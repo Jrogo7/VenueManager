@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
@@ -50,8 +51,12 @@ public class MainWindow : Window, IDisposable
           ImGui.Text("Guests:");
           ImGui.BeginChild(1);
           ImGui.Indent(10);
-          foreach (var guest in this.configuration.guests) {
-            ImGui.Text(guest.Value.Name);
+
+          // Generate sorted guest list 
+          var sortedGuestList = this.configuration.guests.ToList();
+          sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
+          foreach (var guest in sortedGuestList) {
+            ImGui.Text(guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
           }
           ImGui.Unindent(10);
           ImGui.EndChild();
