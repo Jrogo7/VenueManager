@@ -8,6 +8,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
+using System.Diagnostics;
 
 namespace ClubManager
 {
@@ -30,6 +31,7 @@ namespace ClubManager
         public WindowSystem WindowSystem = new("ClubManager");
         private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
+        private Stopwatch stopwatch = new();
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -105,10 +107,12 @@ namespace ClubManager
             {
                 // Log.Debug("User has entered a house");
                 this.Configuration.userInHouse = true;
+                stopwatch.Start();
             }
             else if (this.Configuration.userInHouse)
             {
                 this.Configuration.userInHouse = false;
+                stopwatch.Stop();
             }
 
             this.Configuration.Save();
@@ -116,29 +120,37 @@ namespace ClubManager
 
         private void OnFrameworkUpdate(IFramework framework)
         {
+          // Every second we are in a house. Process players and see what has changed 
+          if (Configuration.userInHouse && stopwatch.ElapsedMilliseconds > 1000) {
+            Log.Info("Process Players");
             bool configUpdated = false;
             foreach (var o in Objects)
             {
-                if (o is not PlayerCharacter pc) continue;
-                var player = Player.fromCharacter(pc);
-                if (!this.Configuration.guests.ContainsKey(o.ObjectId)) {
-                  this.Configuration.guests.Add(o.ObjectId, player);
-                  configUpdated = true;
-                  
-                  // Alert to chat that new player has entered the house 
-                  var messageBuilder = new SeStringBuilder();
-                  messageBuilder.AddText($"[{Name}] ");
-                  messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-                  messageBuilder.AddText(" has entered the " + TerritoryUtils.getHouseType(this.Configuration.territory));
-                  var entry = new XivChatEntry() {
-                    Message = messageBuilder.Build()
-                  };
-                  Chat.Print(entry);
-                }
+              if (o is not PlayerCharacter pc) continue;
+              var player = Player.fromCharacter(pc);
+
+              if (!this.Configuration.guests.ContainsKey(o.ObjectId)) {
+                this.Configuration.guests.Add(o.ObjectId, player);
+                configUpdated = true;
+                
+                // Message Chat for player arriving 
+                var messageBuilder = new SeStringBuilder();
+                messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+                messageBuilder.AddText($"[{Name}] ");
+                messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+                messageBuilder.AddText(" has entered the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+                var entry = new XivChatEntry() {
+                  Message = messageBuilder.Build()
+                };
+                Chat.Print(entry);
+              }
             }
-            
-            // TODO this will be updating each game loop. Probably need to find a better way to handle this 
+
             if (configUpdated) this.Configuration.Save();
+
+            stopwatch.Restart();
+          }
+            
         }
     }
 }
