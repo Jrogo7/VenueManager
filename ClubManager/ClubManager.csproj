@@ -15,4 +15,11 @@
     <RepositoryUrl>https://github.com/Jrogo7/ClubManager</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\images\icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>\images\icon.png</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
 </Project>
