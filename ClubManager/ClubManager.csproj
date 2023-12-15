@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Authors>Jrogo</Authors>
     <Company></Company>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Description>Guest list and doorbell for your club</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Jrogo7/ClubManager</PackageProjectUrl>
