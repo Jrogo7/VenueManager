@@ -9,3 +9,4 @@ Add the following line to Dalamud Settings -> Experimental -> Custom Plugin Repo
 ```
 https://raw.githubusercontent.com/Jrogo7/ClubManager/master/repo.json
 ```
+
