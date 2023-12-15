@@ -2,7 +2,7 @@
   "Author": "Jrogo",
   "Name": "Club Manager",
   "InternalName": "ClubManager",
-  "AssemblyVersion": "0.2.0",
+  "AssemblyVersion": "0.3.0",
   "Description": "Guest list and doorbell for your club",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/ClubManager",
@@ -17,8 +17,8 @@
   "LoadPriority": 0,
   "Punchline": "See who is visiting your club",
   "AcceptsFeedback": true,
-  "DownloadLinkInstall": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/ClubManager/releases/download/0.2.0/latest.zip",
+  "DownloadLinkInstall": "https://github.com/Jrogo7/ClubManager/releases/download/0.3.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/ClubManager/releases/download/0.3.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/ClubManager/releases/download/0.3.0/latest.zip",
   "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/logo.png"
 }]
