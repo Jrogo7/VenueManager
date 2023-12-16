@@ -10,6 +10,8 @@ namespace ClubManager.Windows;
 
 public class MainWindow : Window, IDisposable
 {
+  private readonly Vector4 colorGreen = new(0,0.69f,0,1);
+
     private Plugin plugin;
     private Configuration configuration;
 
@@ -47,6 +49,13 @@ public class MainWindow : Window, IDisposable
               ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " + 
                 plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
             }
+
+            // List the number of players in the house 
+            ImGui.Text("There are currently");
+            ImGui.SameLine();
+            ImGui.TextColored(colorGreen, "" + plugin.pluginState.playersInHouse);
+            ImGui.SameLine();
+            ImGui.Text("players in the " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type));
           } else {
             ImGui.Text("You are not in a house.");
           }
@@ -159,7 +168,7 @@ public class MainWindow : Window, IDisposable
 
         foreach (var club in configuration.knownClubs) {
           var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == club.Value.houseId ?
-            new Vector4(0,0.69f,0,1) : new Vector4(1,1,1,1);
+            colorGreen : new Vector4(1,1,1,1);
             
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, club.Value.name);

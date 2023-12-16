@@ -146,6 +146,7 @@ namespace ClubManager
 
             bool configUpdated = false;
             bool playerArrived = false;
+            int playerCount = 0;
             
             // Object to track seen players 
             Dictionary<string, bool> seenPlayers = new();
@@ -153,6 +154,7 @@ namespace ClubManager
             {
               // Reject non player objects 
               if (o is not PlayerCharacter pc) continue;
+              playerCount++;
               var player = Player.fromCharacter(pc);
 
               // Add player to seen map 
@@ -189,6 +191,10 @@ namespace ClubManager
               doorbell.play();
             }
 
+            // Save number of players seen this update 
+            pluginState.playersInHouse = playerCount;
+
+            // Save config if we saw new players
             if (configUpdated) this.Configuration.Save();
 
             stopwatch.Restart();
