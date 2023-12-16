@@ -10,8 +10,7 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
-using Dalamud.Game.ClientState.JobGauge.Enums;
-using NAudio.MediaFoundation;
+using System.Collections.Generic;
 
 namespace ClubManager
 {
@@ -147,21 +146,41 @@ namespace ClubManager
 
             bool configUpdated = false;
             bool playerArrived = false;
+            
+            // Object to track seen players 
+            Dictionary<string, bool> seenPlayers = new();
             foreach (var o in Objects)
             {
+              // Reject non player objects 
               if (o is not PlayerCharacter pc) continue;
               var player = Player.fromCharacter(pc);
 
+              // Add player to seen map 
+              seenPlayers.Add(o.Name.TextValue, true);
+
+              // Is the new player the current user 
+              var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
+
               // New Player has entered the house 
               if (!this.Configuration.guests.ContainsKey(o.Name.TextValue)) {
-                this.Configuration.guests.Add(player.Name, player);
                 configUpdated = true;
-
-                // Is the new player the current user 
-                var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
-
+                this.Configuration.guests.Add(player.Name, player);
                 if (!isSelf) playerArrived = true;
-                showGuestChatAlert(player, isSelf);
+                showGuestChatAlert(this.Configuration.guests[player.Name], isSelf);
+              }
+              // Mark the player as re-entering the club 
+              else if (!this.Configuration.guests[player.Name].inHouse) {
+                configUpdated = true;
+                this.Configuration.guests[player.Name].inHouse = true;
+                this.Configuration.guests[player.Name].entryCount++;
+                showGuestChatAlert(this.Configuration.guests[player.Name], isSelf);
+              }
+            }
+
+            // Check for guests that have left the house 
+            foreach (var guest in this.Configuration.guests) {
+              if (!seenPlayers.ContainsKey(guest.Value.Name)) {
+                guest.Value.inHouse = false;
               }
             }
 
@@ -201,7 +220,14 @@ namespace ClubManager
           // Show text alert for guests
           else if (!isSelf) {
             messageBuilder.AddText($"[{Name}] ");
-            messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+            if (player.entryCount == 1)
+              messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+            else if (player.entryCount == 2)
+              messageBuilder.AddUiForeground(063);
+            else if (player.entryCount == 3)
+              messageBuilder.AddUiForeground(500);
+            else if (player.entryCount >= 4)
+              messageBuilder.AddUiForeground(518);
             messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
             messageBuilder.AddText(" has entered ");
             if (knownClub) {
@@ -210,11 +236,13 @@ namespace ClubManager
             } else {
               messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
             }
+            if (player.entryCount > 1) 
+              messageBuilder.AddText(". They have entered " + player.entryCount + " times");
+
             messageBuilder.AddUiForegroundOff();
             var entry = new XivChatEntry() {Message = messageBuilder.Build()};
             Chat.Print(entry);
           }
-
         }
       }
     }

@@ -11,18 +11,20 @@ namespace ClubManager
         public bool inHouse { get; set; } = false;
         public uint ObjectId { get; set; } = 0;
         public DateTime firstSeen;
+        public int entryCount { get; set; } = 0;
 
-        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime time)
+        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime time, int entryCount)
         {
             this.Name = name;
             this.HomeWorld = homeWorld;
             this.inHouse = inHouse;
             this.ObjectId = objectId;
             this.firstSeen = time;
+            this.entryCount = entryCount;
         }
 
         public static Player fromCharacter(PlayerCharacter character) {
-          return new Player(character.Name.TextValue, character.HomeWorld.Id, false, character.ObjectId, DateTime.Now);
+          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, 1);
         }
    }
 }
