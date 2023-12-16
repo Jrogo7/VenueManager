@@ -131,9 +131,13 @@ namespace ClubManager
               if (!this.Configuration.guests.ContainsKey(o.Name.TextValue)) {
                 this.Configuration.guests.Add(player.Name, player);
                 configUpdated = true;
-                playerArrived = true;
+
+                // Is the new player the current user 
+                var isSelf = ClientState.LocalPlayer?.OwnerId == o.OwnerId;
+
+                if (!isSelf) playerArrived = true;
                 
-                if (Configuration.showChatAlerts) {
+                if (Configuration.showChatAlerts && !isSelf) {
                   // Message Chat for player arriving 
                   var messageBuilder = new SeStringBuilder();
                   messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
