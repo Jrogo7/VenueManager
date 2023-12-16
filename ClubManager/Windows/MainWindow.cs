@@ -181,11 +181,22 @@ public class MainWindow : Window, IDisposable
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, club.Value.WorldName);
           ImGui.TableNextColumn();
+          
+          bool disabled = false;
+          if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
+            ImGui.BeginDisabled();
+            disabled = true;
+          }
+
           // Allow the user to delete the saved club
           if (ImGuiComponents.IconButton("##" + club.Value.houseId, FontAwesomeIcon.Trash)) {
             this.configuration.knownClubs.Remove(club.Value.houseId);
             this.configuration.Save();
           }
+          if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled) {
+            ImGui.SetTooltip("You must hold control to delete");
+          }
+          if (disabled) ImGui.EndDisabled();
         }
 
         ImGui.EndTable();
