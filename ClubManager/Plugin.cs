@@ -235,15 +235,15 @@ namespace ClubManager
             else if (player.entryCount >= 4)
               messageBuilder.AddUiForeground(518);
             messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-            messageBuilder.AddText(" has entered ");
+            messageBuilder.AddText(" has entered");
+            if (player.entryCount > 1) 
+              messageBuilder.AddText(" (" + player.entryCount + ")");
             if (knownClub) {
               var club = this.Configuration.knownClubs[pluginState.currentHouse.houseId];
-              messageBuilder.AddText(club.name);
+              messageBuilder.AddText(" " + club.name);
             } else {
               messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
             }
-            if (player.entryCount > 1) 
-              messageBuilder.AddText(". They have entered " + player.entryCount + " times");
 
             messageBuilder.AddUiForegroundOff();
             var entry = new XivChatEntry() {Message = messageBuilder.Build()};
