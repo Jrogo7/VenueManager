@@ -11,8 +11,8 @@ namespace ClubManager
         private static readonly ushort[] HouseTerritoryIds = {
             // Small, Medium, Large, Chamber, Apartment
             282, 283, 284, 384, 608, // Mist
-            342, 343, 344, 385, 609, // Lavender Beds
-            345, 346, 347, 386, 610, // Goblet
+            342, 343, 344, 385, 609, // The Lavender Beds
+            345, 346, 347, 386, 610, // The Goblet
             649, 650, 651, 652, 655, // Shirogane
             980, 981, 982, 983, 999, // Empyreum 
         };
@@ -25,11 +25,11 @@ namespace ClubManager
           {608, "Apartment"}, {609, "Apartment"}, {610, "Apartment"}, {655, "Apartment"}, {999, "Apartment"},
         };
         private static Dictionary<ushort, string> HouseLocationMap = new Dictionary<ushort, string>(){
-          {282, "Mist"}, {342, "Lavender Beds"}, {345, "Goblet"}, {649, "Shirogane"}, {980, "Empyreum"},
-          {283, "Mist"}, {343, "Lavender Beds"}, {346, "Goblet"}, {650, "Shirogane"}, {981, "Empyreum"},
-          {284, "Mist"}, {344, "Lavender Beds"}, {347, "Goblet"}, {651, "Shirogane"}, {982, "Empyreum"},
-          {384, "Mist"}, {385, "Lavender Beds"}, {386, "Goblet"}, {652, "Shirogane"}, {983, "Empyreum"},
-          {608, "Mist"}, {609, "Lavender Beds"}, {610, "Goblet"}, {655, "Shirogane"}, {999, "Empyreum"},
+          {282, "Mist"}, {342, "The Lavender Beds"}, {345, "The Goblet"}, {649, "Shirogane"}, {980, "Empyreum"},
+          {283, "Mist"}, {343, "The Lavender Beds"}, {346, "The Goblet"}, {650, "Shirogane"}, {981, "Empyreum"},
+          {284, "Mist"}, {344, "The Lavender Beds"}, {347, "The Goblet"}, {651, "Shirogane"}, {982, "Empyreum"},
+          {384, "Mist"}, {385, "The Lavender Beds"}, {386, "The Goblet"}, {652, "Shirogane"}, {983, "Empyreum"},
+          {608, "Mist"}, {609, "The Lavender Beds"}, {610, "The Goblet"}, {655, "Shirogane"}, {999, "Empyreum"},
         };
 
         // Returns true if sent territory id is a house 
