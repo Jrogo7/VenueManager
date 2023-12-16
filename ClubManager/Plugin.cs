@@ -10,6 +10,8 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using Dalamud.Game.ClientState.JobGauge.Enums;
+using NAudio.MediaFoundation;
 
 namespace ClubManager
 {
@@ -157,19 +159,7 @@ namespace ClubManager
                 var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
 
                 if (!isSelf) playerArrived = true;
-                
-                if (Configuration.showChatAlerts && !isSelf) {
-                  // Message Chat for player arriving 
-                  var messageBuilder = new SeStringBuilder();
-                  messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
-                  messageBuilder.AddText($"[{Name}] ");
-                  messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-                  messageBuilder.AddText(" has entered the " + TerritoryUtils.getHouseType(this.Configuration.territory));
-                  var entry = new XivChatEntry() {
-                    Message = messageBuilder.Build()
-                  };
-                  Chat.Print(entry);
-                }
+                showGuestChatAlert(player, isSelf);
               }
             }
 
@@ -191,6 +181,39 @@ namespace ClubManager
 
       public void reloadDoorbell() {
         doorbell.load();
+      }
+
+      private void showGuestChatAlert(Player player, bool isSelf) {
+        // Message Chat for player arriving 
+        if (Configuration.showChatAlerts) {
+          var messageBuilder = new SeStringBuilder();
+          var knownClub = this.Configuration.knownClubs.ContainsKey(pluginState.currentHouse.houseId);
+          
+          // Show text alert for self if the club is known
+          if (isSelf && knownClub) {
+            var club = this.Configuration.knownClubs[pluginState.currentHouse.houseId];
+            messageBuilder.AddText($"[{Name}] You have entered " + club.name);
+            var entry = new XivChatEntry() {Message = messageBuilder.Build()};
+            Chat.Print(entry);
+          } 
+          // Show text alert for guests
+          else if (!isSelf) {
+            messageBuilder.AddText($"[{Name}] ");
+            messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+            messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+            messageBuilder.AddText(" has entered ");
+            if (knownClub) {
+              var club = this.Configuration.knownClubs[pluginState.currentHouse.houseId];
+              messageBuilder.AddText(club.name);
+            } else {
+              messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+            }
+            messageBuilder.AddUiForegroundOff();
+            var entry = new XivChatEntry() {Message = messageBuilder.Build()};
+            Chat.Print(entry);
+          }
+
+        }
       }
     }
 }
