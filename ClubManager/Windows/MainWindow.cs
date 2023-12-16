@@ -163,7 +163,6 @@ public class MainWindow : Window, IDisposable
       if (!canAdd) ImGui.EndDisabled();
 
       ImGui.Spacing();
-      ImGui.Text("Clubs:");
       if (ImGui.BeginTable("Clubs", 7)) {
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
