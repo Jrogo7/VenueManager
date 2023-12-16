@@ -1,7 +1,7 @@
 [{
-  "DownloadLinkInstall": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/VenueManager.zip",
-  "DownloadLinkUpdate": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/VenueManager.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/VenueManager.zip",
+  "DownloadLinkInstall": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/VenueManager/releases/download/0.9.0/latest.zip",
   "Author": "Jrogo",
   "Name": "Venue Manager",
   "InternalName": "VenueManager",
