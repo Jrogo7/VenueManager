@@ -127,8 +127,9 @@ namespace ClubManager
               if (o is not PlayerCharacter pc) continue;
               var player = Player.fromCharacter(pc);
 
-              if (!this.Configuration.guests.ContainsKey(o.ObjectId)) {
-                this.Configuration.guests.Add(o.ObjectId, player);
+              // New Player has entered the house 
+              if (!this.Configuration.guests.ContainsKey(o.Name.TextValue)) {
+                this.Configuration.guests.Add(player.Name, player);
                 configUpdated = true;
                 playerArrived = true;
                 

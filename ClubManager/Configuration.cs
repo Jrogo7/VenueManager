@@ -20,7 +20,7 @@ namespace ClubManager
         public ushort territory { get; set; } = 0;
 
         // List of guests in the club
-        public Dictionary<uint, Player> guests { get; set; } = new();
+        public Dictionary<string, Player> guests { get; set; } = new();
 
         // the below exist just to make saving less cumbersome
         [NonSerialized]
