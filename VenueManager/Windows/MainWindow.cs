@@ -89,48 +89,66 @@ public class MainWindow : Window, IDisposable
         }
         // Render Settings Tab if selected 
         if (ImGui.BeginTabItem("Settings")) {
-          // can't ref a property, so use a local copy
-          var showChatAlerts = this.configuration.showChatAlerts;
-          if (ImGui.Checkbox("Chat alerts", ref showChatAlerts))
-          {
-              this.configuration.showChatAlerts = showChatAlerts;
-              this.configuration.Save();
-          }
-
-          // can't ref a property, so use a local copy
-          var showPluginNameInChat = this.configuration.showPluginNameInChat;
-          ImGui.Indent(20);
-          if (ImGui.Checkbox("Include Plugin Name", ref showPluginNameInChat))
-          {
-              this.configuration.showPluginNameInChat = showPluginNameInChat;
-              this.configuration.Save();
-          }
-          ImGui.Unindent();
-
-          var soundAlerts = this.configuration.soundAlerts;
-          if (ImGui.Checkbox("Sound alerts", ref soundAlerts))
-          {
-              this.configuration.soundAlerts = soundAlerts;
-              this.configuration.Save();
-          }
-
-          ImGui.Indent(20);
-          if (ImGuiComponents.IconButton(FontAwesomeIcon.Music)) {
-            plugin.playDoorbell();
-          }
-          if (ImGui.IsItemHovered()) {
-              ImGui.SetTooltip("Test Sound");
-          }
-          var volume = this.configuration.soundVolume;
-          if (ImGui.SliderFloat("Volume", ref volume, 0, 5)) {
-            this.configuration.soundVolume = volume;
-            plugin.reloadDoorbell();
-          }
-          ImGui.Unindent();
-
+          drawSettings();
           ImGui.EndTabItem();
         }
         ImGui.EndTabBar();
+    }
+
+    private void drawSettings() {
+      // can't ref a property, so use a local copy
+      var showChatAlerts = this.configuration.showChatAlerts;
+      if (ImGui.Checkbox("Chat alerts", ref showChatAlerts))
+      {
+          this.configuration.showChatAlerts = showChatAlerts;
+          this.configuration.Save();
+      }
+
+      var showPluginNameInChat = this.configuration.showPluginNameInChat;
+      ImGui.Indent(20);
+      if (ImGui.Checkbox("Include Plugin Name", ref showPluginNameInChat))
+      {
+          this.configuration.showPluginNameInChat = showPluginNameInChat;
+          this.configuration.Save();
+      }
+      ImGui.Unindent();
+
+      var soundAlerts = this.configuration.soundAlerts;
+      if (ImGui.Checkbox("Sound alerts", ref soundAlerts))
+      {
+          this.configuration.soundAlerts = soundAlerts;
+          this.configuration.Save();
+      }
+
+      ImGui.Indent(20);
+      // Allow the user to select which doorbell sound they would like 
+      if (ImGui.BeginCombo("Doorbell sound", DoorbellSound.DoorbellSoundTypes[(int)configuration.doorbellType])) {
+        var doorbells = (DOORBELL_TYPE[])Enum.GetValues(typeof(DOORBELL_TYPE));
+        for (int i = 0; i < doorbells.Length; i++)
+        {
+            bool is_selected = configuration.doorbellType == doorbells[i];
+            if (ImGui.Selectable(DoorbellSound.DoorbellSoundTypes[i], is_selected)) {
+              configuration.doorbellType = doorbells[i];
+              configuration.Save();
+              plugin.reloadDoorbell();
+            }
+            if (is_selected)
+                ImGui.SetItemDefaultFocus();
+        }
+        ImGui.EndCombo();
+      }
+      if (ImGuiComponents.IconButton(FontAwesomeIcon.Music)) {
+        plugin.playDoorbell();
+      }
+      if (ImGui.IsItemHovered()) {
+          ImGui.SetTooltip("Test Sound");
+      }
+      var volume = this.configuration.soundVolume;
+      if (ImGui.SliderFloat("Volume", ref volume, 0, 5)) {
+        this.configuration.soundVolume = volume;
+        plugin.reloadDoorbell();
+      }
+      ImGui.Unindent();
     }
 
     // Venue name inside input box 

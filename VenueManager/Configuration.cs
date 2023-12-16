@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace VenueManager
 {
-
   [Serializable]
   public class Configuration : IPluginConfiguration
   {
@@ -16,6 +15,8 @@ namespace VenueManager
     // Should sound alerts be played when new players join the house 
     public bool soundAlerts { get; set; } = false;
     public float soundVolume { get; set; } = 1;
+    // User selection for doorbell type
+    public DOORBELL_TYPE doorbellType { get; set; } = DOORBELL_TYPE.DOORBELL;
     // Territory that the current user is in
     public ushort territory { get; set; } = 0;
 

@@ -39,7 +39,7 @@ namespace VenueManager
     public WindowSystem WindowSystem = new("VenueManager");
     private MainWindow MainWindow { get; init; }
     private Stopwatch stopwatch = new();
-    private Sound doorbell;
+    private DoorbellSound doorbell;
 
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -78,7 +78,7 @@ namespace VenueManager
       Framework.Update += OnFrameworkUpdate;
 
       // Load Sound 
-      doorbell = new Sound(this, Sound.DOORBELL_TYPE.DOORBELL);
+      doorbell = new DoorbellSound(this, Configuration.doorbellType);
       doorbell.load();
 
       // Run territory change one time on boot to register current location 
@@ -235,6 +235,7 @@ namespace VenueManager
 
     public void reloadDoorbell()
     {
+      doorbell.setType(Configuration.doorbellType);
       doorbell.load();
     }
 
