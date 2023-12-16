@@ -160,6 +160,7 @@ public class MainWindow : Window, IDisposable
     // Draw venue list menu 
     private void drawVenueMenu() {
 
+      ImGui.Text("Save the current venue you are in to the list of venues");
       ImGui.InputTextWithHint("", "Enter venue name", ref venueName, 256);
       ImGui.SameLine();
       // Only allow saving venue if name is entered, user is in a house, and current house id is not in list 
@@ -176,10 +177,10 @@ public class MainWindow : Window, IDisposable
       if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
         if (!plugin.pluginState.userInHouse)
           ImGui.SetTooltip("You are not in a house");
+        else if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId))
+          ImGui.SetTooltip("Current venue already saved as " + plugin.venueList.venues[plugin.pluginState.currentHouse.houseId].name);
         else if (venueName.Length == 0) 
           ImGui.SetTooltip("You must enter a name");
-        else if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId))
-          ImGui.SetTooltip("Venue already saved");
       }
       if (!canAdd) ImGui.EndDisabled();
 
