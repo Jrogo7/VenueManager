@@ -35,11 +35,22 @@ public class MainWindow : Window, IDisposable
         ImGui.BeginTabBar("Tabs");
         // Render Guests tab if selected 
         if (ImGui.BeginTabItem("Guests")) {
-
           // Render high level information 
-          ImGui.Text(plugin.pluginState.userInHouse ? 
-            "You are in a " + TerritoryUtils.getHouseType(this.configuration.territory) + " in " + TerritoryUtils.getHouseLocation(this.configuration.territory) : 
-            "You are not in a house.");
+          if (plugin.pluginState.userInHouse) {
+            if (this.configuration.knownClubs.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
+              var club = this.configuration.knownClubs[plugin.pluginState.currentHouse.houseId];
+              ImGui.Text("You are at " + club.name);
+            } else {
+              var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ? 
+                "P" + plugin.pluginState.currentHouse.plot : 
+                "Room" + plugin.pluginState.currentHouse.room;
+              ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " + 
+                plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
+            }
+          } else {
+            ImGui.Text("You are not in a house.");
+          }
+          ImGui.Spacing();
 
           // Clear guest list button 
           if (ImGui.Button("Clear Guest List")) {
