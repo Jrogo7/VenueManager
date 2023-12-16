@@ -96,31 +96,31 @@ public class MainWindow : Window, IDisposable
     }
 
     private void drawSettings() {
+      ImGui.Text("Chat Alerts");
       // can't ref a property, so use a local copy
       var showChatAlerts = this.configuration.showChatAlerts;
-      if (ImGui.Checkbox("Chat alerts", ref showChatAlerts))
+      if (ImGui.Checkbox("Enabled", ref showChatAlerts))
       {
           this.configuration.showChatAlerts = showChatAlerts;
           this.configuration.Save();
       }
 
       var showPluginNameInChat = this.configuration.showPluginNameInChat;
-      ImGui.Indent(20);
       if (ImGui.Checkbox("Include Plugin Name", ref showPluginNameInChat))
       {
           this.configuration.showPluginNameInChat = showPluginNameInChat;
           this.configuration.Save();
       }
-      ImGui.Unindent();
+      ImGui.Separator();
+      ImGui.Spacing();
 
+      ImGui.Text("Sound Alerts");
       var soundAlerts = this.configuration.soundAlerts;
-      if (ImGui.Checkbox("Sound alerts", ref soundAlerts))
+      if (ImGui.Checkbox("Enabled", ref soundAlerts))
       {
           this.configuration.soundAlerts = soundAlerts;
           this.configuration.Save();
       }
-
-      ImGui.Indent(20);
       // Allow the user to select which doorbell sound they would like 
       if (ImGui.BeginCombo("Doorbell sound", DoorbellSound.DoorbellSoundTypes[(int)configuration.doorbellType])) {
         var doorbells = (DOORBELL_TYPE[])Enum.GetValues(typeof(DOORBELL_TYPE));
@@ -148,7 +148,6 @@ public class MainWindow : Window, IDisposable
         this.configuration.soundVolume = volume;
         plugin.reloadDoorbell();
       }
-      ImGui.Unindent();
     }
 
     // Venue name inside input box 
