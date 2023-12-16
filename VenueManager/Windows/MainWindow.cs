@@ -37,48 +37,7 @@ public class MainWindow : Window, IDisposable
         ImGui.BeginTabBar("Tabs");
         // Render Guests tab if selected 
         if (ImGui.BeginTabItem("Guests")) {
-          // Render high level information 
-          if (plugin.pluginState.userInHouse) {
-            if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
-              var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
-              ImGui.Text("You are at " + venue.name);
-            } else {
-              var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ? 
-                "P" + plugin.pluginState.currentHouse.plot : 
-                "Room" + plugin.pluginState.currentHouse.room;
-              ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " + 
-                plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
-            }
-
-            // List the number of players in the house 
-            ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.guestList.guests.Count} total visitors)");
-          } else {
-            ImGui.Text("You are not in a house.");
-          }
-          ImGui.Spacing();
-          ImGui.Separator();
-          ImGui.Spacing();
-
-          // Clear guest list button 
-          if (ImGui.Button("Clear Guest List")) {
-            plugin.guestList.guests = new();
-            plugin.guestList.save();
-          }
-
-          // Draw Guests 
-          ImGui.Text($"Guests ({plugin.guestList.guests.Count})");
-          ImGui.BeginChild(1);
-          ImGui.Indent(10);
-
-          // Generate sorted guest list 
-          var sortedGuestList = plugin.guestList.guests.ToList();
-          sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
-          foreach (var guest in sortedGuestList) {
-            var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
-            ImGui.TextColored(color, guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
-          }
-          ImGui.Unindent(10);
-          ImGui.EndChild();
+          drawGuestsMenu();
 
           ImGui.EndTabItem();
         }
@@ -93,6 +52,51 @@ public class MainWindow : Window, IDisposable
           ImGui.EndTabItem();
         }
         ImGui.EndTabBar();
+    }
+
+    private void drawGuestsMenu() {
+      // Render high level information 
+      if (plugin.pluginState.userInHouse) {
+        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
+          var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
+          ImGui.Text("You are at " + venue.name);
+        } else {
+          var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ? 
+            "P" + plugin.pluginState.currentHouse.plot : 
+            "Room" + plugin.pluginState.currentHouse.room;
+          ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " + 
+            plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
+        }
+
+        // List the number of players in the house 
+        ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.guestList.guests.Count} total visitors)");
+      } else {
+        ImGui.Text("You are not in a house.");
+      }
+      ImGui.Spacing();
+      ImGui.Separator();
+      ImGui.Spacing();
+
+      // Clear guest list button 
+      if (ImGui.Button("Clear Guest List")) {
+        plugin.guestList.guests = new();
+        plugin.guestList.save();
+      }
+
+      // Draw Guests 
+      ImGui.Text($"Guests ({plugin.guestList.guests.Count})");
+      ImGui.BeginChild(1);
+      ImGui.Indent(10);
+
+      // Generate sorted guest list 
+      var sortedGuestList = plugin.guestList.guests.ToList();
+      sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
+      foreach (var guest in sortedGuestList) {
+        var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
+        ImGui.TextColored(color, guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
+      }
+      ImGui.Unindent(10);
+      ImGui.EndChild();
     }
 
     private void drawSettings() {
