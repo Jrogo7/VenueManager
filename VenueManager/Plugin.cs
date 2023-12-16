@@ -32,7 +32,8 @@ namespace VenueManager
     private ICommandManager CommandManager { get; init; }
     public Configuration Configuration { get; init; }
     public PluginState pluginState { get; init; }
-    public VenueStore venueStore { get; init; }
+    public VenueList venueList { get; init; }
+    public GuestList guestList { get; init; }
 
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
@@ -45,8 +46,10 @@ namespace VenueManager
         [RequiredVersion("1.0")] ICommandManager commandManager)
     {
       this.pluginState = new PluginState();
-      this.venueStore = new VenueStore();
-      this.venueStore.load();
+      this.venueList = new VenueList();
+      this.venueList.load();
+      this.guestList = new GuestList();
+      this.guestList.load();
 
       PluginInterface = pluginInterface;
       this.CommandManager = commandManager;
@@ -181,29 +184,30 @@ namespace VenueManager
           var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
 
           // New Player has entered the house 
-          if (!this.Configuration.guests.ContainsKey(o.Name.TextValue))
+          if (!guestList.guests.ContainsKey(o.Name.TextValue))
           {
             configUpdated = true;
-            this.Configuration.guests.Add(player.Name, player);
+            guestList.guests.Add(player.Name, player);
             if (!isSelf) playerArrived = true;
-            showGuestChatAlert(this.Configuration.guests[player.Name], isSelf);
+            showGuestChatAlert(guestList.guests[player.Name], isSelf);
           }
           // Mark the player as re-entering the venue 
-          else if (!this.Configuration.guests[player.Name].inHouse)
+          else if (!guestList.guests[player.Name].inHouse)
           {
             configUpdated = true;
-            this.Configuration.guests[player.Name].inHouse = true;
-            this.Configuration.guests[player.Name].entryCount++;
-            showGuestChatAlert(this.Configuration.guests[player.Name], isSelf);
+            guestList.guests[player.Name].inHouse = true;
+            guestList.guests[player.Name].entryCount++;
+            showGuestChatAlert(guestList.guests[player.Name], isSelf);
           }
         }
 
         // Check for guests that have left the house 
-        foreach (var guest in this.Configuration.guests)
+        foreach (var guest in guestList.guests)
         {
           if (!seenPlayers.ContainsKey(guest.Value.Name))
           {
             guest.Value.inHouse = false;
+            configUpdated = true;
           }
         }
 
@@ -217,7 +221,7 @@ namespace VenueManager
         pluginState.playersInHouse = playerCount;
 
         // Save config if we saw new players
-        if (configUpdated) this.Configuration.Save();
+        if (configUpdated) guestList.save();
 
         stopwatch.Restart();
       }
@@ -240,12 +244,12 @@ namespace VenueManager
       if (Configuration.showChatAlerts)
       {
         var messageBuilder = new SeStringBuilder();
-        var knownVenue = venueStore.venues.ContainsKey(pluginState.currentHouse.houseId);
+        var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
 
         // Show text alert for self if the venue is known
         if (isSelf && knownVenue)
         {
-          var venue = venueStore.venues[pluginState.currentHouse.houseId];
+          var venue = venueList.venues[pluginState.currentHouse.houseId];
           if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
           messageBuilder.AddText("You have entered " + venue.name);
           var entry = new XivChatEntry() { Message = messageBuilder.Build() };
@@ -269,7 +273,7 @@ namespace VenueManager
             messageBuilder.AddText(" (" + player.entryCount + ")");
           if (knownVenue)
           {
-            var venue = venueStore.venues[pluginState.currentHouse.houseId];
+            var venue = venueList.venues[pluginState.currentHouse.houseId];
             messageBuilder.AddText(" " + venue.name);
           }
           else

@@ -18,9 +18,6 @@ namespace VenueManager
         // Territory that the current user is in
         public ushort territory { get; set; } = 0;
 
-        // List of guests in the venue
-        public Dictionary<string, Player> guests { get; set; } = new();
-
         // the below exist just to make saving less cumbersome
         [NonSerialized]
         private DalamudPluginInterface? pluginInterface;
