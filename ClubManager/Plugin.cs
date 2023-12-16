@@ -154,7 +154,7 @@ namespace ClubManager
                 configUpdated = true;
 
                 // Is the new player the current user 
-                var isSelf = ClientState.LocalPlayer?.OwnerId == o.OwnerId;
+                var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
 
                 if (!isSelf) playerArrived = true;
                 
