@@ -9,7 +9,7 @@ insert_final_newline = true
 
 # 4 space indentation
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # disable redundant style warnings
 
