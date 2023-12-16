@@ -1,16 +1,17 @@
 [{
-  "DownloadLinkInstall": "https://github.com/Jrogo7/ClubManager/releases/download/0.8.0/ClubManager.zip",
-  "DownloadLinkUpdate": "https://github.com/Jrogo7/ClubManager/releases/download/0.8.0/ClubManager.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/ClubManager/releases/download/0.8.0/ClubManager.zip",
+  "DownloadLinkInstall": "https://github.com/Jrogo7/VenueManager/releases/download/0.8.0/VenueManager.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/VenueManager/releases/download/0.8.0/VenueManager.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/VenueManager/releases/download/0.8.0/VenueManager.zip",
   "Author": "Jrogo",
-  "Name": "Club Manager",
-  "InternalName": "ClubManager",
+  "Name": "Venue Manager",
+  "InternalName": "VenueManager",
   "AssemblyVersion": "0.8.0",
-  "Punchline": "Save a list of clubs and view club guests",
-  "Description": "Save and manage a list of clubs you visit or own. Get updates when new visitors arrive into the club. Icon by Silv :)",
+  "Punchline": "Save a list of venues and view venue guests",
+  "Description": "Save and manage a list of venues you visit or own. Get updates when new visitors arrive into the venue. Icon by Silv :)",
   "ApplicableVersion": "any",
-  "RepoUrl": "https://github.com/Jrogo7/ClubManager",
+  "RepoUrl": "https://github.com/Jrogo7/VenueManager",
   "Tags": [
+    "venue",
     "club",
     "guests"
   ],
@@ -19,7 +20,7 @@
   "LoadSync": false,
   "CanUnloadAsync": false,
   "LoadPriority": 0,
-  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/icon.png",
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/VenueManager/master/images/icon.png",
   "AcceptsFeedback": true,
   "DownloadCount": 4
 }]

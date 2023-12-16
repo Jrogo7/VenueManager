@@ -1,7 +1,7 @@
 using System;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 
-namespace ClubManager
+namespace VenueManager
 {
     [Serializable]
     public class Player

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Dalamud.Plugin;
 using NAudio.Wave;
 
-namespace ClubManager
+namespace VenueManager
 {
   public class Sound
   {

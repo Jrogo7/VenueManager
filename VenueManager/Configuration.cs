@@ -3,7 +3,7 @@ using Dalamud.Plugin;
 using System;
 using System.Collections.Generic;
 
-namespace ClubManager
+namespace VenueManager
 {
     [Serializable]
     public class Configuration : IPluginConfiguration
@@ -18,10 +18,10 @@ namespace ClubManager
         // Territory that the current user is in
         public ushort territory { get; set; } = 0;
 
-        // List of known clubs 
-        public Dictionary<long, Club> knownClubs { get; set; } = new();
+        // List of known venubs 
+        public Dictionary<long, Venue> knownVenues { get; set; } = new();
 
-        // List of guests in the club
+        // List of guests in the venue
         public Dictionary<string, Player> guests { get; set; } = new();
 
         // the below exist just to make saving less cumbersome

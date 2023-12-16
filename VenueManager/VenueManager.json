@@ -1,0 +1,14 @@
+{
+  "Author": "Jrogo",
+  "Name": "Venue Manager",
+  "Punchline": "Save a list of venues and view venue guests",
+  "Description": "Save and manage a list of venues you visit or own. Get updates when new visitors arrive into the venue. Icon by Silv :)",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/Jrogo7/VenueManager",
+  "Tags": [
+    "venue",
+    "club",
+    "guests"
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/VenueManager/master/images/icon.png"
+}

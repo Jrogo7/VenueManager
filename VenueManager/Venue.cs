@@ -1,9 +1,9 @@
 using System;
 
-namespace ClubManager
+namespace VenueManager
 {
     [Serializable]
-    public class Club
+    public class Venue
     {
         public long houseId {get; set;} = 0;
         public int plot {get; set;} = 0;
@@ -15,11 +15,11 @@ namespace ClubManager
         public ushort type {get; set;} = 0;
         public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(worldId)?.Name?.RawString ?? $"World_{worldId}";
 
-        public Club()
+        public Venue()
         {
         }
 
-        public Club(Club club) {
+        public Venue(Venue club) {
           houseId = club.houseId;
           plot = club.plot;
           ward = club.ward;
