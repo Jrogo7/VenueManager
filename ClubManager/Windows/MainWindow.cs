@@ -37,7 +37,7 @@ public class MainWindow : Window, IDisposable
         if (ImGui.BeginTabItem("Guests")) {
 
           // Render high level information 
-          ImGui.Text(this.configuration.userInHouse ? 
+          ImGui.Text(plugin.pluginState.userInHouse ? 
             "You are in a " + TerritoryUtils.getHouseType(this.configuration.territory) + " in " + TerritoryUtils.getHouseLocation(this.configuration.territory) : 
             "You are not in a house.");
 
@@ -61,6 +61,11 @@ public class MainWindow : Window, IDisposable
           ImGui.Unindent(10);
           ImGui.EndChild();
 
+          ImGui.EndTabItem();
+        }
+        // Render Clubs Tab 
+        if (ImGui.BeginTabItem("Clubs")) {
+          drawClubMenu();
           ImGui.EndTabItem();
         }
         // Render Settings Tab if selected 
@@ -97,5 +102,72 @@ public class MainWindow : Window, IDisposable
           ImGui.EndTabItem();
         }
         ImGui.EndTabBar();
+    }
+
+    // Club name inside input box 
+    private string clubName = string.Empty;
+
+    // Draw club list menu 
+    private void drawClubMenu() {
+
+      ImGui.InputTextWithHint("", "Enter club name", ref clubName, 256);
+      ImGui.SameLine();
+      // Only allow saving club if name is entered, user is in a house, and current house id is not in list 
+      bool canAdd = clubName.Length > 0 && 
+        plugin.pluginState.userInHouse && 
+        !this.configuration.knownClubs.ContainsKey(plugin.pluginState.currentHouse.houseId);
+      if (!canAdd) ImGui.BeginDisabled();
+      if (ImGui.Button("Save Club")) {
+        Club club = new Club(plugin.pluginState.currentHouse);
+        club.name = clubName;
+        this.configuration.knownClubs.Add(club.houseId, club);
+        this.configuration.Save();
+      }
+      if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
+        if (!plugin.pluginState.userInHouse)
+          ImGui.SetTooltip("You are not in a house");
+        else if (clubName.Length == 0) 
+          ImGui.SetTooltip("You must enter a name");
+        else if (this.configuration.knownClubs.ContainsKey(plugin.pluginState.currentHouse.houseId))
+          ImGui.SetTooltip("Club already saved");
+      }
+      if (!canAdd) ImGui.EndDisabled();
+
+      ImGui.Spacing();
+      ImGui.Text("Clubs:");
+      if (ImGui.BeginTable("Clubs", 6)) {
+        ImGui.TableSetupColumn("Name");
+        ImGui.TableSetupColumn("District");
+        ImGui.TableSetupColumn("Ward");
+        ImGui.TableSetupColumn("Plot");
+        ImGui.TableSetupColumn("World");
+        ImGui.TableSetupColumn("Delete");
+        ImGui.TableHeadersRow();
+
+        foreach (var club in configuration.knownClubs) {
+          var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == club.Value.houseId ?
+            new Vector4(0,0.69f,0,1) : new Vector4(1,1,1,1);
+            
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, club.Value.name);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, club.Value.district);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, "" + club.Value.ward);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, "" + club.Value.plot);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, club.Value.WorldName);
+          ImGui.TableNextColumn();
+          // Allow the user to delete the saved club
+          if (ImGuiComponents.IconButton("##" + club.Value.houseId, FontAwesomeIcon.Trash)) {
+            Plugin.Log.Info("Remove house: " + club.Value.houseId);
+            this.configuration.knownClubs.Remove(club.Value.houseId);
+            this.configuration.Save();
+          }
+        }
+
+        ImGui.EndTable();
+      }
     }
 }

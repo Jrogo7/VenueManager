@@ -14,10 +14,11 @@ namespace ClubManager
         // Should sound alerts be played when new players join the house 
         public bool soundAlerts { get; set; } = true; 
         public float soundVolume { get; set; } = 1; 
-        // Is the current user in the house
-        public bool userInHouse { get; set; } = false;
         // Territory that the current user is in
         public ushort territory { get; set; } = 0;
+
+        // List of known clubs 
+        public Dictionary<long, Club> knownClubs { get; set; } = new();
 
         // List of guests in the club
         public Dictionary<string, Player> guests { get; set; } = new();

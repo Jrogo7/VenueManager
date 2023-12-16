@@ -9,6 +9,7 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
+using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 
 namespace ClubManager
 {
@@ -18,6 +19,7 @@ namespace ClubManager
         private const string CommandName = "/club";
         [PluginService] public static IClientState ClientState { get; private set; } = null!;
         [PluginService] public static IFramework Framework { get; private set; } = null!;
+        [PluginService] public static IDataManager DataManager { get; private set; } = null!;
         // Game Objects 
         [PluginService] public static IObjectTable Objects { get; private set; } = null!;
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
@@ -26,6 +28,7 @@ namespace ClubManager
         public DalamudPluginInterface PluginInterface { get; init; }
         private ICommandManager CommandManager { get; init; }
         public Configuration Configuration { get; init; }
+        public PluginState pluginState {get; init;}
 
         // Windows 
         public WindowSystem WindowSystem = new("ClubManager");
@@ -37,7 +40,7 @@ namespace ClubManager
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] ICommandManager commandManager)
         {
-            Log.Debug("Club Manager Plugin started");
+            this.pluginState = new PluginState();
 
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -104,22 +107,40 @@ namespace ClubManager
             if (TerritoryUtils.isHouse(territory))
             {
                 // Log.Debug("User has entered a house");
-                this.Configuration.userInHouse = true;
+                pluginState.userInHouse = true;
                 stopwatch.Start();
             }
-            else if (this.Configuration.userInHouse)
+            else if (pluginState.userInHouse)
             {
-                this.Configuration.userInHouse = false;
+                pluginState.userInHouse = false;
+                pluginState.currentHouse = new Club(); // Erase club when leaving 
                 stopwatch.Stop();
             }
 
             this.Configuration.Save();
         }
+        
 
-        private void OnFrameworkUpdate(IFramework framework)
+        private unsafe void OnFrameworkUpdate(IFramework framework)
         {
           // Every second we are in a house. Process players and see what has changed 
-          if (Configuration.userInHouse && stopwatch.ElapsedMilliseconds > 1000) {
+          if (pluginState.userInHouse && stopwatch.ElapsedMilliseconds > 1000) {
+            // Fetch updated house information 
+            try {
+              var housingManager = HousingManager.Instance();
+              var worldId = ClientState.LocalPlayer?.CurrentWorld.Id;
+              // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
+              if (pluginState.currentHouse.houseId != housingManager->GetCurrentHouseId() && worldId != null) {
+                pluginState.currentHouse.houseId = housingManager->GetCurrentHouseId(); 
+                pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
+                pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
+                pluginState.currentHouse.worldId = worldId ?? 0;
+                pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(Configuration.territory);
+              }
+            } catch {
+              Log.Error("Failed to load housing information");
+            }
+
             bool configUpdated = false;
             bool playerArrived = false;
             foreach (var o in Objects)
