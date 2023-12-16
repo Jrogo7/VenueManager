@@ -130,7 +130,7 @@ public class MainWindow : Window, IDisposable
 
       ImGui.Text("Chat Alerts");
       var showChatAlerts = this.configuration.showChatAlerts;
-      if (ImGui.Checkbox("Enabled", ref showChatAlerts))
+      if (ImGui.Checkbox("Enabled##showChatAlerts", ref showChatAlerts))
       {
           this.configuration.showChatAlerts = showChatAlerts;
           this.configuration.Save();
@@ -147,7 +147,7 @@ public class MainWindow : Window, IDisposable
 
       ImGui.Text("Sound Alerts");
       var soundAlerts = this.configuration.soundAlerts;
-      if (ImGui.Checkbox("Enabled", ref soundAlerts))
+      if (ImGui.Checkbox("Enabled##soundAlerts", ref soundAlerts))
       {
           this.configuration.soundAlerts = soundAlerts;
           this.configuration.Save();
