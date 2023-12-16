@@ -136,6 +136,8 @@ namespace ClubManager
                 pluginState.currentHouse.houseId = housingManager->GetCurrentHouseId(); 
                 pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
                 pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
+                pluginState.currentHouse.room = housingManager->GetCurrentRoom();
+                pluginState.currentHouse.type = this.Configuration.territory;
                 pluginState.currentHouse.worldId = worldId ?? 0;
                 pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(Configuration.territory);
               }

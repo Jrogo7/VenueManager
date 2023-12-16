@@ -45,5 +45,10 @@ namespace ClubManager
         static public string getHouseLocation(ushort territory) {
           return HouseLocationMap.ContainsKey(territory) ? HouseLocationMap[territory] : "";
         }
+
+        static public bool isPlotType(ushort territory) {
+          return HouseLocationMap.ContainsKey(territory) && 
+            (HouseTypeMap[territory] == "Small House" || HouseTypeMap[territory] == "Medium House" || HouseTypeMap[territory] == "Large House");
+        }
     }
 }

@@ -135,11 +135,12 @@ public class MainWindow : Window, IDisposable
 
       ImGui.Spacing();
       ImGui.Text("Clubs:");
-      if (ImGui.BeginTable("Clubs", 6)) {
+      if (ImGui.BeginTable("Clubs", 7)) {
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
         ImGui.TableSetupColumn("Ward");
         ImGui.TableSetupColumn("Plot");
+        ImGui.TableSetupColumn("Room");
         ImGui.TableSetupColumn("World");
         ImGui.TableSetupColumn("Delete");
         ImGui.TableHeadersRow();
@@ -155,7 +156,9 @@ public class MainWindow : Window, IDisposable
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, "" + club.Value.ward);
           ImGui.TableNextColumn();
-          ImGui.TextColored(fontColor, "" + club.Value.plot);
+          ImGui.TextColored(fontColor, TerritoryUtils.isPlotType(club.Value.type) ? "" + club.Value.plot : "");
+          ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, !TerritoryUtils.isPlotType(club.Value.type) ? "" + club.Value.room : "");
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, club.Value.WorldName);
           ImGui.TableNextColumn();
