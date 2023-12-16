@@ -51,14 +51,12 @@ public class MainWindow : Window, IDisposable
             }
 
             // List the number of players in the house 
-            ImGui.Text("There are currently");
-            ImGui.SameLine();
-            ImGui.TextColored(colorGreen, "" + plugin.pluginState.playersInHouse);
-            ImGui.SameLine();
-            ImGui.Text("players in the " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type));
+            ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {this.configuration.guests.Count} total visitors)");
           } else {
             ImGui.Text("You are not in a house.");
           }
+          ImGui.Spacing();
+          ImGui.Separator();
           ImGui.Spacing();
 
           // Clear guest list button 
@@ -68,7 +66,7 @@ public class MainWindow : Window, IDisposable
           }
 
           // Draw Guests 
-          ImGui.Text("Guests:");
+          ImGui.Text($"Guests ({this.configuration.guests.Count})");
           ImGui.BeginChild(1);
           ImGui.Indent(10);
 
