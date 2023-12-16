@@ -11,6 +11,7 @@ namespace ClubManager
         public int Version { get; set; } = 0;
         // Should chat message alerts be printed to the chat
         public bool showChatAlerts { get; set; } = false; 
+        public bool showPluginNameInChat { get; set; } = false; 
         // Should sound alerts be played when new players join the house 
         public bool soundAlerts { get; set; } = false; 
         public float soundVolume { get; set; } = 1; 

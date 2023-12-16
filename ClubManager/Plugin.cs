@@ -219,13 +219,14 @@ namespace ClubManager
           // Show text alert for self if the club is known
           if (isSelf && knownClub) {
             var club = this.Configuration.knownClubs[pluginState.currentHouse.houseId];
-            messageBuilder.AddText($"[{Name}] You have entered " + club.name);
+            if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
+            messageBuilder.AddText("You have entered " + club.name);
             var entry = new XivChatEntry() {Message = messageBuilder.Build()};
             Chat.Print(entry);
           } 
           // Show text alert for guests
           else if (!isSelf) {
-            messageBuilder.AddText($"[{Name}] ");
+            if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
             if (player.entryCount == 1)
               messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
             else if (player.entryCount == 2)

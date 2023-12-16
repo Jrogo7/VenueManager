@@ -97,6 +97,16 @@ public class MainWindow : Window, IDisposable
               this.configuration.Save();
           }
 
+          // can't ref a property, so use a local copy
+          var showPluginNameInChat = this.configuration.showPluginNameInChat;
+          ImGui.Indent(20);
+          if (ImGui.Checkbox("Include Plugin Name", ref showPluginNameInChat))
+          {
+              this.configuration.showPluginNameInChat = showPluginNameInChat;
+              this.configuration.Save();
+          }
+          ImGui.Unindent();
+
           var soundAlerts = this.configuration.soundAlerts;
           if (ImGui.Checkbox("Sound alerts", ref soundAlerts))
           {
