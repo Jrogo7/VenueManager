@@ -164,6 +164,8 @@ namespace VenueManager
           Log.Error("Failed to load housing information");
         }
 
+        if (!Configuration.showGuestsTab) return;
+
         bool configUpdated = false;
         bool playerArrived = false;
         int playerCount = 0;

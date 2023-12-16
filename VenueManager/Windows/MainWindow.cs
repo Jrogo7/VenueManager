@@ -36,15 +36,19 @@ public class MainWindow : Window, IDisposable
     {
         ImGui.BeginTabBar("Tabs");
         // Render Guests tab if selected 
-        if (ImGui.BeginTabItem("Guests")) {
-          drawGuestsMenu();
+        if (this.configuration.showGuestsTab) {
+          if (ImGui.BeginTabItem("Guests")) {
+            drawGuestsMenu();
 
-          ImGui.EndTabItem();
+            ImGui.EndTabItem();
+          }
         }
         // Render Venues Tab 
-        if (ImGui.BeginTabItem("Venues")) {
-          drawVenueMenu();
-          ImGui.EndTabItem();
+        if (this.configuration.showVenueTab) {
+          if (ImGui.BeginTabItem("Venues")) {
+            drawVenueMenu();
+            ImGui.EndTabItem();
+          }
         }
         // Render Settings Tab if selected 
         if (ImGui.BeginTabItem("Settings")) {
@@ -100,8 +104,31 @@ public class MainWindow : Window, IDisposable
     }
 
     private void drawSettings() {
+      ImGui.Text("Tab Visibility");
+      var showGuestsTab = this.configuration.showGuestsTab;
+      if (ImGui.Checkbox("Guests Tab", ref showGuestsTab))
+      {
+          this.configuration.showGuestsTab = showGuestsTab;
+          this.configuration.Save();
+      }
+      ImGui.Indent(20);
+      ImGui.TextWrapped("Hiding the Guests Tab will also disable all notifications around guests entering or leaving.");
+      ImGui.Unindent();
+      var showVenueTab = this.configuration.showVenueTab;
+      if (ImGui.Checkbox("Venues Tab", ref showVenueTab))
+      {
+          this.configuration.showVenueTab = showVenueTab;
+          this.configuration.Save();
+      }
+
+      if (!this.configuration.showGuestsTab && !this.configuration.showVenueTab) {
+        ImGui.TextColored(new Vector4(0.9f,0,1f,1f), "So Empty");
+      }
+      
+      ImGui.Separator();
+      ImGui.Spacing();
+
       ImGui.Text("Chat Alerts");
-      // can't ref a property, so use a local copy
       var showChatAlerts = this.configuration.showChatAlerts;
       if (ImGui.Checkbox("Enabled", ref showChatAlerts))
       {
