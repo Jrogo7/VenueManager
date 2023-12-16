@@ -67,7 +67,8 @@ public class MainWindow : Window, IDisposable
           var sortedGuestList = this.configuration.guests.ToList();
           sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
           foreach (var guest in sortedGuestList) {
-            ImGui.Text(guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
+            var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
+            ImGui.TextColored(color, guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
           }
           ImGui.Unindent(10);
           ImGui.EndChild();
