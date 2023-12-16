@@ -1,8 +1,8 @@
 {
   "Author": "Jrogo",
   "Name": "Club Manager",
-  "Punchline": "See who is visiting your club",
-  "Description": "Guest list and doorbell for your club. Icon by Silv :)",
+  "Punchline": "Save a list of clubs and view club guests",
+  "Description": "Save and manage a list of clubs you visit or own. Get updates when new visitors arrive into the club. Icon by Silv :)",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/ClubManager",
   "Tags": [

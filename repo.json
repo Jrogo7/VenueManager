@@ -6,7 +6,8 @@
   "Name": "Club Manager",
   "InternalName": "ClubManager",
   "AssemblyVersion": "0.7.0",
-  "Description": "Guest list and doorbell for your club. Icon by Silv :)",
+  "Punchline": "Save a list of clubs and view club guests",
+  "Description": "Save and manage a list of clubs you visit or own. Get updates when new visitors arrive into the club. Icon by Silv :)",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/ClubManager",
   "Tags": [
@@ -19,7 +20,6 @@
   "CanUnloadAsync": false,
   "LoadPriority": 0,
   "IconUrl": "https://raw.githubusercontent.com/Jrogo7/ClubManager/master/images/icon.png",
-  "Punchline": "See who is visiting your club",
   "AcceptsFeedback": true,
   "DownloadCount": 4
 }]
