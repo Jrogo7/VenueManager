@@ -161,7 +161,6 @@ public class MainWindow : Window, IDisposable
           ImGui.TableNextColumn();
           // Allow the user to delete the saved club
           if (ImGuiComponents.IconButton("##" + club.Value.houseId, FontAwesomeIcon.Trash)) {
-            Plugin.Log.Info("Remove house: " + club.Value.houseId);
             this.configuration.knownClubs.Remove(club.Value.houseId);
             this.configuration.Save();
           }
