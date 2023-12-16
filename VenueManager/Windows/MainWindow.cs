@@ -39,8 +39,8 @@ public class MainWindow : Window, IDisposable
         if (ImGui.BeginTabItem("Guests")) {
           // Render high level information 
           if (plugin.pluginState.userInHouse) {
-            if (this.configuration.knownVenues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
-              var venue = this.configuration.knownVenues[plugin.pluginState.currentHouse.houseId];
+            if (plugin.venueStore.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
+              var venue = plugin.venueStore.venues[plugin.pluginState.currentHouse.houseId];
               ImGui.Text("You are at " + venue.name);
             } else {
               var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ? 
@@ -144,20 +144,20 @@ public class MainWindow : Window, IDisposable
       // Only allow saving venue if name is entered, user is in a house, and current house id is not in list 
       bool canAdd = venueName.Length > 0 && 
         plugin.pluginState.userInHouse && 
-        !this.configuration.knownVenues.ContainsKey(plugin.pluginState.currentHouse.houseId);
+        !plugin.venueStore.venues.ContainsKey(plugin.pluginState.currentHouse.houseId);
       if (!canAdd) ImGui.BeginDisabled();
       if (ImGui.Button("Save Venue")) {
         Venue venue = new Venue(plugin.pluginState.currentHouse);
         venue.name = venueName;
-        this.configuration.knownVenues.Add(venue.houseId, venue);
-        this.configuration.Save();
+        plugin.venueStore.venues.Add(venue.houseId, venue);
+        plugin.venueStore.save();
       }
       if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
         if (!plugin.pluginState.userInHouse)
           ImGui.SetTooltip("You are not in a house");
         else if (venueName.Length == 0) 
           ImGui.SetTooltip("You must enter a name");
-        else if (this.configuration.knownVenues.ContainsKey(plugin.pluginState.currentHouse.houseId))
+        else if (plugin.venueStore.venues.ContainsKey(plugin.pluginState.currentHouse.houseId))
           ImGui.SetTooltip("Venue already saved");
       }
       if (!canAdd) ImGui.EndDisabled();
@@ -173,7 +173,7 @@ public class MainWindow : Window, IDisposable
         ImGui.TableSetupColumn("Delete");
         ImGui.TableHeadersRow();
 
-        foreach (var venue in configuration.knownVenues) {
+        foreach (var venue in plugin.venueStore.venues) {
           var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == venue.Value.houseId ?
             colorGreen : new Vector4(1,1,1,1);
             
@@ -199,8 +199,8 @@ public class MainWindow : Window, IDisposable
 
           // Allow the user to delete the saved venue
           if (ImGuiComponents.IconButton("##" + venue.Value.houseId, FontAwesomeIcon.Trash)) {
-            this.configuration.knownVenues.Remove(venue.Value.houseId);
-            this.configuration.Save();
+            plugin.venueStore.venues.Remove(venue.Value.houseId);
+            plugin.venueStore.save();
           }
           if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled) {
             ImGui.SetTooltip("You must hold control to delete");

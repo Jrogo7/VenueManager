@@ -20,6 +20,7 @@ namespace VenueManager
     private const string CommandName = "/venue";
     private const string CommandNameAlias = "/vm";
     private const string CommandNameAlias2 = "/club";
+    [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static IFramework Framework { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;
@@ -28,10 +29,10 @@ namespace VenueManager
     [PluginService] public static IPluginLog Log { get; private set; } = null!;
     [PluginService] public static IChatGui Chat { get; private set; } = null!;
 
-    public DalamudPluginInterface PluginInterface { get; init; }
     private ICommandManager CommandManager { get; init; }
     public Configuration Configuration { get; init; }
     public PluginState pluginState { get; init; }
+    public VenueStore venueStore { get; init; }
 
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
@@ -44,12 +45,14 @@ namespace VenueManager
         [RequiredVersion("1.0")] ICommandManager commandManager)
     {
       this.pluginState = new PluginState();
+      this.venueStore = new VenueStore();
+      this.venueStore.load();
 
-      this.PluginInterface = pluginInterface;
+      PluginInterface = pluginInterface;
       this.CommandManager = commandManager;
 
-      this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-      this.Configuration.Initialize(this.PluginInterface);
+      this.Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+      this.Configuration.Initialize(PluginInterface);
 
       MainWindow = new MainWindow(this);
 
@@ -65,7 +68,7 @@ namespace VenueManager
         HelpMessage = "Alias for /venue"
       });
 
-      this.PluginInterface.UiBuilder.Draw += DrawUI;
+      PluginInterface.UiBuilder.Draw += DrawUI;
 
       // Bind territory changed listener to client 
       ClientState.TerritoryChanged += OnTerritoryChanged;
@@ -237,12 +240,12 @@ namespace VenueManager
       if (Configuration.showChatAlerts)
       {
         var messageBuilder = new SeStringBuilder();
-        var knownVenue = this.Configuration.knownVenues.ContainsKey(pluginState.currentHouse.houseId);
+        var knownVenue = venueStore.venues.ContainsKey(pluginState.currentHouse.houseId);
 
         // Show text alert for self if the venue is known
         if (isSelf && knownVenue)
         {
-          var venue = this.Configuration.knownVenues[pluginState.currentHouse.houseId];
+          var venue = venueStore.venues[pluginState.currentHouse.houseId];
           if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
           messageBuilder.AddText("You have entered " + venue.name);
           var entry = new XivChatEntry() { Message = messageBuilder.Build() };
@@ -266,7 +269,7 @@ namespace VenueManager
             messageBuilder.AddText(" (" + player.entryCount + ")");
           if (knownVenue)
           {
-            var venue = this.Configuration.knownVenues[pluginState.currentHouse.houseId];
+            var venue = venueStore.venues[pluginState.currentHouse.houseId];
             messageBuilder.AddText(" " + venue.name);
           }
           else

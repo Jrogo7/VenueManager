@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Dalamud.Plugin;
 using NAudio.Wave;
 
 namespace VenueManager
@@ -28,7 +27,7 @@ namespace VenueManager
     public void load() {
       disposeFile();
       try {
-        var fileToLoad = Path.Join(plugin.PluginInterface.AssemblyLocation.Directory!.FullName, file);
+        var fileToLoad = Path.Join(Plugin.PluginInterface.AssemblyLocation.Directory!.FullName, file);
         
         if (!File.Exists(fileToLoad)) {
             Plugin.Log.Warning($"{file} does not exist.");

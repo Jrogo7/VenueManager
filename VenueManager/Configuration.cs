@@ -18,9 +18,6 @@ namespace VenueManager
         // Territory that the current user is in
         public ushort territory { get; set; } = 0;
 
-        // List of known venubs 
-        public Dictionary<long, Venue> knownVenues { get; set; } = new();
-
         // List of guests in the venue
         public Dictionary<string, Player> guests { get; set; } = new();
 
