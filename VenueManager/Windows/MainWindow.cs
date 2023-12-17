@@ -122,7 +122,7 @@ public class MainWindow : Window, IDisposable
       }
 
       if (!this.configuration.showGuestsTab && !this.configuration.showVenueTab) {
-        ImGui.TextColored(new Vector4(0.9f,0,1f,1f), "So Empty");
+        ImGui.TextColored(new Vector4(0.9f,0,1f,1f), "So Empty :(");
       }
       
       ImGui.Separator();
