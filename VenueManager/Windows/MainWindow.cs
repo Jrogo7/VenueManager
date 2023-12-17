@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
@@ -315,11 +316,55 @@ public class MainWindow : Window, IDisposable
       ImGui.EndChild();
     }
 
+    // Cached sort values 
+    private List<KeyValuePair<long, Venue>> venusSorted = new();
+    private short currentSortColumnIndex = 0;
+    private ImGuiSortDirection currentSortDirect = ImGuiSortDirection.None;
+
+    private List<KeyValuePair<long, Venue>> getSortedVenues(ImGuiTableSortSpecsPtr sortSpecs) {
+      ImGuiTableColumnSortSpecsPtr currentSpecs = sortSpecs.Specs;
+
+      // Sort has not changed, returned cached sort 
+      if (currentSortColumnIndex == currentSpecs.ColumnIndex && currentSortDirect == currentSpecs.SortDirection) {
+        return venusSorted;
+      }
+
+      var venues = plugin.venueList.venues.ToList();
+      Plugin.Log.Info("Table Sort: "+ currentSpecs.ColumnIndex  + " direction: " + currentSpecs.SortDirection);
+      switch (currentSpecs.ColumnIndex) {
+        case 2: // Name
+          if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) venues.Sort((pair1,pair2) => pair2.Value.name.CompareTo(pair1.Value.name));
+          else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) venues.Sort((pair1,pair2) => pair1.Value.name.CompareTo(pair2.Value.name));
+          break;
+        case 3: // District 
+          if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) venues.Sort((pair1,pair2) => pair2.Value.district.CompareTo(pair1.Value.district));
+          else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) venues.Sort((pair1,pair2) => pair1.Value.district.CompareTo(pair2.Value.district));
+          break;
+        case 7: // World
+          if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) venues.Sort((pair1,pair2) => pair2.Value.WorldName.CompareTo(pair1.Value.WorldName));
+          else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) venues.Sort((pair1,pair2) => pair1.Value.WorldName.CompareTo(pair2.Value.WorldName));
+          break;
+        case 8: // Datacenter 
+          if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) venues.Sort((pair1,pair2) => pair2.Value.DataCenter.CompareTo(pair1.Value.DataCenter));
+          else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) venues.Sort((pair1,pair2) => pair1.Value.DataCenter.CompareTo(pair2.Value.DataCenter));
+          break;
+        default: 
+          break; 
+      }
+
+      // Cache the sort 
+      venusSorted = venues;
+      currentSortColumnIndex = currentSpecs.ColumnIndex;
+      currentSortDirect = currentSpecs.SortDirection;
+      
+      return venues;
+    }
+
     // Venue name inside input box 
     private string venueName = string.Empty;
 
     // Draw venue list menu 
-    private void drawVenueMenu() {
+    private unsafe void drawVenueMenu() {
       if (!plugin.pluginState.userInHouse) ImGui.BeginDisabled();
       // Copy current location to clipboard 
       if (ImGui.Button("Copy Current Address")) {
@@ -349,6 +394,9 @@ public class MainWindow : Window, IDisposable
         // Add a new guest list to the main registry for this venue 
         GuestList guestList = new GuestList(venue.houseId, venueName);
         plugin.guestLists.Add(venue.houseId, guestList);
+
+        // Invalidate sort 
+        currentSortDirect = ImGuiSortDirection.None;
       }
       if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
         if (!plugin.pluginState.userInHouse)
@@ -361,20 +409,23 @@ public class MainWindow : Window, IDisposable
       if (!canAdd) ImGui.EndDisabled();
 
       ImGui.Spacing();
-      if (ImGui.BeginTable("Venues", 10)) {
-        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 20);
-        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 20);
+      if (ImGui.BeginTable("Venues", 10, ImGuiTableFlags.Sortable)) {
+        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
+        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
-        ImGui.TableSetupColumn("Ward", ImGuiTableColumnFlags.WidthFixed, 40);
-        ImGui.TableSetupColumn("Plot", ImGuiTableColumnFlags.WidthFixed, 40);
-        ImGui.TableSetupColumn("Room", ImGuiTableColumnFlags.WidthFixed, 40);
+        ImGui.TableSetupColumn("Ward", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
+        ImGui.TableSetupColumn("Plot", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
+        ImGui.TableSetupColumn("Room", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
         ImGui.TableSetupColumn("World");
         ImGui.TableSetupColumn("DataCenter");
-        ImGui.TableSetupColumn("Delete");
+        ImGui.TableSetupColumn("Delete", ImGuiTableColumnFlags.NoSort);
         ImGui.TableHeadersRow();
 
-        foreach (var venue in plugin.venueList.venues) {
+        ImGuiTableSortSpecsPtr sortSpecs = ImGui.TableGetSortSpecs();
+        var venues = getSortedVenues(sortSpecs);
+
+        foreach (var venue in venues) {
           var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == venue.Value.houseId ?
             colorGreen : new Vector4(1,1,1,1);
             
