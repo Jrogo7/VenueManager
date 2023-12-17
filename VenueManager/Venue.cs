@@ -30,5 +30,19 @@ namespace VenueManager
           worldId = club.worldId;
           type = club.type;
         }
+
+        public string getVenueAddress() {
+          string address = DataCenter + " | " + WorldName + " | " + district + " | W" + ward;
+          if (TerritoryUtils.isPlotType(type)) {
+            address += " | P" + plot;
+            if (TerritoryUtils.isChamber(type)) {
+              address += " | Chamber" + room;
+            }
+          } else {
+            address += " | Room" + room;
+          }
+          
+          return address;
+        }
    }
 }

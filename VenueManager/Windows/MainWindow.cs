@@ -349,7 +349,8 @@ public class MainWindow : Window, IDisposable
       if (!canAdd) ImGui.EndDisabled();
 
       ImGui.Spacing();
-      if (ImGui.BeginTable("Venues", 9)) {
+      if (ImGui.BeginTable("Venues", 10)) {
+        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 20);
         ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 20);
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
@@ -360,12 +361,18 @@ public class MainWindow : Window, IDisposable
         ImGui.TableSetupColumn("DataCenter");
         ImGui.TableSetupColumn("Delete");
         ImGui.TableHeadersRow();
-        
 
         foreach (var venue in plugin.venueList.venues) {
           var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == venue.Value.houseId ?
             colorGreen : new Vector4(1,1,1,1);
             
+          ImGui.TableNextColumn();
+          if (ImGuiComponents.IconButton("##Copy" + venue.Value.houseId, FontAwesomeIcon.Copy)) {
+            ImGui.SetClipboardText(venue.Value.getVenueAddress());
+          }
+          if (ImGui.IsItemHovered()) {
+            ImGui.SetTooltip("Copy Address");
+          }
           ImGui.TableNextColumn();
           if (TryLoadIcon(TerritoryUtils.getHouseIcon(venue.Value.type), out var iconHandle))
               ImGui.Image(iconHandle.ImGuiHandle, new Vector2(ImGui.GetFrameHeight()));

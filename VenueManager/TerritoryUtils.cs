@@ -66,6 +66,10 @@ namespace VenueManager
           return HouseLocationMap.ContainsKey(territory) ? HouseLocationMap[territory] : "";
         }
 
+        static public bool isChamber(ushort territory) {
+          return territory == 384 || territory == 385 || territory == 386 || territory == 652 || territory == 983;
+        }
+
         static public bool isPlotType(ushort territory) {
           return HouseLocationMap.ContainsKey(territory) && 
             (HouseTypeMap[territory] == "Small House" || HouseTypeMap[territory] == "Medium House" || HouseTypeMap[territory] == "Large House");
