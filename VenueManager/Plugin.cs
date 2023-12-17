@@ -191,7 +191,7 @@ namespace VenueManager
             configUpdated = true;
             guestList.guests.Add(player.Name, player);
             if (!isSelf) playerArrived = true;
-            showGuestChatAlert(guestList.guests[player.Name], isSelf);
+            showGuestEnterChatAlert(guestList.guests[player.Name], isSelf);
           }
           // Mark the player as re-entering the venue 
           else if (!guestList.guests[player.Name].inHouse)
@@ -199,17 +199,18 @@ namespace VenueManager
             configUpdated = true;
             guestList.guests[player.Name].inHouse = true;
             guestList.guests[player.Name].entryCount++;
-            showGuestChatAlert(guestList.guests[player.Name], isSelf);
+            showGuestEnterChatAlert(guestList.guests[player.Name], isSelf);
           }
         }
 
         // Check for guests that have left the house 
         foreach (var guest in guestList.guests)
         {
-          if (!seenPlayers.ContainsKey(guest.Value.Name))
+          if (!seenPlayers.ContainsKey(guest.Value.Name) && guest.Value.inHouse)
           {
             guest.Value.inHouse = false;
             configUpdated = true;
+            showGuestLeaveChatAlert(guest.Value);
           }
         }
 
@@ -241,7 +242,7 @@ namespace VenueManager
       doorbell.load();
     }
 
-    private void showGuestChatAlert(Player player, bool isSelf)
+    private void showGuestEnterChatAlert(Player player, bool isSelf)
     {
       // Message Chat for player arriving 
       if (Configuration.showChatAlerts)
@@ -289,6 +290,37 @@ namespace VenueManager
           Chat.Print(entry);
         }
       }
+    }
+
+    private void showGuestLeaveChatAlert(Player player) {
+      if (!Configuration.showChatAlerts) return;
+      
+      var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
+      if (isSelf) return;
+
+      var messageBuilder = new SeStringBuilder();
+      var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
+
+      // Add plugin name 
+      if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
+
+      // Add Player name 
+      messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+      messageBuilder.AddText(" has left");
+      
+      // Add Venue info 
+      if (knownVenue)
+      {
+        var venue = venueList.venues[pluginState.currentHouse.houseId];
+        messageBuilder.AddText(" " + venue.name);
+      }
+      else
+      {
+        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+      }
+
+      var entry = new XivChatEntry() { Message = messageBuilder.Build() };
+      Chat.Print(entry);
     }
   }
 }
