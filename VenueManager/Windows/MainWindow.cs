@@ -92,7 +92,7 @@ public class MainWindow : Window, IDisposable
           var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
           ImGui.Text("Guest list for " + venue.name);
         } else {
-          ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved houses");
+          ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved venues");
         }
 
         drawGuestList(plugin.pluginState.currentHouse.houseId);
