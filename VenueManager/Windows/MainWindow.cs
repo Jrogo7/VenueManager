@@ -163,12 +163,14 @@ public class MainWindow : Window, IDisposable
       ImGui.Spacing();
 
       ImGui.Text("Guest Sound Alerts");
+      // Enable / Disable sound allerts 
       var soundAlerts = this.configuration.soundAlerts;
       if (ImGui.Checkbox("Enabled##soundAlerts", ref soundAlerts))
       {
           this.configuration.soundAlerts = soundAlerts;
           this.configuration.Save();
       }
+      if (!this.configuration.soundAlerts) ImGui.BeginDisabled();
       // Allow the user to select which doorbell sound they would like 
       if (ImGui.BeginCombo("Doorbell sound", DoorbellSound.DoorbellSoundTypes[(int)configuration.doorbellType])) {
         var doorbells = (DOORBELL_TYPE[])Enum.GetValues(typeof(DOORBELL_TYPE));
@@ -197,6 +199,7 @@ public class MainWindow : Window, IDisposable
         plugin.reloadDoorbell();
       }
       
+      if (!this.configuration.soundAlerts) ImGui.EndDisabled();
       if (!this.configuration.showGuestsTab) ImGui.EndDisabled();
     }
 
