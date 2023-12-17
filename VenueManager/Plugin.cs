@@ -33,7 +33,7 @@ namespace VenueManager
     public Configuration Configuration { get; init; }
     public PluginState pluginState { get; init; }
     public VenueList venueList { get; init; }
-    public GuestList guestList { get; init; }
+    public Dictionary<long, GuestList> guestLists = new();
 
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
@@ -48,8 +48,10 @@ namespace VenueManager
       this.pluginState = new PluginState();
       this.venueList = new VenueList();
       this.venueList.load();
-      this.guestList = new GuestList();
-      this.guestList.load();
+
+      // Default guest list 
+      this.guestLists.Add(0, new GuestList());
+      this.guestLists[0].load();
 
       PluginInterface = pluginInterface;
       this.CommandManager = commandManager;
@@ -143,7 +145,6 @@ namespace VenueManager
       // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
       {
-        // Log.Debug("User has entered a house");
         pluginState.userInHouse = true;
         stopwatch.Start();
       }
@@ -181,16 +182,29 @@ namespace VenueManager
             pluginState.currentHouse.type = this.Configuration.territory;
             pluginState.currentHouse.worldId = worldId ?? 0;
             pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(Configuration.territory);
+
+            // Load current guest list from disk if player has entered a saved venue 
+            if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId)) {
+              var venue = venueList.venues[pluginState.currentHouse.houseId];
+              GuestList venueGuestList = new GuestList(venue.houseId, venue.name);
+              venueGuestList.load();
+              guestLists.Add(venue.houseId, venueGuestList);
+            }
+            // Reload default guest list  
+            else {
+              guestLists[0].load();
+            }
           }
         }
         catch
         {
           Log.Error("Failed to load housing information");
+          return;
         }
 
         if (!Configuration.showGuestsTab) return;
 
-        bool configUpdated = false;
+        bool guestListUpdated = false;
         bool playerArrived = false;
         int playerCount = 0;
 
@@ -210,30 +224,30 @@ namespace VenueManager
           var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
 
           // New Player has entered the house 
-          if (!guestList.guests.ContainsKey(o.Name.TextValue))
+          if (!getCurrentGuestList().guests.ContainsKey(o.Name.TextValue))
           {
-            configUpdated = true;
-            guestList.guests.Add(player.Name, player);
+            guestListUpdated = true;
+            getCurrentGuestList().guests.Add(player.Name, player);
             if (!isSelf) playerArrived = true;
-            showGuestEnterChatAlert(guestList.guests[player.Name], isSelf);
+            showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
           }
           // Mark the player as re-entering the venue 
-          else if (!guestList.guests[player.Name].inHouse)
+          else if (!getCurrentGuestList().guests[player.Name].inHouse)
           {
-            configUpdated = true;
-            guestList.guests[player.Name].inHouse = true;
-            guestList.guests[player.Name].entryCount++;
-            showGuestEnterChatAlert(guestList.guests[player.Name], isSelf);
+            guestListUpdated = true;
+            getCurrentGuestList().guests[player.Name].inHouse = true;
+            getCurrentGuestList().guests[player.Name].entryCount++;
+            showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
           }
         }
 
         // Check for guests that have left the house 
-        foreach (var guest in guestList.guests)
+        foreach (var guest in getCurrentGuestList().guests)
         {
           if (!seenPlayers.ContainsKey(guest.Value.Name) && guest.Value.inHouse)
           {
             guest.Value.inHouse = false;
-            configUpdated = true;
+            guestListUpdated = true;
             showGuestLeaveChatAlert(guest.Value);
           }
         }
@@ -248,7 +262,7 @@ namespace VenueManager
         pluginState.playersInHouse = playerCount;
 
         // Save config if we saw new players
-        if (configUpdated) guestList.save();
+        if (guestListUpdated) getCurrentGuestList().save();
 
         stopwatch.Restart();
       }
@@ -351,5 +365,15 @@ namespace VenueManager
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };
       Chat.Print(entry);
     }
-  }
+
+    public GuestList getCurrentGuestList() {
+      if (pluginState.userInHouse) {
+        if (guestLists.ContainsKey(pluginState.currentHouse.houseId)) {
+          return guestLists[pluginState.currentHouse.houseId];
+        }
+      }
+      return guestLists[0];
+    }
+
+  } // Plugin
 }

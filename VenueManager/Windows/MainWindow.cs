@@ -73,7 +73,7 @@ public class MainWindow : Window, IDisposable
         }
 
         // List the number of players in the house 
-        ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.guestList.guests.Count} total visitors)");
+        ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.getCurrentGuestList().guests.Count} total visitors)");
       } else {
         ImGui.Text("You are not in a house.");
       }
@@ -82,19 +82,28 @@ public class MainWindow : Window, IDisposable
       ImGui.Separator();
       ImGui.Spacing();
 
+      if (plugin.pluginState.userInHouse) {
+        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
+          var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
+          ImGui.Text("Guest list for " + venue.name);
+        } else {
+          ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved houses");
+        }
+      }
+
       // Clear guest list button 
       if (ImGui.Button("Clear Guest List")) {
-        plugin.guestList.guests = new();
-        plugin.guestList.save();
+        plugin.getCurrentGuestList().guests = new();
+        plugin.getCurrentGuestList().save();
       }
 
       // Draw Guests 
-      ImGui.Text($"Guests ({plugin.guestList.guests.Count})");
+      ImGui.Text($"Guests ({plugin.getCurrentGuestList().guests.Count})");
       ImGui.BeginChild(1);
       ImGui.Indent(10);
 
       // Generate sorted guest list 
-      var sortedGuestList = plugin.guestList.guests.ToList();
+      var sortedGuestList = plugin.getCurrentGuestList().guests.ToList();
       sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
       foreach (var guest in sortedGuestList) {
         var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
@@ -219,10 +228,14 @@ public class MainWindow : Window, IDisposable
         !plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId);
       if (!canAdd) ImGui.BeginDisabled();
       if (ImGui.Button("Save Venue")) {
+        // Save venue to saved venue list 
         Venue venue = new Venue(plugin.pluginState.currentHouse);
         venue.name = venueName;
         plugin.venueList.venues.Add(venue.houseId, venue);
         plugin.venueList.save();
+        // Add a new guest list to the main registry for this venue 
+        GuestList guestList = new GuestList(venue.houseId, venueName);
+        plugin.guestLists.Add(venue.houseId, guestList);
       }
       if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) {
         if (!plugin.pluginState.userInHouse)
