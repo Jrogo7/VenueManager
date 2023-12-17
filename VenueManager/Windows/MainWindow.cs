@@ -194,6 +194,8 @@ public class MainWindow : Window, IDisposable
 
     private void drawSettings() {
       ImGui.BeginChild(1);
+      ImGui.Indent(5);
+
       ImGui.Text("Tab Visibility");
       var showGuestsTab = this.configuration.showGuestsTab;
       if (ImGui.Checkbox("Guests Tab", ref showGuestsTab))
@@ -313,6 +315,7 @@ public class MainWindow : Window, IDisposable
       
       if (!this.configuration.soundAlerts) ImGui.EndDisabled();
       if (!this.configuration.showGuestsTab) ImGui.EndDisabled();
+      ImGui.Unindent();
       ImGui.EndChild();
     }
 
