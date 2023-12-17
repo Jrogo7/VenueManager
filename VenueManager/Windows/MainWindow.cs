@@ -42,6 +42,11 @@ public class MainWindow : Window, IDisposable
 
             ImGui.EndTabItem();
           }
+          if (ImGui.BeginTabItem("Guest Logs")) {
+            drawGuestLogMenu();
+
+            ImGui.EndTabItem();
+          }
         }
         // Render Venues Tab 
         if (this.configuration.showVenueTab) {
@@ -89,21 +94,75 @@ public class MainWindow : Window, IDisposable
         } else {
           ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved houses");
         }
+
+        drawGuestList(plugin.pluginState.currentHouse.houseId);
+      }
+      else {
+          ImGui.Text("Guest list will be shown when you enter a house");
+      }
+    }
+
+    // Current venue selected for logs 
+    private long selectVenue = 0;
+    private readonly string defaultVenueName = "Default (shared with all non-saved venues)";
+
+    private void drawGuestLogMenu() {
+      string displayName = "";
+      if (selectVenue == 0) displayName = defaultVenueName;
+      else if (plugin.venueList.venues.ContainsKey(selectVenue)) {
+        displayName = plugin.venueList.venues[selectVenue].name;
+      }
+
+      ImGui.Text("Select venue to display guest log for:");
+      // Combo box of all venues 
+      if (ImGui.BeginCombo("##VenueForLogs", displayName)) {
+        // Default 0 Venue 
+        if (ImGui.Selectable(defaultVenueName, selectVenue == 0)) {
+          selectVenue = 0;
+        }
+        if (selectVenue == 0)
+            ImGui.SetItemDefaultFocus();
+        
+        // All Saved Venues 
+        foreach (var venue in plugin.venueList.venues)
+        {
+            bool is_selected = venue.Key == selectVenue;
+            if (ImGui.Selectable(venue.Value.name, is_selected)) {
+              selectVenue = venue.Key;
+            }
+            if (is_selected)
+                ImGui.SetItemDefaultFocus();
+        }
+        ImGui.EndCombo();
+      }
+
+      ImGui.Separator();
+      ImGui.Spacing();
+
+      drawGuestList(selectVenue);
+    }
+
+    private void drawGuestList(long houseId) {
+      // Ensure we have this guest list 
+      if (!plugin.guestLists.ContainsKey(houseId)) {
+        GuestList guestList = new GuestList(houseId, "");
+        guestList.load();
+        plugin.guestLists.Add(houseId, guestList);
       }
 
       // Clear guest list button 
       if (ImGui.Button("Clear Guest List")) {
-        plugin.getCurrentGuestList().guests = new();
-        plugin.getCurrentGuestList().save();
+        plugin.guestLists[houseId].guests = new();
+        plugin.guestLists[houseId].save();
       }
 
       // Draw Guests 
-      ImGui.Text($"Guests ({plugin.getCurrentGuestList().guests.Count})");
+      ImGui.Text($"Guests ({plugin.guestLists[houseId].guests.Count})");
       ImGui.BeginChild(1);
       ImGui.Indent(10);
 
       // Generate sorted guest list 
-      var sortedGuestList = plugin.getCurrentGuestList().guests.ToList();
+      var sortedGuestList = plugin.guestLists[houseId].guests.ToList();
       sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
       foreach (var guest in sortedGuestList) {
         var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
