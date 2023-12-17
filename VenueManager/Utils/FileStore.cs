@@ -58,7 +58,7 @@ namespace VenueManager
       }
     }
 
-    private static FileInfo GetFileInfo(string fileName)
+    public static FileInfo GetFileInfo(string fileName)
     {
       var configDirectory = Plugin.PluginInterface.ConfigDirectory;
       return new FileInfo(Path.Combine(configDirectory.FullName, fileName));
