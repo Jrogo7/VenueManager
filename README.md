@@ -10,15 +10,15 @@ The plugin allows you to:
 
 ## Commands 
 
-`/venue` -> Open Main interface 
-`/venue snooze` -> Pause alarms until you exit the current house you are in. Sending the command again will unpause
+`/venue` -> Open Main interface  
+`/venue snooze` -> Pause alarms until you exit the current house you are in. Sending the command again will unpause  
 
 ### Aliases
 
-`/club` -> Alias for `/venue`
-`/vm` -> Alias for `/venue`
-`/club` -> Alias for `/venue snooze`
-`/vm` -> Alias for `/venue snooze`
+`/club` -> Alias for `/venue`  
+`/vm` -> Alias for `/venue`  
+`/club` -> Alias for `/venue snooze`  
+`/vm` -> Alias for `/venue snooze`  
 
 ## Installation 
 
