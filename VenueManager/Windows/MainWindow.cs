@@ -128,7 +128,9 @@ public class MainWindow : Window, IDisposable
       ImGui.Separator();
       ImGui.Spacing();
 
-      ImGui.Text("Chat Alerts");
+      if (!this.configuration.showGuestsTab) ImGui.BeginDisabled();
+
+      ImGui.Text("Guest Chat Alerts");
       var showChatAlerts = this.configuration.showChatAlerts;
       if (ImGui.Checkbox("Enabled##showChatAlerts", ref showChatAlerts))
       {
@@ -145,7 +147,7 @@ public class MainWindow : Window, IDisposable
       ImGui.Separator();
       ImGui.Spacing();
 
-      ImGui.Text("Sound Alerts");
+      ImGui.Text("Guest Sound Alerts");
       var soundAlerts = this.configuration.soundAlerts;
       if (ImGui.Checkbox("Enabled##soundAlerts", ref soundAlerts))
       {
@@ -179,6 +181,8 @@ public class MainWindow : Window, IDisposable
         this.configuration.soundVolume = volume;
         plugin.reloadDoorbell();
       }
+      
+      if (!this.configuration.showGuestsTab) ImGui.EndDisabled();
     }
 
     // Venue name inside input box 
