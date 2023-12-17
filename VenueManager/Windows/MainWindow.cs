@@ -77,6 +77,7 @@ public class MainWindow : Window, IDisposable
       } else {
         ImGui.Text("You are not in a house.");
       }
+      if (plugin.pluginState.snoozed) ImGui.TextColored(new Vector4(.82f, .5f, .04f, 1f), "Alarms snoozed");
       ImGui.Spacing();
       ImGui.Separator();
       ImGui.Spacing();

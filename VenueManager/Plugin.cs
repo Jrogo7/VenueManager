@@ -61,15 +61,14 @@ namespace VenueManager
 
       WindowSystem.AddWindow(MainWindow);
 
-      this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand) {
-        HelpMessage = "Open venue manager interface to see guests list and manage venues"
-      });
-      this.CommandManager.AddHandler(CommandNameAlias, new CommandInfo(OnCommand) {
-        HelpMessage = "Alias for /venue"
-      });
-      this.CommandManager.AddHandler(CommandNameAlias2, new CommandInfo(OnCommand) {
-        HelpMessage = "Alias for /venue"
-      });
+      this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand) {ShowInHelp = true, HelpMessage = "Open venue manager interface to see guests list and manage venues"});
+      this.CommandManager.AddHandler(CommandNameAlias, new CommandInfo(OnCommand) {ShowInHelp = true, HelpMessage = "Alias for /venue"});
+      this.CommandManager.AddHandler(CommandNameAlias2, new CommandInfo(OnCommand) {ShowInHelp = true, HelpMessage = "Alias for /venue"});
+      var SnoozeHandler = new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Pause alerts until leaving the house."};
+      var SnoozeHandlerAlias = new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue snooze"};
+      CommandManager.AddHandler(CommandName + " snooze", SnoozeHandler);
+      CommandManager.AddHandler(CommandNameAlias + " snooze", SnoozeHandlerAlias);
+      CommandManager.AddHandler(CommandNameAlias2 + " snooze", SnoozeHandlerAlias);
 
       PluginInterface.UiBuilder.Draw += DrawUI;
 
@@ -102,10 +101,31 @@ namespace VenueManager
       this.CommandManager.RemoveHandler(CommandName);
       this.CommandManager.RemoveHandler(CommandNameAlias);
       this.CommandManager.RemoveHandler(CommandNameAlias2);
+      CommandManager.RemoveHandler(CommandName + " snooze");
+      CommandManager.RemoveHandler(CommandNameAlias + " snooze");
+      CommandManager.RemoveHandler(CommandNameAlias2 + " snooze");
+    }
+
+    private void OnSnooze() {
+      if (pluginState.snoozed) {
+        pluginState.snoozed = false;
+        Chat.Print((this.Configuration.showPluginNameInChat ? $"[{Name}] " : "") + "Alerts unpaused");
+      }
+      else if (!pluginState.userInHouse) {
+        Chat.Print((this.Configuration.showPluginNameInChat ? $"[{Name}] " : "") + "You must be in a house to pause alerts");
+      }
+      else {
+        pluginState.snoozed = true;
+        Chat.Print((this.Configuration.showPluginNameInChat ? $"[{Name}] " : "") + "Alerts paused until leaving the current house");
+      }
     }
 
     private void OnCommand(string command, string args)
     {
+      if (args == "snooze") {
+        OnSnooze();
+        return;
+      }
       // in response to the slash command, just display our main ui
       MainWindow.IsOpen = true;
     }
@@ -120,17 +140,21 @@ namespace VenueManager
       // Save current user territory 
       this.Configuration.territory = territory;
 
+      // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
       {
         // Log.Debug("User has entered a house");
         pluginState.userInHouse = true;
         stopwatch.Start();
       }
+      // Player has left a house 
       else if (pluginState.userInHouse)
       {
         pluginState.userInHouse = false;
         pluginState.currentHouse = new Venue(); // Erase venue when leaving 
         stopwatch.Stop();
+        // Unsnooze if leaving a house when snoozed 
+        if (pluginState.snoozed) OnSnooze();
       }
 
       this.Configuration.Save();
@@ -214,8 +238,8 @@ namespace VenueManager
           }
         }
 
-        // Only play doorbell sound once if there were multiple new people 
-        if (Configuration.soundAlerts && playerArrived)
+        // Only play doorbell sound once if there were one or more new people 
+        if (Configuration.soundAlerts && playerArrived && !pluginState.snoozed)
         {
           doorbell.play();
         }
@@ -244,6 +268,8 @@ namespace VenueManager
 
     private void showGuestEnterChatAlert(Player player, bool isSelf)
     {
+      // Don't show alerts if snoozed 
+      if (pluginState.snoozed) return;
       // Message Chat for player arriving 
       if (Configuration.showChatAlerts)
       {
@@ -295,6 +321,8 @@ namespace VenueManager
     private void showGuestLeaveChatAlert(Player player) {
       if (!Configuration.showChatAlerts) return;
       if (!Configuration.showChatAlertReentry) return;
+      // Don't show alerts if snoozed 
+      if (pluginState.snoozed) return;
       
       var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
       if (isSelf) return;
