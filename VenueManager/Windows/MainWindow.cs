@@ -150,11 +150,21 @@ public class MainWindow : Window, IDisposable
         plugin.guestLists.Add(houseId, guestList);
       }
 
+
+      bool disabled = false;
+      if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
+        ImGui.BeginDisabled();
+        disabled = true;
+      }
       // Clear guest list button 
       if (ImGui.Button("Clear Guest List")) {
         plugin.guestLists[houseId].guests = new();
         plugin.guestLists[houseId].save();
       }
+      if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled) {
+        ImGui.SetTooltip("Hold control to clear guest list");
+      }
+      if (disabled) ImGui.EndDisabled();
 
       // Draw Guests 
       ImGui.Text($"Guests ({plugin.guestLists[houseId].guests.Count})");
@@ -347,7 +357,7 @@ public class MainWindow : Window, IDisposable
             plugin.venueList.save();
           }
           if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled) {
-            ImGui.SetTooltip("You must hold control to delete");
+            ImGui.SetTooltip("Hold control to delete");
           }
           if (disabled) ImGui.EndDisabled();
         }
