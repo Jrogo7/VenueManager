@@ -1,6 +1,21 @@
 # Venue Manager
 
-Simple Dalmund Plugin designed to help with venue management, guest greeting, and a list of venues. 
+Simple Dalmund Plugin designed to help with venue management, guest management, and tracking venue locations. 
+
+The plugin allows you to: 
+
+- Get notifications (sound and gamechat) when guests enter and leave the house you are in
+- Save houses to a list of Venues for better tracking
+- Copy venue addresses to share with others 
+
+## Commands 
+
+`/venue` -> Open Main interface 
+`/club` -> Alias for `/venue`
+`/vm` -> Alias for `/venue`
+`/venue snooze` -> Pause alarms until you exit the current house you are in. Sending the command again will unpause
+`/club` -> Alias for `/venue snooze`
+`/vm` -> Alias for `/venue snooze`
 
 ## Installation 
 
