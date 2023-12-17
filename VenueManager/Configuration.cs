@@ -11,6 +11,7 @@ namespace VenueManager
 
     // Should chat message alerts be printed to the chat
     public bool showChatAlerts { get; set; } = false;
+    public bool showChatAlertReentry { get; set; } = true;
     public bool showPluginNameInChat { get; set; } = false;
 
     // Should sound alerts be played when new players join the house 

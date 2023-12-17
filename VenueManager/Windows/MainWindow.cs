@@ -138,12 +138,27 @@ public class MainWindow : Window, IDisposable
           this.configuration.Save();
       }
 
+      if (!this.configuration.showChatAlerts) ImGui.BeginDisabled();
+      // Reentry Alerts 
+      var showChatAlertReentry = this.configuration.showChatAlertReentry;
+      if (ImGui.Checkbox("Reentry Alerts", ref showChatAlertReentry))
+      {
+        this.configuration.showChatAlertReentry = showChatAlertReentry;
+        this.configuration.Save();
+      }
+      if (ImGui.IsItemHovered()) {
+        ImGui.SetTooltip("Display chat message for when a user reenters a club after leaving");
+      }
+
+      // Include plugin name in alerts 
       var showPluginNameInChat = this.configuration.showPluginNameInChat;
       if (ImGui.Checkbox("Include Plugin Name", ref showPluginNameInChat))
       {
           this.configuration.showPluginNameInChat = showPluginNameInChat;
           this.configuration.Save();
       }
+      if (!this.configuration.showChatAlerts) ImGui.EndDisabled();
+
       ImGui.Separator();
       ImGui.Spacing();
 

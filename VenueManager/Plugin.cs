@@ -294,6 +294,7 @@ namespace VenueManager
 
     private void showGuestLeaveChatAlert(Player player) {
       if (!Configuration.showChatAlerts) return;
+      if (!Configuration.showChatAlertReentry) return;
       
       var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
       if (isSelf) return;
