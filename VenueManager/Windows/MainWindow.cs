@@ -341,13 +341,14 @@ public class MainWindow : Window, IDisposable
       if (!canAdd) ImGui.EndDisabled();
 
       ImGui.Spacing();
-      if (ImGui.BeginTable("Venues", 7)) {
+      if (ImGui.BeginTable("Venues", 8)) {
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
         ImGui.TableSetupColumn("Ward");
         ImGui.TableSetupColumn("Plot");
         ImGui.TableSetupColumn("Room");
         ImGui.TableSetupColumn("World");
+        ImGui.TableSetupColumn("DataCenter");
         ImGui.TableSetupColumn("Delete");
         ImGui.TableHeadersRow();
 
@@ -368,7 +369,9 @@ public class MainWindow : Window, IDisposable
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, venue.Value.WorldName);
           ImGui.TableNextColumn();
+          ImGui.TextColored(fontColor, venue.Value.DataCenter);
           
+          ImGui.TableNextColumn();
           bool disabled = false;
           if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
             ImGui.BeginDisabled();

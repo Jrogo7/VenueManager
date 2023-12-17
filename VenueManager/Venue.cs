@@ -14,6 +14,7 @@ namespace VenueManager
         public uint worldId {get; set;} = 0;
         public ushort type {get; set;} = 0;
         public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(worldId)?.Name?.RawString ?? $"World_{worldId}";
+        public string DataCenter => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(worldId)?.DataCenter?.Value?.Name ?? "";
 
         public Venue()
         {
