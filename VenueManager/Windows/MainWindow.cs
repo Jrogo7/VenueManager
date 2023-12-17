@@ -219,6 +219,18 @@ public class MainWindow : Window, IDisposable
       }
 
       if (!this.configuration.showChatAlerts) ImGui.BeginDisabled();
+      ImGui.Indent(20);
+      // Entry Alerts 
+      var showChatAlertEntry = this.configuration.showChatAlertEntry;
+      if (ImGui.Checkbox("Entry Alerts", ref showChatAlertEntry))
+      {
+        this.configuration.showChatAlertEntry = showChatAlertEntry;
+        this.configuration.Save();
+      }
+      if (ImGui.IsItemHovered()) {
+        ImGui.SetTooltip("Display chat message when a guest enters a venue");
+      }
+
       // Reentry Alerts 
       var showChatAlertReentry = this.configuration.showChatAlertReentry;
       if (ImGui.Checkbox("Reentry Alerts", ref showChatAlertReentry))
@@ -227,7 +239,17 @@ public class MainWindow : Window, IDisposable
         this.configuration.Save();
       }
       if (ImGui.IsItemHovered()) {
-        ImGui.SetTooltip("Display chat message for when a user reenters a club after leaving");
+        ImGui.SetTooltip("Display chat message when a guest reenters a venue after leaving");
+      }
+      // Leave Alerts 
+      var showChatAlertLeave = this.configuration.showChatAlertLeave;
+      if (ImGui.Checkbox("Leave Alerts", ref showChatAlertLeave))
+      {
+        this.configuration.showChatAlertLeave = showChatAlertLeave;
+        this.configuration.Save();
+      }
+      if (ImGui.IsItemHovered()) {
+        ImGui.SetTooltip("Display chat message when a guest leaves");
       }
 
       // Include plugin name in alerts 
@@ -238,7 +260,7 @@ public class MainWindow : Window, IDisposable
           this.configuration.Save();
       }
       if (!this.configuration.showChatAlerts) ImGui.EndDisabled();
-
+      ImGui.Unindent();
       ImGui.Separator();
       ImGui.Spacing();
 

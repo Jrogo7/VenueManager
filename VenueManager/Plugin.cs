@@ -284,57 +284,58 @@ namespace VenueManager
     {
       // Don't show alerts if snoozed 
       if (pluginState.snoozed) return;
-      // Message Chat for player arriving 
-      if (Configuration.showChatAlerts)
-      {
-        var messageBuilder = new SeStringBuilder();
-        var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
+      if (!Configuration.showChatAlerts) return;
 
-        // Show text alert for self if the venue is known
-        if (isSelf && knownVenue)
-        {
+      var messageBuilder = new SeStringBuilder();
+      var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
+
+      // Show text alert for self if the venue is known
+      if (isSelf && knownVenue) {
+        if (knownVenue) {
           var venue = venueList.venues[pluginState.currentHouse.houseId];
           if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
           messageBuilder.AddText("You have entered " + venue.name);
-          var entry = new XivChatEntry() { Message = messageBuilder.Build() };
-          Chat.Print(entry);
+          Chat.Print(new XivChatEntry() { Message = messageBuilder.Build() });
         }
-        // Show text alert for guests
-        else if (!isSelf)
-        {
-          if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
-          if (player.entryCount == 1)
-            messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
-          else if (player.entryCount == 2)
-            messageBuilder.AddUiForeground(063);
-          else if (player.entryCount == 3)
-            messageBuilder.AddUiForeground(500);
-          else if (player.entryCount >= 4)
-            messageBuilder.AddUiForeground(518);
-          messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-          messageBuilder.AddText(" has entered");
-          if (player.entryCount > 1)
-            messageBuilder.AddText(" (" + player.entryCount + ")");
-          if (knownVenue)
-          {
-            var venue = venueList.venues[pluginState.currentHouse.houseId];
-            messageBuilder.AddText(" " + venue.name);
-          }
-          else
-          {
-            messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
-          }
-
-          messageBuilder.AddUiForegroundOff();
-          var entry = new XivChatEntry() { Message = messageBuilder.Build() };
-          Chat.Print(entry);
-        }
+        return;
       }
+
+      // Return if reentry alerts are disabled 
+      if (player.entryCount > 1 && !Configuration.showChatAlertReentry) return;
+      // Return if entry alerts are disabled 
+      if (player.entryCount == 1 && !Configuration.showChatAlertEntry) return;
+
+      // Show text alert for guests
+      if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
+      if (player.entryCount == 1)
+        messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
+      else if (player.entryCount == 2)
+        messageBuilder.AddUiForeground(063);
+      else if (player.entryCount == 3)
+        messageBuilder.AddUiForeground(500);
+      else if (player.entryCount >= 4)
+        messageBuilder.AddUiForeground(518);
+      messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+      messageBuilder.AddText(" has entered");
+      if (player.entryCount > 1)
+        messageBuilder.AddText(" (" + player.entryCount + ")");
+      if (knownVenue)
+      {
+        var venue = venueList.venues[pluginState.currentHouse.houseId];
+        messageBuilder.AddText(" " + venue.name);
+      }
+      else
+      {
+        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+      }
+
+      messageBuilder.AddUiForegroundOff();
+      Chat.Print(new XivChatEntry() { Message = messageBuilder.Build() });
     }
 
     private void showGuestLeaveChatAlert(Player player) {
       if (!Configuration.showChatAlerts) return;
-      if (!Configuration.showChatAlertReentry) return;
+      if (!Configuration.showChatAlertLeave) return;
       // Don't show alerts if snoozed 
       if (pluginState.snoozed) return;
       
