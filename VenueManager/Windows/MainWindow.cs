@@ -320,6 +320,18 @@ public class MainWindow : Window, IDisposable
 
     // Draw venue list menu 
     private void drawVenueMenu() {
+      if (!plugin.pluginState.userInHouse) ImGui.BeginDisabled();
+      // Copy current location to clipboard 
+      if (ImGui.Button("Copy Current Address")) {
+        ImGui.SetClipboardText(plugin.pluginState.currentHouse.getVenueAddress());
+      }
+      if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !plugin.pluginState.userInHouse) {
+        ImGui.SetTooltip("You must be in a house");
+      }
+      if (!plugin.pluginState.userInHouse) ImGui.EndDisabled();
+      ImGui.Separator();
+      ImGui.Spacing();
+
       ImGui.Text("Save the current venue you are in to the list of venues");
       ImGui.InputTextWithHint("", "Enter venue name", ref venueName, 256);
       ImGui.SameLine();
