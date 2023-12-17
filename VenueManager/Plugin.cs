@@ -24,6 +24,7 @@ namespace VenueManager
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static IFramework Framework { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;
+    [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
     // Game Objects 
     [PluginService] public static IObjectTable Objects { get; private set; } = null!;
     [PluginService] public static IPluginLog Log { get; private set; } = null!;

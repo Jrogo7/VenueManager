@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Internal;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 namespace VenueManager.Windows;
@@ -30,6 +33,12 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose()
     {
+    }
+
+    public bool TryLoadIcon(uint iconId, [NotNullWhen(true)] out IDalamudTextureWrap? wrap, bool keepAlive = false)
+    {
+        wrap = Plugin.TextureProvider.GetIcon(iconId, ITextureProvider.IconFlags.HiRes, null, keepAlive);
+        return wrap != null;
     }
 
     public override void Draw()
@@ -311,7 +320,6 @@ public class MainWindow : Window, IDisposable
 
     // Draw venue list menu 
     private void drawVenueMenu() {
-
       ImGui.Text("Save the current venue you are in to the list of venues");
       ImGui.InputTextWithHint("", "Enter venue name", ref venueName, 256);
       ImGui.SameLine();
@@ -341,21 +349,28 @@ public class MainWindow : Window, IDisposable
       if (!canAdd) ImGui.EndDisabled();
 
       ImGui.Spacing();
-      if (ImGui.BeginTable("Venues", 8)) {
+      if (ImGui.BeginTable("Venues", 9)) {
+        ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 20);
         ImGui.TableSetupColumn("Name");
         ImGui.TableSetupColumn("District");
-        ImGui.TableSetupColumn("Ward");
-        ImGui.TableSetupColumn("Plot");
-        ImGui.TableSetupColumn("Room");
+        ImGui.TableSetupColumn("Ward", ImGuiTableColumnFlags.WidthFixed, 40);
+        ImGui.TableSetupColumn("Plot", ImGuiTableColumnFlags.WidthFixed, 40);
+        ImGui.TableSetupColumn("Room", ImGuiTableColumnFlags.WidthFixed, 40);
         ImGui.TableSetupColumn("World");
         ImGui.TableSetupColumn("DataCenter");
         ImGui.TableSetupColumn("Delete");
         ImGui.TableHeadersRow();
+        
 
         foreach (var venue in plugin.venueList.venues) {
           var fontColor = plugin.pluginState.userInHouse && plugin.pluginState.currentHouse.houseId == venue.Value.houseId ?
             colorGreen : new Vector4(1,1,1,1);
             
+          ImGui.TableNextColumn();
+          if (TryLoadIcon(TerritoryUtils.getHouseIcon(venue.Value.type), out var iconHandle))
+              ImGui.Image(iconHandle.ImGuiHandle, new Vector2(ImGui.GetFrameHeight()));
+          else
+              ImGui.Dummy(new Vector2(ImGui.GetFrameHeight()));
           ImGui.TableNextColumn();
           ImGui.TextColored(fontColor, venue.Value.name);
           ImGui.TableNextColumn();

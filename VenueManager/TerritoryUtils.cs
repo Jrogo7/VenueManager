@@ -32,6 +32,26 @@ namespace VenueManager
           {608, "Mist"}, {609, "The Lavender Beds"}, {610, "The Goblet"}, {655, "Shirogane"}, {999, "Empyreum"},
         };
 
+        private static readonly uint SmallHouseIcon = 60751;
+        private static readonly uint MediumHouseIcon = 60752;
+        private static readonly uint LargeHouseIcon = 60753;
+        private static readonly uint AppartmentHouseIcon = 60789;
+        private static Dictionary<ushort, uint> HouseIconMap = new Dictionary<ushort, uint>(){
+          {282, SmallHouseIcon}, {342, SmallHouseIcon}, {345, SmallHouseIcon}, {649, SmallHouseIcon}, {980, SmallHouseIcon},
+          {283, MediumHouseIcon}, {343, MediumHouseIcon}, {346, MediumHouseIcon}, {650, MediumHouseIcon}, {981, MediumHouseIcon},
+          {284, LargeHouseIcon}, {344, LargeHouseIcon}, {347, LargeHouseIcon}, {651, LargeHouseIcon}, {982, LargeHouseIcon},
+          {384, LargeHouseIcon}, {385, LargeHouseIcon}, {386, LargeHouseIcon}, {652, LargeHouseIcon}, {983, LargeHouseIcon},
+          {608, AppartmentHouseIcon}, {609, AppartmentHouseIcon}, {610, AppartmentHouseIcon}, {655, AppartmentHouseIcon}, {999, AppartmentHouseIcon},
+        };
+        
+        private static Dictionary<ushort, uint> HouseIconMapFromType = new Dictionary<ushort, uint>(){
+          {282, SmallHouseIcon}, {342, SmallHouseIcon}, {345, SmallHouseIcon}, {649, SmallHouseIcon}, {980, SmallHouseIcon},
+          {283, MediumHouseIcon}, {343, MediumHouseIcon}, {346, MediumHouseIcon}, {650, MediumHouseIcon}, {981, MediumHouseIcon},
+          {284, LargeHouseIcon}, {344, LargeHouseIcon}, {347, LargeHouseIcon}, {651, LargeHouseIcon}, {982, LargeHouseIcon},
+          {384, LargeHouseIcon}, {385, LargeHouseIcon}, {386, LargeHouseIcon}, {652, LargeHouseIcon}, {983, LargeHouseIcon},
+          {608, AppartmentHouseIcon}, {609, AppartmentHouseIcon}, {610, AppartmentHouseIcon}, {655, AppartmentHouseIcon}, {999, AppartmentHouseIcon},
+        };
+
         // Returns true if sent territory id is a house 
         static public bool isHouse(ushort territory)
         {
@@ -49,6 +69,10 @@ namespace VenueManager
         static public bool isPlotType(ushort territory) {
           return HouseLocationMap.ContainsKey(territory) && 
             (HouseTypeMap[territory] == "Small House" || HouseTypeMap[territory] == "Medium House" || HouseTypeMap[territory] == "Large House");
+        }
+
+        public static uint getHouseIcon(ushort territory) {
+          return HouseIconMap.ContainsKey(territory) ? HouseIconMap[territory] : 0;
         }
     }
 }
