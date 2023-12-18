@@ -32,6 +32,10 @@ namespace VenueManager
     }
 
     public void load() {
+      // Don't attempt to load if there is no file 
+      var fileInfo = FileStore.GetFileInfo(getFileName());
+      if (!fileInfo.Exists) return;
+      
       GuestList loadedData = FileStore.LoadFile<GuestList>(getFileName(), this);
       this.guests = loadedData.guests;
       this.houseId = loadedData.houseId;

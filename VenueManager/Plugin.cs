@@ -11,6 +11,7 @@ using Dalamud.Game.Text;
 using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using System.Collections.Generic;
+using System;
 
 namespace VenueManager
 {
@@ -219,13 +220,13 @@ namespace VenueManager
           var player = Player.fromCharacter(pc);
 
           // Add player to seen map 
-          seenPlayers.Add(o.Name.TextValue, true);
+          seenPlayers.Add(player.Name, true);
 
           // Is the new player the current user 
-          var isSelf = ClientState.LocalPlayer?.Name.TextValue == o.Name.TextValue;
+          var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
 
           // New Player has entered the house 
-          if (!getCurrentGuestList().guests.ContainsKey(o.Name.TextValue))
+          if (!getCurrentGuestList().guests.ContainsKey(player.Name))
           {
             guestListUpdated = true;
             getCurrentGuestList().guests.Add(player.Name, player);
@@ -240,6 +241,9 @@ namespace VenueManager
             getCurrentGuestList().guests[player.Name].entryCount++;
             showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
           }
+
+          // Mark last seen 
+          getCurrentGuestList().guests[player.Name].lastSeen = DateTime.Now;
         }
 
         // Check for guests that have left the house 

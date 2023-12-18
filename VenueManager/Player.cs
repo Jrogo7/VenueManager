@@ -11,20 +11,22 @@ namespace VenueManager
         public bool inHouse { get; set; } = false;
         public uint ObjectId { get; set; } = 0;
         public DateTime firstSeen;
+        public DateTime lastSeen;
         public int entryCount { get; set; } = 0;
 
-        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime time, int entryCount)
+        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, int entryCount)
         {
             this.Name = name;
             this.HomeWorld = homeWorld;
             this.inHouse = inHouse;
             this.ObjectId = objectId;
-            this.firstSeen = time;
+            this.firstSeen = firstSeen;
+            this.lastSeen = firstSeen;
             this.entryCount = entryCount;
         }
 
         public static Player fromCharacter(PlayerCharacter character) {
-          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, 1);
+          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, DateTime.Now, 1);
         }
    }
 }
