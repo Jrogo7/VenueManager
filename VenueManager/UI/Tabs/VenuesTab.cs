@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Internal;
-using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
 
 namespace VenueManager.Tabs;
