@@ -15,12 +15,6 @@ public class VenuesTab
   private readonly Vector4 colorGreen = new(0, 0.69f, 0, 1);
   private Plugin plugin;
 
-  // Cached sort values 
-  private List<KeyValuePair<long, Venue>> venusSorted = new();
-  private short currentSortColumnIndex = 0;
-  private ImGuiSortDirection currentSortDirect = ImGuiSortDirection.None;
-  private bool sortValid = false;
-
   // Venue name inside input box 
   private string venueName = string.Empty;
 
@@ -39,14 +33,7 @@ public class VenuesTab
   {
     ImGuiTableColumnSortSpecsPtr currentSpecs = sortSpecs.Specs;
 
-    // Sort has not changed, returned cached sort 
-    if (currentSortColumnIndex == currentSpecs.ColumnIndex && currentSortDirect == currentSpecs.SortDirection && sortValid)
-    {
-      return venusSorted;
-    }
-
     var venues = plugin.venueList.venues.ToList();
-    Plugin.Log.Info("Table Sort: " + currentSpecs.ColumnIndex + " direction: " + currentSpecs.SortDirection);
     switch (currentSpecs.ColumnIndex)
     {
       case 2: // Name
@@ -68,12 +55,6 @@ public class VenuesTab
       default:
         break;
     }
-
-    // Cache the sort 
-    venusSorted = venues;
-    currentSortColumnIndex = currentSpecs.ColumnIndex;
-    currentSortDirect = currentSpecs.SortDirection;
-    sortValid = true;
 
     return venues;
   }
@@ -113,9 +94,6 @@ public class VenuesTab
       // Add a new guest list to the main registry for this venue 
       GuestList guestList = new GuestList(venue.houseId, venueName);
       plugin.guestLists.Add(venue.houseId, guestList);
-
-      // Invalidate sort 
-      sortValid = false;
     }
     if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
     {
@@ -193,8 +171,6 @@ public class VenuesTab
         {
           plugin.venueList.venues.Remove(venue.Value.houseId);
           plugin.venueList.save();
-          // Invalidate sort 
-          sortValid = false;
         }
         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled)
         {
