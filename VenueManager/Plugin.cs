@@ -219,6 +219,10 @@ namespace VenueManager
           playerCount++;
           var player = Player.fromCharacter(pc);
 
+          // Skip player characters that do not have a name. 
+          // Portrait and Adventure plates show up with this. 
+          if (pc.Name.TextValue.Length == 0) continue;
+
           // Add player to seen map 
           seenPlayers.Add(player.Name, true);
 
