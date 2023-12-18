@@ -103,7 +103,12 @@ public class MainWindow : Window, IDisposable
           ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved venues");
         }
 
-        drawGuestList(plugin.pluginState.currentHouse.houseId);
+        // We are in a saved house, draw guest list for that house
+        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) 
+          drawGuestList(plugin.pluginState.currentHouse.houseId);
+        // Otherwise draw public list 
+        else 
+          drawGuestList(0);
       }
       else {
           ImGui.Text("Guest list will be shown when you enter a house");
@@ -155,9 +160,16 @@ public class MainWindow : Window, IDisposable
     private void drawGuestList(long houseId) {
       // Ensure we have this guest list 
       if (!plugin.guestLists.ContainsKey(houseId)) {
-        GuestList guestList = new GuestList(houseId, "");
-        guestList.load();
-        plugin.guestLists.Add(houseId, guestList);
+        if (plugin.venueList.venues.ContainsKey(houseId)) {
+          GuestList guestList = new GuestList(houseId, "");
+          guestList.load();
+          plugin.guestLists.Add(houseId, guestList);
+        }
+        // A house Id has been sent to be rendered that is not saved. This is invalid. 
+        else {
+          Plugin.Log.Warning("Can't render guest list for: " + houseId);
+          return;
+        }
       }
 
       bool disabled = false;
