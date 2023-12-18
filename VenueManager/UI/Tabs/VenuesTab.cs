@@ -14,12 +14,12 @@ public class VenuesTab
 {
   private readonly Vector4 colorGreen = new(0, 0.69f, 0, 1);
   private Plugin plugin;
-  private Configuration configuration;
 
   // Cached sort values 
   private List<KeyValuePair<long, Venue>> venusSorted = new();
   private short currentSortColumnIndex = 0;
   private ImGuiSortDirection currentSortDirect = ImGuiSortDirection.None;
+  private bool sortValid = false;
 
   // Venue name inside input box 
   private string venueName = string.Empty;
@@ -27,7 +27,6 @@ public class VenuesTab
   public VenuesTab(Plugin plugin)
   {
     this.plugin = plugin;
-    this.configuration = plugin.Configuration;
   }
 
   public bool TryLoadIcon(uint iconId, [NotNullWhen(true)] out IDalamudTextureWrap? wrap, bool keepAlive = false)
@@ -41,7 +40,7 @@ public class VenuesTab
     ImGuiTableColumnSortSpecsPtr currentSpecs = sortSpecs.Specs;
 
     // Sort has not changed, returned cached sort 
-    if (currentSortColumnIndex == currentSpecs.ColumnIndex && currentSortDirect == currentSpecs.SortDirection)
+    if (currentSortColumnIndex == currentSpecs.ColumnIndex && currentSortDirect == currentSpecs.SortDirection && sortValid)
     {
       return venusSorted;
     }
@@ -74,6 +73,7 @@ public class VenuesTab
     venusSorted = venues;
     currentSortColumnIndex = currentSpecs.ColumnIndex;
     currentSortDirect = currentSpecs.SortDirection;
+    sortValid = true;
 
     return venues;
   }
@@ -115,7 +115,7 @@ public class VenuesTab
       plugin.guestLists.Add(venue.houseId, guestList);
 
       // Invalidate sort 
-      currentSortDirect = ImGuiSortDirection.None;
+      sortValid = false;
     }
     if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
     {
@@ -193,6 +193,8 @@ public class VenuesTab
         {
           plugin.venueList.venues.Remove(venue.Value.houseId);
           plugin.venueList.save();
+          // Invalidate sort 
+          sortValid = false;
         }
         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled)
         {
