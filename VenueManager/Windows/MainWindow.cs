@@ -5,9 +5,11 @@ using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Internal;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
 
 namespace VenueManager.Windows;
@@ -18,6 +20,7 @@ public class MainWindow : Window, IDisposable
 
     private Plugin plugin;
     private Configuration configuration;
+    private readonly FileDialogManager fileDialog = new();
 
     public MainWindow(Plugin plugin) : base(
         "Venue Manager", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
@@ -44,6 +47,8 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+      if (drawSaveDialog) fileDialog.Draw();
+
         ImGui.BeginTabBar("Tabs");
         // Render Guests tab if selected 
         if (this.configuration.showGuestsTab) {
@@ -115,6 +120,8 @@ public class MainWindow : Window, IDisposable
     // Current venue selected for logs 
     private long selectVenue = 0;
     private readonly string defaultVenueName = "Default (shared with all non-saved venues)";
+    private bool drawSaveDialog = false;
+    private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
 
     private void drawGuestLogMenu() {
       string displayName = "";
@@ -160,7 +167,6 @@ public class MainWindow : Window, IDisposable
         plugin.guestLists.Add(houseId, guestList);
       }
 
-
       bool disabled = false;
       if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
         ImGui.BeginDisabled();
@@ -175,6 +181,21 @@ public class MainWindow : Window, IDisposable
         ImGui.SetTooltip("Hold control to clear guest list");
       }
       if (disabled) ImGui.EndDisabled();
+      ImGui.SameLine();
+      // Allow the user to save the log to a file 
+      if (ImGui.Button("Save Log")) {
+        var startPath = GetUserPath();
+        if (startPath.Length == 0)
+          startPath = null;
+        // Setup the save dialog 
+        fileDialog.SaveFileDialog("Save File...", ".json", "VenueGuestLog.json", ".json", (confirm, path) => {
+          if (confirm && plugin.guestLists.ContainsKey(selectVenue)) {
+            plugin.guestLists[selectVenue].saveToFile(path);
+          }
+          drawSaveDialog = false;
+        }, startPath);
+        drawSaveDialog = true;
+      }
 
       // Draw Guests 
       ImGui.Text($"Guests ({plugin.guestLists[houseId].guests.Count})");

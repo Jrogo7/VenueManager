@@ -9,18 +9,23 @@ namespace VenueManager
 {
   public class FileStore
   {
-    public static void SaveFile(string fileName, Type fileType, object objectData)
+    public static void SaveClassToFile(string path, Type fileType, object objectData)
     {
       try
       {
         string output = JsonConvert.SerializeObject(objectData, fileType, new JsonSerializerSettings { Formatting = Formatting.Indented });
-        var fileInfo = GetFileInfo(fileName);
-        Util.WriteAllTextSafe(fileInfo.FullName, output);
+        Util.WriteAllTextSafe(path, output);
       }
       catch (Exception exception)
       {
         Plugin.Log.Error("Failed to save file: " + exception.ToString());
       }
+    }
+
+    public static void SaveClassToFileInPluginDir(string fileName, Type fileType, object objectData)
+    {
+      var fileInfo = GetFileInfo(fileName);
+      SaveClassToFile(fileInfo.FullName, fileType, objectData);
     }
 
     public static T LoadFile<T>(string filePath, object targetObject)
@@ -30,7 +35,7 @@ namespace VenueManager
         return (T)loadedData;
       }
 
-      SaveFile(filePath, targetObject.GetType(), targetObject);
+      SaveClassToFileInPluginDir(filePath, targetObject.GetType(), targetObject);
       return (T)targetObject;
     }
 

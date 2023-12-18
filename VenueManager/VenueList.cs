@@ -18,7 +18,7 @@ namespace VenueManager
     }
 
     public void save() {
-      FileStore.SaveFile(OutputFile, this.GetType(), this);
+      FileStore.SaveClassToFileInPluginDir(OutputFile, this.GetType(), this);
     }
 
     public void load() {
