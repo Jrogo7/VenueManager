@@ -222,6 +222,8 @@ namespace VenueManager
           // Skip player characters that do not have a name. 
           // Portrait and Adventure plates show up with this. 
           if (pc.Name.TextValue.Length == 0) continue;
+          // Im not sure what this means, but it seems that 4 is for players
+          if (o.SubKind != 4) continue;
 
           // Add player to seen map 
           seenPlayers.Add(player.Name, true);
