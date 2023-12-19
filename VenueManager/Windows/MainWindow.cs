@@ -13,8 +13,11 @@ public class MainWindow : Window, IDisposable
 
     private Plugin plugin;
     private Configuration configuration;
+
     private VenuesTab venuesTab;
     private SettingsTab settingsTab;
+    private GuestsTab guestsTab;
+
     private GuestListWidget guestListWidget;
 
     public MainWindow(Plugin plugin) : base(
@@ -31,6 +34,7 @@ public class MainWindow : Window, IDisposable
         this.venuesTab = new VenuesTab(plugin);
         this.settingsTab = new SettingsTab(plugin);
         this.guestListWidget = new GuestListWidget(plugin);
+        this.guestsTab = new GuestsTab(plugin);
     }
 
     public void Dispose()
@@ -43,7 +47,7 @@ public class MainWindow : Window, IDisposable
         // Render Guests tab if selected 
         if (this.configuration.showGuestsTab) {
           if (ImGui.BeginTabItem("Guests")) {
-            drawGuestsMenu();
+            this.guestsTab.draw();
 
             ImGui.EndTabItem();
           }
@@ -66,50 +70,6 @@ public class MainWindow : Window, IDisposable
           ImGui.EndTabItem();
         }
         ImGui.EndTabBar();
-    }
-
-    private void drawGuestsMenu() {
-      // Render high level information 
-      if (plugin.pluginState.userInHouse) {
-        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
-          var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
-          ImGui.Text("You are at " + venue.name);
-        } else {
-          var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ? 
-            "P" + plugin.pluginState.currentHouse.plot : 
-            "Room" + plugin.pluginState.currentHouse.room;
-          ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " + 
-            plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
-        }
-
-        // List the number of players in the house 
-        ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.getCurrentGuestList().guests.Count} total visitors)");
-      } else {
-        ImGui.Text("You are not in a house.");
-      }
-      if (plugin.pluginState.snoozed) ImGui.TextColored(new Vector4(.82f, .5f, .04f, 1f), "Alarms snoozed");
-      ImGui.Spacing();
-      ImGui.Separator();
-      ImGui.Spacing();
-
-      if (plugin.pluginState.userInHouse) {
-        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) {
-          var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
-          ImGui.Text("Guest list for " + venue.name);
-        } else {
-          ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved venues");
-        }
-
-        // We are in a saved house, draw guest list for that house
-        if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) 
-          this.guestListWidget.draw(plugin.pluginState.currentHouse.houseId);
-        // Otherwise draw public list 
-        else 
-          this.guestListWidget.draw(0);
-      }
-      else {
-          ImGui.Text("Guest list will be shown when you enter a house");
-      }
     }
 
     // Current venue selected for logs 
