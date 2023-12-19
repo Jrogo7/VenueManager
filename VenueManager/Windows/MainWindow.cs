@@ -1,13 +1,11 @@
 using System;
-using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
 using VenueManager.Tabs;
+using VenueManager.Widgets;
 
 namespace VenueManager.Windows;
 
@@ -17,8 +15,8 @@ public class MainWindow : Window, IDisposable
 
     private Plugin plugin;
     private Configuration configuration;
-    private readonly FileDialogManager fileDialog = new();
     private VenuesTab venuesTab;
+    private GuestListWidget guestListWidget;
 
     public MainWindow(Plugin plugin) : base(
         "Venue Manager", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
@@ -32,6 +30,7 @@ public class MainWindow : Window, IDisposable
         this.plugin = plugin;
         this.configuration = plugin.Configuration;
         this.venuesTab = new VenuesTab(plugin);
+        this.guestListWidget = new GuestListWidget(plugin);
     }
 
     public void Dispose()
@@ -40,8 +39,6 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-      if (drawSaveDialog) fileDialog.Draw();
-
         ImGui.BeginTabBar("Tabs");
         // Render Guests tab if selected 
         if (this.configuration.showGuestsTab) {
@@ -105,10 +102,10 @@ public class MainWindow : Window, IDisposable
 
         // We are in a saved house, draw guest list for that house
         if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId)) 
-          drawGuestList(plugin.pluginState.currentHouse.houseId);
+          this.guestListWidget.draw(plugin.pluginState.currentHouse.houseId);
         // Otherwise draw public list 
         else 
-          drawGuestList(0);
+          this.guestListWidget.draw(0);
       }
       else {
           ImGui.Text("Guest list will be shown when you enter a house");
@@ -118,8 +115,6 @@ public class MainWindow : Window, IDisposable
     // Current venue selected for logs 
     private long selectVenue = 0;
     private readonly string defaultVenueName = "Default (shared with all non-saved venues)";
-    private bool drawSaveDialog = false;
-    private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
 
     private void drawGuestLogMenu() {
       string displayName = "";
@@ -154,68 +149,7 @@ public class MainWindow : Window, IDisposable
       ImGui.Separator();
       ImGui.Spacing();
 
-      drawGuestList(selectVenue);
-    }
-
-    private void drawGuestList(long houseId) {
-      // Ensure we have this guest list 
-      if (!plugin.guestLists.ContainsKey(houseId)) {
-        if (plugin.venueList.venues.ContainsKey(houseId)) {
-          GuestList guestList = new GuestList(houseId, "");
-          guestList.load();
-          plugin.guestLists.Add(houseId, guestList);
-        }
-        // A house Id has been sent to be rendered that is not saved. This is invalid. 
-        else {
-          Plugin.Log.Warning("Can't render guest list for: " + houseId);
-          return;
-        }
-      }
-
-      bool disabled = false;
-      if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
-        ImGui.BeginDisabled();
-        disabled = true;
-      }
-      // Clear guest list button 
-      if (ImGui.Button("Clear Guest List")) {
-        plugin.guestLists[houseId].guests = new();
-        plugin.guestLists[houseId].save();
-      }
-      if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled) {
-        ImGui.SetTooltip("Hold control to clear guest list");
-      }
-      if (disabled) ImGui.EndDisabled();
-      ImGui.SameLine();
-      // Allow the user to save the log to a file 
-      if (ImGui.Button("Save Log")) {
-        var startPath = GetUserPath();
-        if (startPath.Length == 0)
-          startPath = null;
-        // Setup the save dialog 
-        fileDialog.SaveFileDialog("Save File...", ".json", "VenueGuestLog.json", ".json", (confirm, path) => {
-          if (confirm && plugin.guestLists.ContainsKey(selectVenue)) {
-            plugin.guestLists[selectVenue].saveToFile(path);
-          }
-          drawSaveDialog = false;
-        }, startPath);
-        drawSaveDialog = true;
-      }
-
-      // Draw Guests 
-      ImGui.Text($"Guests ({plugin.guestLists[houseId].guests.Count})");
-      ImGui.BeginChild(1);
-      ImGui.Indent(10);
-
-      // Generate sorted guest list 
-      var sortedGuestList = plugin.guestLists[houseId].guests.ToList();
-      sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
-      foreach (var guest in sortedGuestList) {
-        var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
-        ImGui.TextColored(color, guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
-      }
-      ImGui.Unindent(10);
-      ImGui.EndChild();
+      this.guestListWidget.draw(selectVenue);
     }
 
     private void drawSettings() {
