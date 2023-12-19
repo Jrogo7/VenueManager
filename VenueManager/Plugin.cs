@@ -244,6 +244,7 @@ namespace VenueManager
           {
             guestListUpdated = true;
             getCurrentGuestList().guests[player.Name].inHouse = true;
+            getCurrentGuestList().guests[player.Name].latestEntry = DateTime.Now;
             getCurrentGuestList().guests[player.Name].entryCount++;
             showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
           }

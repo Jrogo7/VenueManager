@@ -12,9 +12,10 @@ namespace VenueManager
         public uint ObjectId { get; set; } = 0;
         public DateTime firstSeen;
         public DateTime lastSeen;
+        public DateTime latestEntry;
         public int entryCount { get; set; } = 0;
 
-        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, int entryCount)
+        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, DateTime latestEntry, int entryCount)
         {
             this.Name = name;
             this.HomeWorld = homeWorld;
@@ -22,11 +23,12 @@ namespace VenueManager
             this.ObjectId = objectId;
             this.firstSeen = firstSeen;
             this.lastSeen = firstSeen;
+            this.latestEntry = latestEntry;
             this.entryCount = entryCount;
         }
 
         public static Player fromCharacter(PlayerCharacter character) {
-          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, DateTime.Now, 1);
+          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, DateTime.Now, DateTime.Now, 1);
         }
    }
 }
