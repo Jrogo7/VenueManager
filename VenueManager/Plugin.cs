@@ -204,7 +204,7 @@ namespace VenueManager
         }
         catch
         {
-          Log.Error("Failed to load housing information");
+          Log.Warning("Failed to load housing information for current house.");
           return;
         }
 
