@@ -14,6 +14,7 @@ namespace VenueManager
     public bool showChatAlertEntry { get; set; } = true;
     public bool showChatAlertReentry { get; set; } = true;
     public bool showChatAlertLeave { get; set; } = true;
+    public bool showChatAlertAlreadyHere { get; set; } = false;
     public bool showPluginNameInChat { get; set; } = false;
 
     // Should sound alerts be played when new players join the house 

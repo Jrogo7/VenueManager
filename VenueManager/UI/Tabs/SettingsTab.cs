@@ -74,15 +74,28 @@ public class SettingsTab
 
     // Reentry Alerts 
     var showChatAlertReentry = this.configuration.showChatAlertReentry;
-    if (ImGui.Checkbox("Reentry Alerts", ref showChatAlertReentry))
+    if (ImGui.Checkbox("Re-entry Alerts", ref showChatAlertReentry))
     {
       this.configuration.showChatAlertReentry = showChatAlertReentry;
       this.configuration.Save();
     }
     if (ImGui.IsItemHovered())
     {
-      ImGui.SetTooltip("Display chat message when a guest reenters a venue after leaving");
+      ImGui.SetTooltip("Display chat message when a guest re-enters a venue after leaving");
     }
+
+    // Current Visitor
+    var showChatAlertAlreadyHere = this.configuration.showChatAlertAlreadyHere;
+    if (ImGui.Checkbox("Current Visitors on Entry", ref showChatAlertAlreadyHere))
+    {
+      this.configuration.showChatAlertAlreadyHere = showChatAlertAlreadyHere;
+      this.configuration.Save();
+    }
+    if (ImGui.IsItemHovered())
+    {
+      ImGui.SetTooltip("Display chat message for all current guests when re-entering a house");
+    }
+
     // Leave Alerts 
     var showChatAlertLeave = this.configuration.showChatAlertLeave;
     if (ImGui.Checkbox("Leave Alerts", ref showChatAlertLeave))

@@ -43,6 +43,9 @@ namespace VenueManager
     private Stopwatch stopwatch = new();
     private DoorbellSound doorbell;
 
+    // True for the first loop that a player enters a house 
+    private bool justEnteredHouse = false;
+
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
         [RequiredVersion("1.0")] ICommandManager commandManager)
@@ -147,6 +150,7 @@ namespace VenueManager
       // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
       {
+        justEnteredHouse = true;
         pluginState.userInHouse = true;
         stopwatch.Start();
       }
@@ -248,6 +252,10 @@ namespace VenueManager
             getCurrentGuestList().guests[player.Name].entryCount++;
             showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
           }
+          // Current user just entered house and setting is enabled to notify them on existing users. 
+          else if (justEnteredHouse && this.Configuration.showChatAlertAlreadyHere) {
+            showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
+          }
 
           // Mark last seen 
           getCurrentGuestList().guests[player.Name].lastSeen = DateTime.Now;
@@ -276,6 +284,7 @@ namespace VenueManager
         // Save config if we saw new players
         if (guestListUpdated) getCurrentGuestList().save();
 
+        justEnteredHouse = false;
         stopwatch.Restart();
       }
 
@@ -294,10 +303,6 @@ namespace VenueManager
 
     private void showGuestEnterChatAlert(Player player, bool isSelf)
     {
-      // Don't show alerts if snoozed 
-      if (pluginState.snoozed) return;
-      if (!Configuration.showChatAlerts) return;
-
       var messageBuilder = new SeStringBuilder();
       var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
 
@@ -312,13 +317,23 @@ namespace VenueManager
         return;
       }
 
+      // Don't show alerts if snoozed 
+      if (pluginState.snoozed) return;
+      // Don't show if chat alerts disabled 
+      if (!Configuration.showChatAlerts) return;
+
+      // Alert type is already here 
+      bool isAlreadyHere = justEnteredHouse && this.Configuration.showChatAlertAlreadyHere;
+
       // Return if reentry alerts are disabled 
-      if (player.entryCount > 1 && !Configuration.showChatAlertReentry) return;
+      if (player.entryCount > 1 && !Configuration.showChatAlertReentry && !isAlreadyHere) return;
       // Return if entry alerts are disabled 
-      if (player.entryCount == 1 && !Configuration.showChatAlertEntry) return;
+      if (player.entryCount == 1 && !Configuration.showChatAlertEntry && !isAlreadyHere) return;
 
       // Show text alert for guests
       if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
+
+      // Chat color 
       if (player.entryCount == 1)
         messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
       else if (player.entryCount == 2)
@@ -327,10 +342,22 @@ namespace VenueManager
         messageBuilder.AddUiForeground(500);
       else if (player.entryCount >= 4)
         messageBuilder.AddUiForeground(518);
+
+      // Add player message 
       messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
-      messageBuilder.AddText(" has entered");
-      if (player.entryCount > 1)
-        messageBuilder.AddText(" (" + player.entryCount + ")");
+
+      // Current player has re-entered the house 
+      if (justEnteredHouse) {
+        messageBuilder.AddText(" is already inside");
+      } 
+      // Player enters house while you are already inside
+      else {
+        messageBuilder.AddText(" has entered");
+        if (player.entryCount > 1)
+          messageBuilder.AddText(" (" + player.entryCount + ")");
+      }
+
+      // Venue Name 
       if (knownVenue)
       {
         var venue = venueList.venues[pluginState.currentHouse.houseId];
