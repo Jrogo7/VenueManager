@@ -39,6 +39,17 @@ public class SettingsTab
       this.configuration.showVenueTab = showVenueTab;
       this.configuration.Save();
     }
+    
+    var showWebserviceLogging = this.configuration.showWebserviceLogging;
+    if (ImGui.Checkbox("Webservice Logging", ref showWebserviceLogging))
+    {
+      this.configuration.showWebserviceLogging = showWebserviceLogging;
+      this.configuration.Save();
+    }
+    if (ImGui.IsItemHovered())
+    {
+      ImGui.SetTooltip("This is an advanced feature that is for developers");
+    }
 
     if (!this.configuration.showGuestsTab && !this.configuration.showVenueTab)
     {

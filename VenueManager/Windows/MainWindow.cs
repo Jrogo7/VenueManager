@@ -3,7 +3,6 @@ using System.Numerics;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using VenueManager.Tabs;
-using VenueManager.Widgets;
 
 namespace VenueManager.Windows;
 
@@ -15,6 +14,7 @@ public class MainWindow : Window, IDisposable
   private SettingsTab settingsTab;
   private GuestsTab guestsTab;
   private GuestLogTab guestLogTab;
+  private WebserviceTab webserviceTab;
 
   public MainWindow(Plugin plugin) : base(
       "Venue Manager", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
@@ -30,6 +30,7 @@ public class MainWindow : Window, IDisposable
     this.settingsTab = new SettingsTab(plugin);
     this.guestsTab = new GuestsTab(plugin);
     this.guestLogTab = new GuestLogTab(plugin);
+    this.webserviceTab = new WebserviceTab(plugin);
   }
 
   public void Dispose()
@@ -53,6 +54,15 @@ public class MainWindow : Window, IDisposable
         this.guestLogTab.draw();
 
         ImGui.EndTabItem();
+      }
+      if (this.configuration.showWebserviceLogging)
+      {
+        if (ImGui.BeginTabItem("Webserver Logging"))
+        {
+          this.webserviceTab.draw();
+
+          ImGui.EndTabItem();
+        }
       }
     }
     // Render Venues Tab 
