@@ -31,11 +31,17 @@ namespace VenueManager
 
     public void save()
     {
+      // Save not supported for default guest list
+      if (this.houseId == 0) return;
+
       FileStore.SaveClassToFileInPluginDir(getFileName(), this.GetType(), this);
     }
 
     public void load()
     {
+      // Load not supported for default guest list
+      if (this.houseId == 0) return;
+
       // Don't attempt to load if there is no file 
       var fileInfo = FileStore.GetFileInfo(getFileName());
       if (!fileInfo.Exists) return;

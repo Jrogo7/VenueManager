@@ -62,7 +62,7 @@ public class GuestsTab
       }
       else
       {
-        ImGui.Text("This venue is not saved. Guest list will be shared will all unsaved venues");
+        ImGui.Text("This venue is not saved. Not all features will be supported.");
       }
 
       // We are in a saved house, draw guest list for that house

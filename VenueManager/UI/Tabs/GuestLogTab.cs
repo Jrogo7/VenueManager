@@ -10,7 +10,6 @@ public class GuestLogTab
 
   // Current venue selected for logs 
   private long selectVenue = 0;
-  private readonly string defaultVenueName = "Default (shared with all non-saved venues)";
 
   public GuestLogTab(Plugin plugin)
   {
@@ -21,8 +20,7 @@ public class GuestLogTab
   public unsafe void draw()
   {
     string displayName = "";
-    if (selectVenue == 0) displayName = defaultVenueName;
-    else if (plugin.venueList.venues.ContainsKey(selectVenue))
+    if (plugin.venueList.venues.ContainsKey(selectVenue))
     {
       displayName = plugin.venueList.venues[selectVenue].name;
     }
@@ -31,14 +29,6 @@ public class GuestLogTab
     // Combo box of all venues 
     if (ImGui.BeginCombo("##VenueForLogs", displayName))
     {
-      // Default 0 Venue 
-      if (ImGui.Selectable(defaultVenueName, selectVenue == 0))
-      {
-        selectVenue = 0;
-      }
-      if (selectVenue == 0)
-        ImGui.SetItemDefaultFocus();
-
       // All Saved Venues 
       foreach (var venue in plugin.venueList.venues)
       {
@@ -56,6 +46,9 @@ public class GuestLogTab
     ImGui.Separator();
     ImGui.Spacing();
 
-    this.guestListWidget.draw(selectVenue);
+    if (selectVenue != 0)
+      this.guestListWidget.draw(selectVenue);
+    else 
+      ImGui.Text("Please select a venue");
   }
 }
