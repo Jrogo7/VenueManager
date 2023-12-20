@@ -26,7 +26,7 @@ public class GuestListWidget
     // Ensure we have this guest list 
     if (!plugin.guestLists.ContainsKey(houseId)) {
       if (plugin.venueList.venues.ContainsKey(houseId)) {
-        GuestList guestList = new GuestList(houseId, "");
+        GuestList guestList = new GuestList(houseId, plugin.venueList.venues[houseId]);
         guestList.load();
         plugin.guestLists.Add(houseId, guestList);
       }

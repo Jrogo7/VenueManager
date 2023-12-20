@@ -92,7 +92,7 @@ public class VenuesTab
       plugin.venueList.venues.Add(venue.houseId, venue);
       plugin.venueList.save();
       // Add a new guest list to the main registry for this venue 
-      GuestList guestList = new GuestList(venue.houseId, venueName);
+      GuestList guestList = new GuestList(venue.houseId, venue);
       plugin.guestLists.Add(venue.houseId, guestList);
     }
     if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))

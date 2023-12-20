@@ -192,7 +192,7 @@ namespace VenueManager
             // Load current guest list from disk if player has entered a saved venue 
             if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId)) {
               var venue = venueList.venues[pluginState.currentHouse.houseId];
-              GuestList venueGuestList = new GuestList(venue.houseId, venue.name);
+              GuestList venueGuestList = new GuestList(venue.houseId, venue);
               venueGuestList.load();
               guestLists.Add(venue.houseId, venueGuestList);
             }

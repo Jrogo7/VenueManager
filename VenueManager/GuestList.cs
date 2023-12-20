@@ -12,16 +12,16 @@ namespace VenueManager
     // List of guests in the venue
     public Dictionary<string, Player> guests { get; set; } = new();
     public long houseId { get; set; } = 0;
-    public string venueName { get; set; } = "";
+    public Venue venue { get; set; } = new();
 
     public GuestList()
     {
     }
 
-    public GuestList(long id, string name)
+    public GuestList(long id, Venue venue)
     {
       this.houseId = id;
-      this.venueName = name;
+      this.venue = venue;
     }
 
     private string getFileName()
@@ -43,7 +43,9 @@ namespace VenueManager
       GuestList loadedData = FileStore.LoadFile<GuestList>(getFileName(), this);
       this.guests = loadedData.guests;
       this.houseId = loadedData.houseId;
-      this.venueName = loadedData.venueName;
+      // Don't replace venue if the incoming one is blank
+      if (loadedData.venue.name.Length != 0)
+        this.venue = loadedData.venue;
     }
 
     public void saveToFile(string path)
