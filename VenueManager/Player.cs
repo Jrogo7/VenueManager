@@ -7,7 +7,7 @@ namespace VenueManager
     public class Player
     {
         public string Name { get; set; } = "";
-        public uint HomeWorld { get; set; } = 0;
+        public uint homeWorld { get; set; } = 0;
         public bool inHouse { get; set; } = false;
         public uint ObjectId { get; set; } = 0;
         public DateTime firstSeen;
@@ -18,7 +18,7 @@ namespace VenueManager
         public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, DateTime latestEntry, int entryCount)
         {
             this.Name = name;
-            this.HomeWorld = homeWorld;
+            this.homeWorld = homeWorld;
             this.inHouse = inHouse;
             this.ObjectId = objectId;
             this.firstSeen = firstSeen;

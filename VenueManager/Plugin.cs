@@ -344,7 +344,7 @@ namespace VenueManager
         messageBuilder.AddUiForeground(518);
 
       // Add player message 
-      messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+      messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
 
       // Current player has re-entered the house 
       if (justEnteredHouse) {
@@ -388,7 +388,7 @@ namespace VenueManager
       if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
 
       // Add Player name 
-      messageBuilder.Add(new PlayerPayload(player.Name, player.HomeWorld));
+      messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
       messageBuilder.AddText(" has left");
       
       // Add Venue info 
