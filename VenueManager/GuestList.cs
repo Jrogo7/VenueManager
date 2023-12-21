@@ -62,6 +62,8 @@ namespace VenueManager
     public void sentToWebserver(Plugin plugin) {
       // Cant send payload if we do not have a url 
       if (plugin.Configuration.webserverConfig.endpoint.Length == 0) return;
+      // Don't send data for default house 
+      if (this.houseId == 0) return;
 
       // Convert class to string
       string output = JsonConvert.SerializeObject(this, this.GetType(), new JsonSerializerSettings { Formatting = Formatting.Indented });

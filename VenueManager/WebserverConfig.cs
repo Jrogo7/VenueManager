@@ -16,6 +16,9 @@ namespace VenueManager
   {
     public string endpoint { get; set; } = "";
     public HeaderPair[] headers { get; set; } = [];
+    public bool sendDataOnInterval { get; set; } = false;
+    public float interval { get; set; } = 5;
+    public int IntervalMiliseconds => (int)(interval * 1000.0f);
 
     public WebserverConfig() { }
   }

@@ -41,6 +41,7 @@ namespace VenueManager
     public WindowSystem WindowSystem = new("VenueManager");
     private MainWindow MainWindow { get; init; }
     private Stopwatch stopwatch = new();
+    private Stopwatch webserviceStopwatch = new();
     private DoorbellSound doorbell;
 
     // True for the first loop that a player enters a house 
@@ -162,6 +163,7 @@ namespace VenueManager
         justEnteredHouse = true;
         pluginState.userInHouse = true;
         stopwatch.Start();
+        webserviceStopwatch.Start();
       }
       // Player has left a house 
       else if (pluginState.userInHouse)
@@ -176,6 +178,7 @@ namespace VenueManager
       pluginState.userInHouse = false;
       pluginState.currentHouse = new Venue(); // Erase venue when leaving 
       stopwatch.Stop();
+      webserviceStopwatch.Stop();
       // Unsnooze if leaving a house when snoozed 
       if (pluginState.snoozed) OnSnooze();
     }
@@ -298,8 +301,15 @@ namespace VenueManager
 
         justEnteredHouse = false;
         stopwatch.Restart();
-      }
 
+        // Send data to server 
+        if (Configuration.webserverConfig.sendDataOnInterval && 
+          webserviceStopwatch.ElapsedMilliseconds > Configuration.webserverConfig.IntervalMiliseconds && 
+          RestUtils.failedRequests <= RestUtils.maxFailedRequests) {
+          webserviceStopwatch.Restart();
+          getCurrentGuestList().sentToWebserver(this);
+        }
+      }
     }
 
     public void playDoorbell()

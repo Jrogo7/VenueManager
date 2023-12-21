@@ -1,3 +1,4 @@
+using System.Numerics;
 using ImGuiNET;
 
 namespace VenueManager.Tabs;
@@ -62,8 +63,41 @@ public class WebserviceTab
     }
     if (disableSend) ImGui.EndDisabled();
 
-    // TODO status information 
-    // TODO send on interval checkmark 
-    // TODO interval timing 
+    ImGui.Spacing();
+    ImGui.Spacing();
+
+    // Send data on interval 
+    var sendDataOnInterval = plugin.Configuration.webserverConfig.sendDataOnInterval;
+    if (ImGui.Checkbox("Send data on interval", ref sendDataOnInterval))
+    {
+      plugin.Configuration.webserverConfig.sendDataOnInterval = sendDataOnInterval;
+      plugin.Configuration.Save();
+    }
+    if (ImGui.IsItemHovered())
+    {
+      ImGui.SetTooltip("Periodically send guest list to the provided endpoint on the interval set below");
+    }
+
+    // Interval 
+    var interval = plugin.Configuration.webserverConfig.interval;
+    if (ImGui.SliderFloat("Seconds", ref interval, 5, 60))
+    {
+      plugin.Configuration.webserverConfig.interval = interval;
+      plugin.Configuration.Save();
+    }
+
+    ImGui.Spacing();
+    ImGui.Separator();
+    if (RestUtils.failedRequests < RestUtils.maxFailedRequests) {
+      ImGui.TextColored(new Vector4(1.0f,0.25f,0.25f,1f), "Interval paused as max failed requests reached");
+      ImGui.SameLine();
+      if (ImGui.Button("Reset"))
+      {
+        RestUtils.successfulRequests = 0;
+        RestUtils.failedRequests = 0;
+      }
+    }
+    ImGui.TextWrapped($"Successful Requests: {RestUtils.successfulRequests}");
+    ImGui.TextWrapped($"Failed Requests: {RestUtils.failedRequests}");
   }
 }
