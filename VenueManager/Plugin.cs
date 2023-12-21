@@ -12,6 +12,7 @@ using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using System.Collections.Generic;
 using System;
+using VenueManager.UI;
 
 namespace VenueManager
 {
@@ -362,18 +363,14 @@ namespace VenueManager
       // Show text alert for guests
       if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
 
-      // Chat color 
-      if (player.entryCount == 1)
-        messageBuilder.AddUiForeground(060); // Green. `/xldata` -> UIColor in chat in game 
-      else if (player.entryCount == 2)
-        messageBuilder.AddUiForeground(063);
-      else if (player.entryCount == 3)
-        messageBuilder.AddUiForeground(500);
-      else if (player.entryCount >= 4)
-        messageBuilder.AddUiForeground(518);
+      // Player Color 
+      messageBuilder.AddUiForeground(Colors.getChatColor(player, true));
 
       // Add player message 
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
+
+      // Message Color 
+      messageBuilder.AddUiForeground(Colors.getChatColor(player, false));
 
       // Current player has re-entered the house 
       if (justEnteredHouse) {

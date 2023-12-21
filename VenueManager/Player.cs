@@ -1,4 +1,5 @@
 using System;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 
 namespace VenueManager
@@ -9,6 +10,7 @@ namespace VenueManager
         public string Name { get; set; } = "";
         public uint homeWorld { get; set; } = 0;
         public bool inHouse { get; set; } = false;
+        public bool isFriend { get; set; } = false; 
         public uint ObjectId { get; set; } = 0;
         public DateTime firstSeen;
         public DateTime lastSeen;
@@ -23,6 +25,7 @@ namespace VenueManager
           player.Name = character.Name.TextValue;
           player.homeWorld = character.HomeWorld.Id;
           player.inHouse = true;
+          player.isFriend = character.StatusFlags.HasFlag(StatusFlags.Friend);
           player.ObjectId = character.ObjectId;
           player.entryCount = 1;
           player.firstSeen = DateTime.Now;

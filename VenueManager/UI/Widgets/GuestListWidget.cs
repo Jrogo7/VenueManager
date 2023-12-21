@@ -165,24 +165,18 @@ public class GuestListWidget
 
       foreach (var player in sortedGuestList)
       {
-        var color = Colors.White;
-
-        // Change color based on entry count 
-        if (player.Value.entryCount == 2)
-          color = Colors.PlayerEntry2;
-        else if (player.Value.entryCount == 3)
-          color = Colors.PlayerEntry3;
-        else if (player.Value.entryCount >= 4)
-          color = Colors.PlayerEntry4;
+        var playerColor = Colors.getGuestListColor(player.Value, true);
+        var color = Colors.getGuestListColor(player.Value, false);
 
         if (!player.Value.inHouse && plugin.pluginState.currentHouse.houseId == houseId) {
           color[3] = .5f;
+          playerColor[3] = .5f;
         }
 
         ImGui.TableNextColumn();
         ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
         ImGui.TableNextColumn();
-        ImGui.TextColored(color, player.Value.Name);
+        ImGui.TextColored(playerColor, player.Value.Name);
 
         if (!simpleFormat) {
           ImGui.TableNextColumn();
