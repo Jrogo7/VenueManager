@@ -1,4 +1,6 @@
 using System.Numerics;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using ImGuiNET;
 
 namespace VenueManager.Tabs;
@@ -17,11 +19,13 @@ public class WebserviceTab
 
   public unsafe void draw()
   {
+    ImGui.BeginChild(1);
     ImGui.TextWrapped("The below configuration is used to sync the guest log for the current house you are in to the designated server endpoint provided below.");
     ImGui.TextWrapped("You should only use this tab if you know what you are doing.");
     ImGui.Separator();
     
-    // TODO headers Mention that headers are not encrypted 
+    // Headers
+    drawHeaders();
 
     // Endpoing Url section 
     ImGui.Text("Endpoint:");
@@ -99,5 +103,46 @@ public class WebserviceTab
     }
     ImGui.TextWrapped($"Successful Requests: {RestUtils.successfulRequests}");
     ImGui.TextWrapped($"Failed Requests: {RestUtils.failedRequests}");
+
+    ImGui.EndChild();
+  } // End Draw 
+
+  private void drawHeaders() {
+    if (ImGui.Button("Add Header"))
+    {
+      plugin.Configuration.webserverConfig.headers.Add(new HeaderPair());
+      plugin.Configuration.Save();
+    }
+
+    int itemToRemove = -1;
+
+    for (var i = 0; i < plugin.Configuration.webserverConfig.headers.Count; i++) {
+      ImGui.PushItemWidth(200);
+      var key = plugin.Configuration.webserverConfig.headers[i].key;
+      ImGui.InputTextWithHint($"##headerkey{i}", "Key", ref key, 100);
+      ImGui.SameLine();
+      var value = plugin.Configuration.webserverConfig.headers[i].value;
+      ImGui.InputTextWithHint($"##headervalue{i}", "Value", ref value, 100);
+      ImGui.PopItemWidth();
+
+      if (key != plugin.Configuration.webserverConfig.headers[i].key || value != plugin.Configuration.webserverConfig.headers[i].value) {
+        plugin.Configuration.webserverConfig.headers[i].key = key;
+        plugin.Configuration.webserverConfig.headers[i].value = value;
+        plugin.Configuration.Save();
+        RestUtils.headersChanged = true;
+      }
+
+      ImGui.SameLine();
+      if (ImGuiComponents.IconButton($"##headerdelete{i}", FontAwesomeIcon.Trash))
+      {
+        itemToRemove = i;
+      }
+    }
+
+    if (itemToRemove != -1) {
+      plugin.Configuration.webserverConfig.headers.Remove(plugin.Configuration.webserverConfig.headers[itemToRemove]);
+      plugin.Configuration.Save();
+      RestUtils.headersChanged = true;
+    }
   }
 }

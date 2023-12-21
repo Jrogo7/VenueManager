@@ -13,17 +13,24 @@ namespace VenueManager
     public static int successfulRequests = 0;
     public static int failedRequests = 0;
     public static readonly int maxFailedRequests = 5;
+    public static bool headersChanged = true;
 
     public static async Task PostAsync(string url, string content, Plugin plugin)
     {
-      if (url != CurrentUrl) {
+      if (url != CurrentUrl || headersChanged) {
         Client = new HttpClient()
         {
           BaseAddress = new Uri(url)
         };
-
+        // Add default player name header
         Client.DefaultRequestHeaders.Add("FF-UserName", plugin.pluginState.playerName);
 
+        // Add all client defined headers 
+        foreach (var header in plugin.Configuration.webserverConfig.headers) {
+          if (header.key.Length > 0)
+            Client.DefaultRequestHeaders.Add(header.key, header.value);
+        }
+        headersChanged = false;
         CurrentUrl = url;
       }
 
