@@ -14,6 +14,7 @@ public class GuestListWidget
   private readonly FileDialogManager fileDialog = new();
   private bool drawSaveDialog = false;
   private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
+  private bool simpleFormat = true;
 
   public GuestListWidget(Plugin plugin)
   {
@@ -73,6 +74,9 @@ public class GuestListWidget
       }, startPath);
       drawSaveDialog = true;
     }
+    // Simple or advanced table format 
+    ImGui.SameLine();
+    ImGui.Checkbox("Simple", ref simpleFormat);
   }
 
   private List<KeyValuePair<string, Player>> getSortedGuests(ImGuiTableSortSpecsPtr sortSpecs, long houseId)
@@ -91,6 +95,22 @@ public class GuestListWidget
         if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.Name.CompareTo(pair1.Value.Name));
         else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.Name.CompareTo(pair2.Value.Name));
         break;
+      case 2: // Entry Count
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.entryCount.CompareTo(pair1.Value.entryCount));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.entryCount.CompareTo(pair2.Value.entryCount));
+        break;
+      case 3: // First Seen
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen));
+        break;
+      case 4: // Last Seen
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen));
+        break;
+      case 5: // Last Seen
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.WorldName.CompareTo(pair1.Value.WorldName));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.WorldName.CompareTo(pair2.Value.WorldName));
+        break;
       default:
         break;
     }
@@ -101,10 +121,16 @@ public class GuestListWidget
   private void drawGuestTable(long houseId) {
     ImGui.BeginChild(1);
 
-    if (ImGui.BeginTable("Guests", 2, ImGuiTableFlags.Sortable))
+    if (ImGui.BeginTable("Guests", simpleFormat ? 2 : 6, ImGuiTableFlags.Sortable))
     {
       ImGui.TableSetupColumn("Latest Entry", ImGuiTableColumnFlags.DefaultSort);
       ImGui.TableSetupColumn("Name");
+      if (!simpleFormat) {
+        ImGui.TableSetupColumn("Entries");
+        ImGui.TableSetupColumn("First Seen");
+        ImGui.TableSetupColumn("Last Seen");
+        ImGui.TableSetupColumn("World");
+      }
       ImGui.TableHeadersRow();
 
       ImGuiTableSortSpecsPtr sortSpecs = ImGui.TableGetSortSpecs();
@@ -118,6 +144,17 @@ public class GuestListWidget
         ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
         ImGui.TableNextColumn();
         ImGui.TextColored(color, player.Value.Name);
+
+        if (!simpleFormat) {
+          ImGui.TableNextColumn();
+          ImGui.TextColored(color, "" + player.Value.entryCount);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(color, player.Value.firstSeen.ToString("h:mm tt"));
+          ImGui.TableNextColumn();
+          ImGui.TextColored(color, player.Value.lastSeen.ToString("h:mm tt"));
+          ImGui.TableNextColumn();
+          ImGui.TextColored(color, player.Value.WorldName);
+        }
       }
 
       ImGui.EndTable();

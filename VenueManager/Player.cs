@@ -14,6 +14,7 @@ namespace VenueManager
         public DateTime lastSeen;
         public DateTime latestEntry;
         public int entryCount { get; set; } = 0;
+        public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(homeWorld)?.Name?.RawString ?? $"World_{homeWorld}";
 
         public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, DateTime latestEntry, int entryCount)
         {
