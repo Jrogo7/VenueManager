@@ -28,9 +28,6 @@ namespace VenueManager
     public bool showWebserviceLogging { get; set; } = false;
     public bool showVenueTab { get; set; } = true;
 
-    // Territory that the current user is in
-    public ushort territory { get; set; } = 0;
-
     // Advanced setting webserver config
     public WebserverConfig webserverConfig { get; set; } = new();
 

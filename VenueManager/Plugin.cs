@@ -146,8 +146,7 @@ namespace VenueManager
 
     private void OnLogout() {
       // Erase territory state 
-      this.Configuration.territory = 0;
-      this.Configuration.Save();
+      pluginState.territory = 0;
 
       leftHouse();
     }
@@ -155,7 +154,7 @@ namespace VenueManager
     private void OnTerritoryChanged(ushort territory)
     {
       // Save current user territory 
-      this.Configuration.territory = territory;
+      pluginState.territory = territory;
 
       // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
@@ -200,9 +199,9 @@ namespace VenueManager
             pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
             pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
             pluginState.currentHouse.room = housingManager->GetCurrentRoom();
-            pluginState.currentHouse.type = this.Configuration.territory;
+            pluginState.currentHouse.type = pluginState.territory;
             pluginState.currentHouse.worldId = worldId ?? 0;
-            pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(Configuration.territory);
+            pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(pluginState.territory);
 
             // Load current guest list from disk if player has entered a saved venue 
             if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId)) {
@@ -395,7 +394,7 @@ namespace VenueManager
       }
       else
       {
-        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(pluginState.territory));
       }
 
       messageBuilder.AddUiForegroundOff();
@@ -429,7 +428,7 @@ namespace VenueManager
       }
       else
       {
-        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(this.Configuration.territory));
+        messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(pluginState.territory));
       }
 
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };

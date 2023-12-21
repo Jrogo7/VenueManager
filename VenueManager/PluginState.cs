@@ -12,6 +12,8 @@ namespace VenueManager
         public bool snoozed { get; set; } = false;
         // Current Player Name 
         public string playerName { get; set; } = "";
+        // Territory that the current user is in
+        public ushort territory { get; set; } = 0;
 
         public PluginState()
         {
