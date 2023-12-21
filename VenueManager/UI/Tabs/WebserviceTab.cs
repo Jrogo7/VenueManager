@@ -105,6 +105,7 @@ public class WebserviceTab
         RestUtils.failedRequests = 0;
       }
     }
+    ImGui.TextWrapped("Last request sent at: " + (RestUtils.lastTimeSentSet ? RestUtils.lastTimeSent.ToString("MM/dd h:mm tt") : "-"));
     ImGui.TextWrapped($"Successful Requests: {RestUtils.successfulRequests}");
     ImGui.TextWrapped($"Failed Requests: {RestUtils.failedRequests}");
 

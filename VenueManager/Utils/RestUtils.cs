@@ -14,6 +14,8 @@ namespace VenueManager
     public static int failedRequests = 0;
     public static readonly int maxFailedRequests = 5;
     public static bool headersChanged = true;
+    public static DateTime lastTimeSent = new();
+    public static bool lastTimeSentSet = false;
 
     public static async Task PostAsync(string url, string content, Plugin plugin)
     {
@@ -43,6 +45,8 @@ namespace VenueManager
         using HttpResponseMessage response = await Client.PostAsync("", stringContent);
         response.EnsureSuccessStatusCode();
         successfulRequests++;
+        lastTimeSent = DateTime.Now;
+        lastTimeSentSet = true;
       }
       catch
       {
