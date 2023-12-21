@@ -14,13 +14,15 @@ namespace VenueManager
     public static int failedRequests = 0;
     public static readonly int maxFailedRequests = 5;
 
-    public static async Task PostAsync(string url, string content)
+    public static async Task PostAsync(string url, string content, Plugin plugin)
     {
       if (url != CurrentUrl) {
         Client = new HttpClient()
         {
           BaseAddress = new Uri(url)
         };
+
+        Client.DefaultRequestHeaders.Add("FF-UserName", plugin.pluginState.playerName);
 
         CurrentUrl = url;
       }

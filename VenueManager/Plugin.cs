@@ -250,6 +250,9 @@ namespace VenueManager
           // Is the new player the current user 
           var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
 
+          // Store Player name 
+          if (ClientState.LocalPlayer?.Name.TextValue.Length > 0) pluginState.playerName = ClientState.LocalPlayer?.Name.TextValue ?? "";
+
           // New Player has entered the house 
           if (!getCurrentGuestList().guests.ContainsKey(player.Name))
           {

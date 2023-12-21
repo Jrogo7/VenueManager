@@ -69,7 +69,7 @@ namespace VenueManager
       string output = JsonConvert.SerializeObject(this, this.GetType(), new JsonSerializerSettings { Formatting = Formatting.Indented });
 
       // Post data to the webserver
-      _ = RestUtils.PostAsync(plugin.Configuration.webserverConfig.endpoint, output);
+      _ = RestUtils.PostAsync(plugin.Configuration.webserverConfig.endpoint, output, plugin);
     }
   }
 }

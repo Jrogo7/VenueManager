@@ -10,6 +10,8 @@ namespace VenueManager
         public int playersInHouse { get; set; } = 0;
         // True if alarms are currently snoozed 
         public bool snoozed { get; set; } = false;
+        // Current Player Name 
+        public string playerName { get; set; } = "";
 
         public PluginState()
         {
