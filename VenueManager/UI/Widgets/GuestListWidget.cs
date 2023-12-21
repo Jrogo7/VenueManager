@@ -153,6 +153,14 @@ public class GuestListWidget
       {
         var color = player.Value.inHouse && plugin.pluginState.currentHouse.houseId == houseId ? Colors.White : Colors.HalfWhite;
 
+        // Change color based on entry count 
+        if (player.Value.entryCount == 2)
+          color = Colors.PlayerEntry2;
+        else if (player.Value.entryCount == 3)
+          color = Colors.PlayerEntry3;
+        else if (player.Value.entryCount >= 4)
+          color = Colors.PlayerEntry4;
+
         ImGui.TableNextColumn();
         ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
         ImGui.TableNextColumn();
