@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Dalamud.Interface.ImGuiFileDialog;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
@@ -15,6 +14,7 @@ public class GuestListWidget
   private bool drawSaveDialog = false;
   private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
   private bool simpleFormat = true;
+  private bool pinCurrentVisitors = true;
 
   public GuestListWidget(Plugin plugin)
   {
@@ -77,6 +77,16 @@ public class GuestListWidget
     // Simple or advanced table format 
     ImGui.SameLine();
     ImGui.Checkbox("Simple", ref simpleFormat);
+    if (plugin.pluginState.currentHouse.houseId == houseId) {
+      // Put current visitors at the top 
+      ImGui.Checkbox("Pin Current Visitors", ref pinCurrentVisitors);
+      if (ImGui.IsItemHovered()) {
+        ImGui.SetTooltip("Pin current visitors to the top of the table");
+      }
+    }
+    else {
+      pinCurrentVisitors = false;
+    }
   }
 
   private List<KeyValuePair<string, Player>> getSortedGuests(ImGuiTableSortSpecsPtr sortSpecs, long houseId)
@@ -115,6 +125,9 @@ public class GuestListWidget
         break;
     }
 
+    if (pinCurrentVisitors)
+      guestList.Sort((pair1, pair2) => pair2.Value.inHouse.CompareTo(pair1.Value.inHouse));
+
     return guestList;
   }
 
@@ -138,7 +151,7 @@ public class GuestListWidget
 
       foreach (var player in sortedGuestList)
       {
-        var color = player.Value.inHouse ? Colors.White : Colors.HalfWhite;
+        var color = player.Value.inHouse && plugin.pluginState.currentHouse.houseId == houseId ? Colors.White : Colors.HalfWhite;
 
         ImGui.TableNextColumn();
         ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
