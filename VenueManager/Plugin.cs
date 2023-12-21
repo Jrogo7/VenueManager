@@ -277,6 +277,11 @@ namespace VenueManager
 
           // Mark last seen 
           getCurrentGuestList().guests[player.Name].lastSeen = DateTime.Now;
+
+          // Mark last time current player enter house 
+          if (justEnteredHouse && isSelf) {
+            getCurrentGuestList().guests[player.Name].latestEntry = DateTime.Now;
+          }
         }
 
         // Check for guests that have left the house 
