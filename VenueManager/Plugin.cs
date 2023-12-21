@@ -82,6 +82,7 @@ namespace VenueManager
       // Bind territory changed listener to client 
       ClientState.TerritoryChanged += OnTerritoryChanged;
       Framework.Update += OnFrameworkUpdate;
+      ClientState.Logout += OnLogout;
 
       // Load Sound 
       doorbell = new DoorbellSound(this, Configuration.doorbellType);
@@ -142,6 +143,14 @@ namespace VenueManager
       this.WindowSystem.Draw();
     }
 
+    private void OnLogout() {
+      // Erase territory state 
+      this.Configuration.territory = 0;
+      this.Configuration.Save();
+
+      leftHouse();
+    }
+
     private void OnTerritoryChanged(ushort territory)
     {
       // Save current user territory 
@@ -157,16 +166,19 @@ namespace VenueManager
       // Player has left a house 
       else if (pluginState.userInHouse)
       {
-        pluginState.userInHouse = false;
-        pluginState.currentHouse = new Venue(); // Erase venue when leaving 
-        stopwatch.Stop();
-        // Unsnooze if leaving a house when snoozed 
-        if (pluginState.snoozed) OnSnooze();
+        leftHouse();
       }
 
       this.Configuration.Save();
     }
 
+    private void leftHouse() {
+      pluginState.userInHouse = false;
+      pluginState.currentHouse = new Venue(); // Erase venue when leaving 
+      stopwatch.Stop();
+      // Unsnooze if leaving a house when snoozed 
+      if (pluginState.snoozed) OnSnooze();
+    }
 
     private unsafe void OnFrameworkUpdate(IFramework framework)
     {
