@@ -170,6 +170,7 @@ public class SettingsTab
     if (ImGui.SliderFloat("Volume", ref volume, 0, 5))
     {
       this.configuration.soundVolume = volume;
+      configuration.Save();
       plugin.reloadDoorbell();
     }
 
