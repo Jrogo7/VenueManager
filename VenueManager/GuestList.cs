@@ -13,6 +13,7 @@ namespace VenueManager
     public Dictionary<string, Player> guests { get; set; } = new();
     public long houseId { get; set; } = 0;
     public Venue venue { get; set; } = new();
+    public DateTime startTime { get; set; } = DateTime.Now;
 
     public GuestList()
     {
@@ -49,6 +50,7 @@ namespace VenueManager
       GuestList loadedData = FileStore.LoadFile<GuestList>(getFileName(), this);
       this.guests = loadedData.guests;
       this.houseId = loadedData.houseId;
+      this.startTime = loadedData.startTime;
       // Don't replace venue if the incoming one is blank
       if (loadedData.venue.name.Length != 0)
         this.venue = loadedData.venue;
