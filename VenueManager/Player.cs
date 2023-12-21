@@ -16,20 +16,19 @@ namespace VenueManager
         public int entryCount { get; set; } = 0;
         public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(homeWorld)?.Name?.RawString ?? $"World_{homeWorld}";
 
-        public Player(string name, uint homeWorld, bool inHouse, uint objectId, DateTime firstSeen, DateTime lastSeen, DateTime latestEntry, int entryCount)
-        {
-            this.Name = name;
-            this.homeWorld = homeWorld;
-            this.inHouse = inHouse;
-            this.ObjectId = objectId;
-            this.firstSeen = firstSeen;
-            this.lastSeen = firstSeen;
-            this.latestEntry = latestEntry;
-            this.entryCount = entryCount;
-        }
+        public Player() {}
 
         public static Player fromCharacter(PlayerCharacter character) {
-          return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, DateTime.Now, DateTime.Now, 1);
+          Player player = new Player();
+          player.Name = character.Name.TextValue;
+          player.homeWorld = character.HomeWorld.Id;
+          player.inHouse = true;
+          player.ObjectId = character.ObjectId;
+          player.entryCount = 1;
+          player.firstSeen = DateTime.Now;
+          player.lastSeen = DateTime.Now;
+          player.latestEntry = DateTime.Now;
+          return player;
         }
 
         public string getCSVString() {
