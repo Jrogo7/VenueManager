@@ -31,5 +31,13 @@ namespace VenueManager
         public static Player fromCharacter(PlayerCharacter character) {
           return new Player(character.Name.TextValue, character.HomeWorld.Id, true, character.ObjectId, DateTime.Now, DateTime.Now, DateTime.Now, 1);
         }
+
+        public string getCSVString() {
+          return Name + "," + WorldName + "," + inHouse + 
+            "," + latestEntry.ToString("MM/dd/yyyy hh:mm tt") + 
+            "," + firstSeen.ToString("MM/dd/yyyy hh:mm tt") + 
+            "," + lastSeen.ToString("MM/dd/yyyy hh:mm tt") + 
+            "," + entryCount;
+        }
    }
 }

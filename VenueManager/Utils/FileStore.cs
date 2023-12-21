@@ -2,13 +2,24 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Dalamud.Utility;
-using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
 namespace VenueManager
 {
   public class FileStore
   {
+    public static void SaveStringToFile(string path, string output) 
+    {
+      try
+      {
+        Util.WriteAllTextSafe(path, output);
+      }
+      catch (Exception exception)
+      {
+        Plugin.Log.Error("Failed to save file: " + exception.ToString());
+      }
+    }
+
     public static void SaveClassToFile(string path, Type fileType, object objectData)
     {
       try

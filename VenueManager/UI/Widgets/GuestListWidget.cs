@@ -61,7 +61,7 @@ public class GuestListWidget
     if (disabled) ImGui.EndDisabled();
     ImGui.SameLine();
     // Allow the user to save the log to a file 
-    if (ImGui.Button("Save List")) {
+    if (ImGui.Button("Save Json")) {
       var startPath = GetUserPath();
       if (startPath.Length == 0)
         startPath = null;
@@ -74,11 +74,25 @@ public class GuestListWidget
       }, startPath);
       drawSaveDialog = true;
     }
-    // Simple or advanced table format 
     ImGui.SameLine();
-    ImGui.Checkbox("Simple", ref simpleFormat);
+    if (ImGui.Button("Save CSV")) {
+      var startPath = GetUserPath();
+      if (startPath.Length == 0)
+        startPath = null;
+      // Setup the save dialog 
+      fileDialog.SaveFileDialog("Save File...", ".csv", "VenueGuestLog.csv", ".csv", (confirm, path) => {
+        if (confirm && plugin.guestLists.ContainsKey(houseId)) {
+          plugin.guestLists[houseId].saveToFileCSV(path);
+        }
+        drawSaveDialog = false;
+      }, startPath);
+      drawSaveDialog = true;
+    }
+    // Simple or advanced table format 
+    ImGui.Checkbox("Simple View", ref simpleFormat);
     if (plugin.pluginState.currentHouse.houseId == houseId) {
       // Put current visitors at the top 
+      ImGui.SameLine();
       ImGui.Checkbox("Pin Current Visitors", ref pinCurrentVisitors);
       if (ImGui.IsItemHovered()) {
         ImGui.SetTooltip("Pin current visitors to the top of the table");

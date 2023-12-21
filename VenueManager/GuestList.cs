@@ -59,6 +59,15 @@ namespace VenueManager
       FileStore.SaveClassToFile(path, this.GetType(), this);
     }
 
+    public void saveToFileCSV(string path)
+    {
+      string csv = "Name,World,Is Inside,Latest Entry,First Seen,Last Seen,Entry Count\n";
+      foreach (var guest in guests) {
+        csv += guest.Value.getCSVString() + "\n";
+      }
+      FileStore.SaveStringToFile(path, csv);
+    }
+
     public void sentToWebserver(Plugin plugin) {
       // Cant send payload if we do not have a url 
       if (plugin.Configuration.webserverConfig.endpoint.Length == 0) return;
