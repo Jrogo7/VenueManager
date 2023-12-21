@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface.ImGuiFileDialog;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
+using VenueManager.UI;
 
 namespace VenueManager.Widgets;
 
@@ -37,6 +39,11 @@ public class GuestListWidget
       }
     }
 
+    drawOptions(houseId);
+    drawGuestTable(houseId);
+  }
+
+  private void drawOptions(long houseId) {
     bool disabled = false;
     if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl)) {
       ImGui.BeginDisabled();
@@ -53,7 +60,7 @@ public class GuestListWidget
     if (disabled) ImGui.EndDisabled();
     ImGui.SameLine();
     // Allow the user to save the log to a file 
-    if (ImGui.Button("Save Log")) {
+    if (ImGui.Button("Save List")) {
       var startPath = GetUserPath();
       if (startPath.Length == 0)
         startPath = null;
@@ -66,20 +73,56 @@ public class GuestListWidget
       }, startPath);
       drawSaveDialog = true;
     }
+  }
 
-    // Draw Guests 
-    ImGui.Text($"Guests ({plugin.guestLists[houseId].guests.Count})");
-    ImGui.BeginChild(1);
-    ImGui.Indent(10);
+  private List<KeyValuePair<string, Player>> getSortedGuests(ImGuiTableSortSpecsPtr sortSpecs, long houseId)
+  {
+    ImGuiTableColumnSortSpecsPtr currentSpecs = sortSpecs.Specs;
 
-    // Generate sorted guest list 
-    var sortedGuestList = plugin.guestLists[houseId].guests.ToList();
-    sortedGuestList.Sort((pair1,pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
-    foreach (var guest in sortedGuestList) {
-      var color = guest.Value.inHouse ? new Vector4(1,1,1,1) : new Vector4(.5f,.5f,.5f,1);
-      ImGui.TextColored(color, guest.Value.firstSeen.ToString("hh:mm") + " - " + guest.Value.Name);
+    var guestList = plugin.guestLists[houseId].guests.ToList();
+
+    switch (currentSpecs.ColumnIndex)
+    {
+      case 0: // Latest Entry
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.latestEntry.CompareTo(pair1.Value.latestEntry));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.latestEntry.CompareTo(pair2.Value.latestEntry));
+        break;
+      case 1: // Name
+        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.Name.CompareTo(pair1.Value.Name));
+        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.Name.CompareTo(pair2.Value.Name));
+        break;
+      default:
+        break;
     }
-    ImGui.Unindent(10);
+
+    return guestList;
+  }
+
+  private void drawGuestTable(long houseId) {
+    ImGui.BeginChild(1);
+
+    if (ImGui.BeginTable("Guests", 2, ImGuiTableFlags.Sortable))
+    {
+      ImGui.TableSetupColumn("Latest Entry", ImGuiTableColumnFlags.DefaultSort);
+      ImGui.TableSetupColumn("Name");
+      ImGui.TableHeadersRow();
+
+      ImGuiTableSortSpecsPtr sortSpecs = ImGui.TableGetSortSpecs();
+      var sortedGuestList = getSortedGuests(sortSpecs, houseId);
+
+      foreach (var player in sortedGuestList)
+      {
+        var color = player.Value.inHouse ? Colors.White : Colors.HalfWhite;
+
+        ImGui.TableNextColumn();
+        ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
+        ImGui.TableNextColumn();
+        ImGui.TextColored(color, player.Value.Name);
+      }
+
+      ImGui.EndTable();
+    }
+
     ImGui.EndChild();
   }
 }
