@@ -23,9 +23,7 @@ public class WebserviceTab
     ImGui.TextWrapped("The below configuration is used to sync the guest log for the current house you are in to the designated server endpoint provided below.");
     ImGui.TextWrapped("You should only use this tab if you know what you are doing.");
     ImGui.Separator();
-    
-    // Headers
-    drawHeaders();
+    ImGui.Spacing();
 
     // Endpoing Url section 
     ImGui.Text("Endpoint:");
@@ -49,23 +47,8 @@ public class WebserviceTab
     }
     if (!canAdd) ImGui.EndDisabled();
 
-    var disableSend = !plugin.pluginState.userInHouse || plugin.Configuration.webserverConfig.endpoint.Length == 0;
-    if (disableSend) ImGui.BeginDisabled();
-    // Send the guest list now to the server
-    if (ImGui.Button("Send Now"))
-    {
-      plugin.getCurrentGuestList().sentToWebserver(plugin);
-    }
-    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !plugin.pluginState.userInHouse)
-    {
-      if (plugin.Configuration.webserverConfig.endpoint.Length == 0) {
-        ImGui.SetTooltip("You must enter an endpoint to POST to");
-      }
-      else if (!plugin.pluginState.userInHouse) {
-        ImGui.SetTooltip("You must be in a house to send current guest log");
-      }
-    }
-    if (disableSend) ImGui.EndDisabled();
+    // Headers
+    drawHeaders();
 
     ImGui.Spacing();
     ImGui.Spacing();
@@ -92,7 +75,28 @@ public class WebserviceTab
 
     ImGui.Spacing();
     ImGui.Separator();
-    if (RestUtils.failedRequests < RestUtils.maxFailedRequests) {
+    ImGui.Spacing();
+
+    var disableSend = !plugin.pluginState.userInHouse || plugin.Configuration.webserverConfig.endpoint.Length == 0;
+    if (disableSend) ImGui.BeginDisabled();
+    // Send the guest list now to the server
+    if (ImGui.Button("Send Now"))
+    {
+      plugin.getCurrentGuestList().sentToWebserver(plugin);
+    }
+    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && !plugin.pluginState.userInHouse)
+    {
+      if (plugin.Configuration.webserverConfig.endpoint.Length == 0) {
+        ImGui.SetTooltip("You must enter an endpoint to POST to");
+      }
+      else if (!plugin.pluginState.userInHouse) {
+        ImGui.SetTooltip("You must be in a house to send current guest log");
+      }
+    }
+    if (disableSend) ImGui.EndDisabled();
+
+    // Error for failed requests
+    if (RestUtils.failedRequests > RestUtils.maxFailedRequests) {
       ImGui.TextColored(new Vector4(1.0f,0.25f,0.25f,1f), "Interval paused as max failed requests reached");
       ImGui.SameLine();
       if (ImGui.Button("Reset"))
@@ -108,6 +112,7 @@ public class WebserviceTab
   } // End Draw 
 
   private void drawHeaders() {
+    ImGui.Spacing();
     if (ImGui.Button("Add Header"))
     {
       plugin.Configuration.webserverConfig.headers.Add(new HeaderPair());
