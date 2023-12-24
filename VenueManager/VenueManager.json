@@ -1,8 +1,8 @@
 {
   "Author": "Jrogo",
   "Name": "Venue Manager",
-  "Punchline": "Save a list of venues and view venue guests",
-  "Description": "Save and manage a list of venues you visit or own. Get updates when new visitors arrive into the venue. Icon by Silv :)",
+  "Punchline": "Save (bookmark) a list of venues (houses) you visit. View and manage guests for venues.",
+  "Description": "Save and manage a list of venues you visit or own. Copy and share venue addresses. Get updates when new visitors arrive into the venue. View a guest list for the current view and easily export it for use with other applications. Icon by Silv :)",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/VenueManager",
   "Tags": [
