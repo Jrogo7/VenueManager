@@ -31,15 +31,8 @@ public class SettingsTab
       this.configuration.Save();
     }
     ImGui.Indent(20);
+    if (!this.configuration.showGuestsTab) ImGui.BeginDisabled();
     ImGui.TextWrapped("Hiding the Guests Tab will also disable all notifications around guests entering or leaving.");
-    ImGui.Unindent();
-    var showVenueTab = this.configuration.showVenueTab;
-    if (ImGui.Checkbox("Venues Tab", ref showVenueTab))
-    {
-      this.configuration.showVenueTab = showVenueTab;
-      this.configuration.Save();
-    }
-    
     var showWebserviceLogging = this.configuration.showWebserviceLogging;
     if (ImGui.Checkbox("Webservice Logging", ref showWebserviceLogging))
     {
@@ -49,6 +42,15 @@ public class SettingsTab
     if (ImGui.IsItemHovered())
     {
       ImGui.SetTooltip("This is an advanced feature that is for developers");
+    }
+    if (!this.configuration.showGuestsTab) ImGui.EndDisabled();
+
+    ImGui.Unindent();
+    var showVenueTab = this.configuration.showVenueTab;
+    if (ImGui.Checkbox("Venues Tab", ref showVenueTab))
+    {
+      this.configuration.showVenueTab = showVenueTab;
+      this.configuration.Save();
     }
 
     if (!this.configuration.showGuestsTab && !this.configuration.showVenueTab)
