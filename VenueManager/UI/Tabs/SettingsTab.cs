@@ -33,6 +33,7 @@ public class SettingsTab
     ImGui.Indent(20);
     if (!this.configuration.showGuestsTab) ImGui.BeginDisabled();
     ImGui.TextWrapped("Hiding the Guests Tab will also disable all notifications around guests entering or leaving.");
+    // Webserver configuration 
     var showWebserviceLogging = this.configuration.showWebserviceLogging;
     if (ImGui.Checkbox("Webservice Logging", ref showWebserviceLogging))
     {
