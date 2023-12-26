@@ -163,6 +163,8 @@ namespace VenueManager
 
       // Reset tracking outside 
       pluginState.isTrackingOutside = false;
+      // Clear outdoor events list 
+      guestLists[1].guests = new();
 
       // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
