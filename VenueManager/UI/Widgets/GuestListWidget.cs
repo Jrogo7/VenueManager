@@ -157,7 +157,7 @@ public class GuestListWidget
       ImGui.TableSetupColumn("Latest Entry", ImGuiTableColumnFlags.DefaultSort);
       ImGui.TableSetupColumn("Name");
       if (!simpleFormat) {
-        ImGui.TableSetupColumn("Entries");
+        ImGui.TableSetupColumn("Entries", ImGuiTableColumnFlags.WidthFixed, 60);
         ImGui.TableSetupColumn("First Seen");
         ImGui.TableSetupColumn("Last Seen");
         ImGui.TableSetupColumn("World");
