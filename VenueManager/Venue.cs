@@ -13,6 +13,7 @@ namespace VenueManager
         public string district {get; set;} = "";
         public uint worldId {get; set;} = 0;
         public ushort type {get; set;} = 0;
+        public string notes {get; set;} = "";
         public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(worldId)?.Name?.RawString ?? $"World_{worldId}";
         public string DataCenter => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(worldId)?.DataCenter?.Value?.Name ?? "";
 
@@ -29,6 +30,7 @@ namespace VenueManager
           district = club.district;
           worldId = club.worldId;
           type = club.type;
+          notes = club.notes;
         }
 
         public string getVenueAddress() {

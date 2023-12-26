@@ -23,7 +23,7 @@ namespace VenueManager
     public GuestList(long id, Venue venue)
     {
       this.houseId = id;
-      this.venue = venue;
+      this.venue = new Venue(venue);
     }
 
     private string getFileName()
@@ -76,6 +76,9 @@ namespace VenueManager
       if (plugin.Configuration.webserverConfig.endpoint.Length == 0) return;
       // Don't send data for default house 
       if (this.houseId == 0) return;
+
+      // Ensure no player created notes are sent to the server
+      this.venue.notes = "";
 
       // Convert class to string
       string output = JsonConvert.SerializeObject(this, this.GetType(), new JsonSerializerSettings { Formatting = Formatting.Indented });

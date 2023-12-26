@@ -107,7 +107,7 @@ public class VenuesTab
     if (!canAdd) ImGui.EndDisabled();
 
     ImGui.Spacing();
-    if (ImGui.BeginTable("Venues", 10, ImGuiTableFlags.Sortable))
+    if (ImGui.BeginTable("Venues", 11, ImGuiTableFlags.Sortable))
     {
       ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
       ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
@@ -119,6 +119,7 @@ public class VenuesTab
       ImGui.TableSetupColumn("World");
       ImGui.TableSetupColumn("DataCenter");
       ImGui.TableSetupColumn("Delete", ImGuiTableColumnFlags.NoSort);
+      ImGui.TableSetupColumn("Notes");
       ImGui.TableHeadersRow();
 
       ImGuiTableSortSpecsPtr sortSpecs = ImGui.TableGetSortSpecs();
@@ -158,6 +159,7 @@ public class VenuesTab
         ImGui.TableNextColumn();
         ImGui.TextColored(fontColor, venue.Value.DataCenter);
 
+        // Allow the user to delete the saved venue
         ImGui.TableNextColumn();
         bool disabled = false;
         if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl) && !ImGui.IsKeyDown(ImGuiKey.RightCtrl))
@@ -165,8 +167,6 @@ public class VenuesTab
           ImGui.BeginDisabled();
           disabled = true;
         }
-
-        // Allow the user to delete the saved venue
         if (ImGuiComponents.IconButton("##" + venue.Value.houseId, FontAwesomeIcon.Trash))
         {
           plugin.venueList.venues.Remove(venue.Value.houseId);
@@ -177,6 +177,15 @@ public class VenuesTab
           ImGui.SetTooltip("Hold control to delete");
         }
         if (disabled) ImGui.EndDisabled();
+
+        // Notes Section 
+        ImGui.TableNextColumn();
+        var notes = venue.Value.notes;
+        ImGui.InputTextWithHint($"##notes{venue.Value.name}", "Notes", ref notes, 75);
+        if (notes != venue.Value.notes) {
+          plugin.venueList.venues[venue.Key].notes = notes;
+          plugin.venueList.save();
+        }
       }
 
       ImGui.EndTable();
