@@ -15,6 +15,7 @@ public class GuestLogTab
   {
     this.plugin = plugin;
     this.guestListWidget = new GuestListWidget(plugin);
+    this.guestListWidget.showDownloadButtons = true;
   }
 
   public unsafe void draw()

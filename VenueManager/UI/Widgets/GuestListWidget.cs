@@ -3,6 +3,7 @@ using System.Linq;
 using Dalamud.Interface.ImGuiFileDialog;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using ImGuiNET;
+using Lumina.Data.Files;
 using VenueManager.UI;
 
 namespace VenueManager.Widgets;
@@ -15,6 +16,7 @@ public class GuestListWidget
   private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
   private bool simpleFormat = true;
   private bool pinCurrentVisitors = true;
+  public bool showDownloadButtons {get; set;} = false;
 
   public GuestListWidget(Plugin plugin)
   {
@@ -59,34 +61,36 @@ public class GuestListWidget
       ImGui.SetTooltip("Hold control to clear guest list");
     }
     if (disabled) ImGui.EndDisabled();
-    ImGui.SameLine();
-    // Allow the user to save the log to a file 
-    if (ImGui.Button("Save Json")) {
-      var startPath = GetUserPath();
-      if (startPath.Length == 0)
-        startPath = null;
-      // Setup the save dialog 
-      fileDialog.SaveFileDialog("Save File...", ".json", "VenueGuestLog.json", ".json", (confirm, path) => {
-        if (confirm && plugin.guestLists.ContainsKey(houseId)) {
-          plugin.guestLists[houseId].saveToFile(path);
-        }
-        drawSaveDialog = false;
-      }, startPath);
-      drawSaveDialog = true;
-    }
-    ImGui.SameLine();
-    if (ImGui.Button("Save CSV")) {
-      var startPath = GetUserPath();
-      if (startPath.Length == 0)
-        startPath = null;
-      // Setup the save dialog 
-      fileDialog.SaveFileDialog("Save File...", ".csv", "VenueGuestLog.csv", ".csv", (confirm, path) => {
-        if (confirm && plugin.guestLists.ContainsKey(houseId)) {
-          plugin.guestLists[houseId].saveToFileCSV(path);
-        }
-        drawSaveDialog = false;
-      }, startPath);
-      drawSaveDialog = true;
+    if (showDownloadButtons) {
+      ImGui.SameLine();
+      // Allow the user to save the log to a file 
+      if (ImGui.Button("Save Json")) {
+        var startPath = GetUserPath();
+        if (startPath.Length == 0)
+          startPath = null;
+        // Setup the save dialog 
+        fileDialog.SaveFileDialog("Save File...", ".json", "VenueGuestLog.json", ".json", (confirm, path) => {
+          if (confirm && plugin.guestLists.ContainsKey(houseId)) {
+            plugin.guestLists[houseId].saveToFile(path);
+          }
+          drawSaveDialog = false;
+        }, startPath);
+        drawSaveDialog = true;
+      }
+      ImGui.SameLine();
+      if (ImGui.Button("Save CSV")) {
+        var startPath = GetUserPath();
+        if (startPath.Length == 0)
+          startPath = null;
+        // Setup the save dialog 
+        fileDialog.SaveFileDialog("Save File...", ".csv", "VenueGuestLog.csv", ".csv", (confirm, path) => {
+          if (confirm && plugin.guestLists.ContainsKey(houseId)) {
+            plugin.guestLists[houseId].saveToFileCSV(path);
+          }
+          drawSaveDialog = false;
+        }, startPath);
+        drawSaveDialog = true;
+      }
     }
     // Simple or advanced table format 
     ImGui.Checkbox("Simple View", ref simpleFormat);
