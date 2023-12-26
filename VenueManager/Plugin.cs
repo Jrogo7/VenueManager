@@ -472,5 +472,14 @@ namespace VenueManager
       return guestLists[0];
     }
 
+    // Post a clickable player link in chat
+    public void chatPlayerLink(Player player) {
+      
+      var messageBuilder = new SeStringBuilder();
+      messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
+      var entry = new XivChatEntry() { Message = messageBuilder.Build() };
+      Chat.Print(entry);
+    }
+
   } // Plugin
 }

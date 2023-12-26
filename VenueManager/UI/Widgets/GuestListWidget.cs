@@ -181,6 +181,9 @@ public class GuestListWidget
         ImGui.TextColored(color, player.Value.latestEntry.ToString("h:mm tt"));
         ImGui.TableNextColumn();
         ImGui.TextColored(playerColor, player.Value.Name);
+        if (ImGui.IsItemClicked()) {
+          plugin.chatPlayerLink(player.Value);
+        }
 
         if (!simpleFormat) {
           ImGui.TableNextColumn();
