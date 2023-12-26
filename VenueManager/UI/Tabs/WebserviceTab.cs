@@ -119,6 +119,8 @@ public class WebserviceTab
       plugin.Configuration.webserverConfig.headers.Add(new HeaderPair());
       plugin.Configuration.Save();
     }
+    ImGui.SameLine();
+    ImGui.TextWrapped("Note: Headers are stored in plain text.");
 
     int itemToRemove = -1;
 
