@@ -8,6 +8,7 @@ namespace VenueManager
   public enum DOORBELL_TYPE {
     DOORBELL = 0, 
     RECEPTION_BELL,
+    RECEPTION_BELL_SINGLE
   };
 
   
@@ -15,7 +16,8 @@ namespace VenueManager
   {
     public static readonly string[] DoorbellSoundTypes = {
       "Standard Doorbell",
-      "Reception Bell"
+      "Reception Bell Double",
+      "Reception Bell Single"
     };
     
     private string file = "";
@@ -32,6 +34,7 @@ namespace VenueManager
     public void setType(DOORBELL_TYPE type) {
       if (type == DOORBELL_TYPE.DOORBELL) file = "doorbell_home.wav";
       if (type == DOORBELL_TYPE.RECEPTION_BELL) file = "reception_bell.wav";
+      if (type == DOORBELL_TYPE.RECEPTION_BELL_SINGLE) file = "reception_bell_single.wav";
     }
 
     public void load() {

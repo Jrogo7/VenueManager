@@ -26,6 +26,9 @@
     <Content Include="..\sounds\reception_bell.wav">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\sounds\reception_bell_single.wav">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
