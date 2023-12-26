@@ -14,6 +14,7 @@ namespace VenueManager
     public long houseId { get; set; } = 0;
     public Venue venue { get; set; } = new();
     public DateTime startTime { get; set; } = DateTime.Now;
+    public bool outsideEvent { get; set; } = false;
 
     public GuestList()
     {

@@ -59,6 +59,10 @@ namespace VenueManager
       // Default guest list 
       this.guestLists.Add(0, new GuestList());
       this.guestLists[0].load();
+      // Create default fake outside event 
+      this.guestLists.Add(1, new GuestList());
+      this.guestLists[1].houseId = 1;
+      this.guestLists[1].outsideEvent = true;
 
       PluginInterface = pluginInterface;
       this.CommandManager = commandManager;
@@ -157,13 +161,15 @@ namespace VenueManager
       // Save current user territory 
       pluginState.territory = territory;
 
+      // Reset tracking outside 
+      pluginState.isTrackingOutside = false;
+
       // Player has entered a house 
       if (TerritoryUtils.isHouse(territory))
       {
         justEnteredHouse = true;
         pluginState.userInHouse = true;
-        stopwatch.Start();
-        webserviceStopwatch.Start();
+        startTimers();
       }
       // Player has left a house 
       else if (pluginState.userInHouse)
@@ -172,6 +178,16 @@ namespace VenueManager
       }
 
       this.Configuration.Save();
+    }
+
+    public void startTimers() {
+      stopwatch.Start();
+      webserviceStopwatch.Start();
+    }
+
+    public void stopTimers() {
+      stopwatch.Stop();
+      webserviceStopwatch.Stop();
     }
 
     private void leftHouse() {
@@ -185,42 +201,40 @@ namespace VenueManager
 
     private unsafe void OnFrameworkUpdate(IFramework framework)
     {
-      // Every second we are in a house. Process players and see what has changed 
-      if (pluginState.userInHouse && stopwatch.ElapsedMilliseconds > 1000)
+      // Every second we are in a house or tracking outside event. Process players and see what has changed 
+      if ((pluginState.userInHouse || pluginState.isTrackingOutside) && stopwatch.ElapsedMilliseconds > 1000)
       {
         // Fetch updated house information 
-        try
-        {
-          var housingManager = HousingManager.Instance();
-          var worldId = ClientState.LocalPlayer?.CurrentWorld.Id;
-          // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
-          if (pluginState.currentHouse.houseId != housingManager->GetCurrentHouseId() && worldId != null)
+        if (pluginState.userInHouse) {
+          try
           {
-            pluginState.currentHouse.houseId = housingManager->GetCurrentHouseId();
-            pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
-            pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
-            pluginState.currentHouse.room = housingManager->GetCurrentRoom();
-            pluginState.currentHouse.type = pluginState.territory;
-            pluginState.currentHouse.worldId = worldId ?? 0;
-            pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(pluginState.territory);
+            var housingManager = HousingManager.Instance();
+            var worldId = ClientState.LocalPlayer?.CurrentWorld.Id;
+            // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
+            if (pluginState.currentHouse.houseId != housingManager->GetCurrentHouseId() && worldId != null)
+            {
+              pluginState.currentHouse.houseId = housingManager->GetCurrentHouseId();
+              pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
+              pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
+              pluginState.currentHouse.room = housingManager->GetCurrentRoom();
+              pluginState.currentHouse.type = pluginState.territory;
+              pluginState.currentHouse.worldId = worldId ?? 0;
+              pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(pluginState.territory);
 
-            // Load current guest list from disk if player has entered a saved venue 
-            if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId)) {
-              var venue = venueList.venues[pluginState.currentHouse.houseId];
-              GuestList venueGuestList = new GuestList(venue.houseId, venue);
-              venueGuestList.load();
-              guestLists.Add(venue.houseId, venueGuestList);
-            }
-            // Reload default guest list  
-            else {
-              guestLists[0].load();
+              // Load current guest list from disk if player has entered a saved venue 
+              if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId)) {
+                var venue = venueList.venues[pluginState.currentHouse.houseId];
+                GuestList venueGuestList = new GuestList(venue.houseId, venue);
+                venueGuestList.load();
+                guestLists.Add(venue.houseId, venueGuestList);
+              }
             }
           }
-        }
-        catch
-        {
-          Log.Warning("Failed to load housing information for current house.");
-          return;
+          catch
+          {
+            // Typically fails first time after entering a house 
+            return;
+          }
         }
 
         if (!Configuration.showGuestsTab) return;
@@ -337,7 +351,7 @@ namespace VenueManager
       var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
 
       // Show text alert for self if the venue is known
-      if (isSelf && knownVenue) {
+      if (isSelf) {
         if (knownVenue) {
           var venue = venueList.venues[pluginState.currentHouse.houseId];
           if (this.Configuration.showPluginNameInChat) messageBuilder.AddText($"[{Name}] ");
@@ -374,11 +388,17 @@ namespace VenueManager
 
       // Current player has re-entered the house 
       if (justEnteredHouse) {
-        messageBuilder.AddText(" is already inside");
+        if (pluginState.isTrackingOutside)
+          messageBuilder.AddText(" is already at the event");
+        else 
+          messageBuilder.AddText(" is already inside");
       } 
       // Player enters house while you are already inside
       else {
-        messageBuilder.AddText(" has entered");
+        if (pluginState.isTrackingOutside)
+          messageBuilder.AddText(" has arrived");
+        else 
+          messageBuilder.AddText(" has entered");
         if (player.entryCount > 1)
           messageBuilder.AddText(" (" + player.entryCount + ")");
       }
@@ -388,6 +408,9 @@ namespace VenueManager
       {
         var venue = venueList.venues[pluginState.currentHouse.houseId];
         messageBuilder.AddText(" " + venue.name);
+      }
+      else if (pluginState.isTrackingOutside) {
+        messageBuilder.AddText(" at the event");
       }
       else
       {
@@ -423,6 +446,9 @@ namespace VenueManager
         var venue = venueList.venues[pluginState.currentHouse.houseId];
         messageBuilder.AddText(" " + venue.name);
       }
+      else if (pluginState.isTrackingOutside) {
+        messageBuilder.AddText(" the event");
+      }
       else
       {
         messageBuilder.AddText(" the " + TerritoryUtils.getHouseType(pluginState.territory));
@@ -437,6 +463,9 @@ namespace VenueManager
         if (guestLists.ContainsKey(pluginState.currentHouse.houseId)) {
           return guestLists[pluginState.currentHouse.houseId];
         }
+      }
+      else if (pluginState.isTrackingOutside) {
+        return guestLists[1];
       }
       return guestLists[0];
     }

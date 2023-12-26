@@ -44,9 +44,22 @@ public class GuestsTab
       // List the number of players in the house 
       ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests inside (out of {plugin.getCurrentGuestList().guests.Count} total visitors)");
     }
+    else if (plugin.pluginState.isTrackingOutside) {
+      ImGui.Text("Currently tracking outdoor event");
+      // List the number of players at the event
+      ImGui.TextWrapped($"There are currently {plugin.pluginState.playersInHouse} guests at this event (out of {plugin.getCurrentGuestList().guests.Count} total visitors)");
+      if (ImGui.Button("Stop Tracking")) {
+        plugin.pluginState.isTrackingOutside = false;
+        plugin.stopTimers();
+      }
+    } 
     else
     {
       ImGui.Text("You are not in a house.");
+      if (ImGui.Button("Track outdoor event?")) {
+        plugin.pluginState.isTrackingOutside = true;
+        plugin.startTimers();
+      }
     }
     if (plugin.pluginState.snoozed) ImGui.TextColored(new Vector4(.82f, .5f, .04f, 1f), "Alarms snoozed");
     ImGui.Spacing();
@@ -71,6 +84,10 @@ public class GuestsTab
       // Otherwise draw public list 
       else
         this.guestListWidget.draw(0);
+    }
+    else if (plugin.pluginState.isTrackingOutside) {
+      ImGui.Text("Guests for outdoor event");
+      this.guestListWidget.draw(1);
     }
     else
     {
