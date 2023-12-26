@@ -113,12 +113,12 @@ public class VenuesTab
       ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
       ImGui.TableSetupColumn("Name");
       ImGui.TableSetupColumn("District");
-      ImGui.TableSetupColumn("Ward", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
-      ImGui.TableSetupColumn("Plot", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
-      ImGui.TableSetupColumn("Room", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 40);
+      ImGui.TableSetupColumn("Ward", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 30);
+      ImGui.TableSetupColumn("Plot", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 25);
+      ImGui.TableSetupColumn("Room", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 30);
       ImGui.TableSetupColumn("World");
       ImGui.TableSetupColumn("DataCenter");
-      ImGui.TableSetupColumn("Delete", ImGuiTableColumnFlags.NoSort);
+      ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
       ImGui.TableSetupColumn("Notes");
       ImGui.TableHeadersRow();
 
@@ -174,14 +174,14 @@ public class VenuesTab
         }
         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) && disabled)
         {
-          ImGui.SetTooltip("Hold control to delete");
+          ImGui.SetTooltip("Hold control to delete venue");
         }
         if (disabled) ImGui.EndDisabled();
 
         // Notes Section 
         ImGui.TableNextColumn();
         var notes = venue.Value.notes;
-        ImGui.InputTextWithHint($"##notes{venue.Value.name}", "Notes", ref notes, 75);
+        ImGui.InputTextWithHint($"##notes{venue.Value.name}", "Notes", ref notes, 256);
         if (notes != venue.Value.notes) {
           plugin.venueList.venues[venue.Key].notes = notes;
           plugin.venueList.save();
