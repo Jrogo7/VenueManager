@@ -255,11 +255,15 @@ namespace VenueManager
             catch
             {
               // Typically fails first time after entering a house 
+              running = false;
               return;
             }
           }
 
-          if (!Configuration.showGuestsTab) return;
+          if (!Configuration.showGuestsTab) {
+            running = false;
+            return;
+          }
 
           bool guestListUpdated = false;
           bool playerArrived = false;
