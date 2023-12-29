@@ -48,6 +48,8 @@ namespace VenueManager
     // True for the first loop that a player enters a house 
     private bool justEnteredHouse = false;
 
+    private bool running = false;
+
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
         [RequiredVersion("1.0")] ICommandManager commandManager)
@@ -212,6 +214,11 @@ namespace VenueManager
 
     private unsafe void OnFrameworkUpdate(IFramework framework)
     {
+      if (running) {
+        Log.Warning("Skipping processing while already running.");
+        return;
+      }
+      running = true;
       try
       {
         // Every second we are in a house or tracking outside event. Process players and see what has changed 
@@ -356,6 +363,7 @@ namespace VenueManager
         Log.Error("Venue Manager Failed during framework update");
         Log.Error(e.ToString());
       }
+      running = false;
     }
 
     public void playDoorbell()
