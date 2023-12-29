@@ -34,7 +34,7 @@ namespace VenueManager
     public void save()
     {
       // Save not supported for default guest list
-      if (this.houseId == 0) return;
+      if (this.houseId == 0 || this.houseId == 1) return;
 
       FileStore.SaveClassToFileInPluginDir(getFileName(), this.GetType(), this);
     }
@@ -42,7 +42,7 @@ namespace VenueManager
     public void load()
     {
       // Load not supported for default guest list
-      if (this.houseId == 0) return;
+      if (this.houseId == 0 || this.houseId == 1) return;
 
       // Don't attempt to load if there is no file 
       var fileInfo = FileStore.GetFileInfo(getFileName());
