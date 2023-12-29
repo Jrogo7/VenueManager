@@ -1,7 +1,9 @@
 using System;
+using System.Linq.Expressions;
 using System.Numerics;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using Lumina.Excel.GeneratedSheets;
 using VenueManager.Tabs;
 
 namespace VenueManager.Windows;
@@ -39,47 +41,55 @@ public class MainWindow : Window, IDisposable
 
   public override void Draw()
   {
-    ImGui.BeginTabBar("Tabs");
-    // Render Guests tab if selected 
-    if (this.configuration.showGuestsTab)
+    try
     {
-      if (ImGui.BeginTabItem("Guests"))
+      ImGui.BeginTabBar("Tabs");
+      // Render Guests tab if selected 
+      if (this.configuration.showGuestsTab)
       {
-        this.guestsTab.draw();
-
-        ImGui.EndTabItem();
-      }
-      if (ImGui.BeginTabItem("Guest Logs"))
-      {
-        this.guestLogTab.draw();
-
-        ImGui.EndTabItem();
-      }
-      if (this.configuration.showWebserviceLogging)
-      {
-        if (ImGui.BeginTabItem("Webserver Logging"))
+        if (ImGui.BeginTabItem("Guests"))
         {
-          this.webserviceTab.draw();
+          this.guestsTab.draw();
 
           ImGui.EndTabItem();
         }
+        if (ImGui.BeginTabItem("Guest Logs"))
+        {
+          this.guestLogTab.draw();
+
+          ImGui.EndTabItem();
+        }
+        if (this.configuration.showWebserviceLogging)
+        {
+          if (ImGui.BeginTabItem("Webserver Logging"))
+          {
+            this.webserviceTab.draw();
+
+            ImGui.EndTabItem();
+          }
+        }
       }
-    }
-    // Render Venues Tab 
-    if (this.configuration.showVenueTab)
-    {
-      if (ImGui.BeginTabItem("Venues"))
+      // Render Venues Tab 
+      if (this.configuration.showVenueTab)
       {
-        venuesTab.draw();
+        if (ImGui.BeginTabItem("Venues"))
+        {
+          venuesTab.draw();
+          ImGui.EndTabItem();
+        }
+      }
+      // Render Settings Tab if selected 
+      if (ImGui.BeginTabItem("Settings"))
+      {
+        this.settingsTab.draw();
         ImGui.EndTabItem();
       }
+      ImGui.EndTabBar();
     }
-    // Render Settings Tab if selected 
-    if (ImGui.BeginTabItem("Settings"))
+    catch (Exception e)
     {
-      this.settingsTab.draw();
-      ImGui.EndTabItem();
+      Plugin.Log.Error("Crash while drawing main window");
+      Plugin.Log.Error(e.ToString());
     }
-    ImGui.EndTabBar();
   }
 }
