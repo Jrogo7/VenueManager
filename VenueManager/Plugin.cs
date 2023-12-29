@@ -275,7 +275,6 @@ namespace VenueManager
           {
             // Reject non player objects 
             if (o is not PlayerCharacter pc) continue;
-            playerCount++;
             var player = Player.fromCharacter(pc);
 
             // Skip player characters that do not have a name. 
@@ -283,6 +282,7 @@ namespace VenueManager
             if (pc.Name.TextValue.Length == 0) continue;
             // Im not sure what this means, but it seems that 4 is for players
             if (o.SubKind != 4) continue;
+            playerCount++;
 
             // Add player to seen map 
             seenPlayers.Add(player.Name, true);
