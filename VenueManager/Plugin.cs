@@ -420,6 +420,7 @@ namespace VenueManager
 
       // Add player message 
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
+      messageBuilder.AddUiForegroundOff();
 
       // Message Color 
       messageBuilder.AddUiForeground(Colors.getChatColor(player, false));
