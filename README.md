@@ -35,6 +35,6 @@ https://raw.githubusercontent.com/Jrogo7/VenueManager/master/repo.json
 
 `/club` -> Alias for `/venue`  
 `/vm` -> Alias for `/venue`  
-`/club` -> Alias for `/venue snooze`  
-`/vm` -> Alias for `/venue snooze`  
+`/club snooze` -> Alias for `/venue snooze`  
+`/vm snooze` -> Alias for `/venue snooze`  
 
