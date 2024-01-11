@@ -107,6 +107,7 @@ public class VenuesTab
     if (!canAdd) ImGui.EndDisabled();
 
     ImGui.Spacing();
+    ImGui.BeginChild(1);
     if (ImGui.BeginTable("Venues", 11, ImGuiTableFlags.Sortable))
     {
       ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 20);
@@ -190,5 +191,6 @@ public class VenuesTab
 
       ImGui.EndTable();
     }
+    ImGui.EndChild();
   }
 }
