@@ -143,6 +143,10 @@ public class GuestListWidget
         break;
     }
 
+    // Filter friends to top 
+    guestList.Sort((pair1, pair2) => pair2.Value.isFriend.CompareTo(pair1.Value.isFriend));
+
+    // Filter in house to top 
     if (pinCurrentVisitors)
       guestList.Sort((pair1, pair2) => pair2.Value.inHouse.CompareTo(pair1.Value.inHouse));
 
