@@ -28,6 +28,9 @@ namespace VenueManager
     public bool showWebserviceLogging { get; set; } = false;
     public bool showVenueTab { get; set; } = true;
 
+    public bool sortFriendsToTop { get; set; } = true;
+    public bool sortCurrentVisitorsTop { get; set; } = true;
+
     // Advanced setting webserver config
     public WebserverConfig webserverConfig { get; set; } = new();
 

@@ -25,7 +25,7 @@ public class SettingsTab
 
     ImGui.Text("Tab Visibility");
     var showGuestsTab = this.configuration.showGuestsTab;
-    if (ImGui.Checkbox("Guests Tab", ref showGuestsTab))
+    if (ImGui.Checkbox("Guest Tabs", ref showGuestsTab))
     {
       this.configuration.showGuestsTab = showGuestsTab;
       this.configuration.Save();
@@ -59,6 +59,31 @@ public class SettingsTab
       ImGui.TextColored(new Vector4(0.9f, 0, 1f, 1f), "So Empty :(");
     }
 
+    // =============================================================================
+    ImGui.Separator();
+    ImGui.Spacing();
+    ImGui.Text("Guest List");
+    var sortCurrentVisitorsTop = this.configuration.sortCurrentVisitorsTop;
+    if (ImGui.Checkbox("Pin current visitors to top", ref sortCurrentVisitorsTop))
+    {
+      this.configuration.sortCurrentVisitorsTop = sortCurrentVisitorsTop;
+      this.configuration.Save();
+    }
+    if (ImGui.IsItemHovered()) {
+      ImGui.SetTooltip("Pin current visitors to the top of the guest list");
+    }
+
+    var sortFriendsToTop = this.configuration.sortFriendsToTop;
+    if (ImGui.Checkbox("Pin frients to top", ref sortFriendsToTop))
+    {
+      this.configuration.sortFriendsToTop = sortFriendsToTop;
+      this.configuration.Save();
+    }
+    if (ImGui.IsItemHovered()) {
+      ImGui.SetTooltip("Pin friends to the top of the guest list");
+    }
+
+    // =============================================================================
     ImGui.Separator();
     ImGui.Spacing();
 
@@ -131,6 +156,8 @@ public class SettingsTab
     }
     if (!this.configuration.showChatAlerts) ImGui.EndDisabled();
     ImGui.Unindent();
+
+    // =============================================================================
     ImGui.Separator();
     ImGui.Spacing();
 

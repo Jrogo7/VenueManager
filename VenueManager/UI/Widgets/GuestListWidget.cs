@@ -15,7 +15,6 @@ public class GuestListWidget
   private bool drawSaveDialog = false;
   private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
   private bool simpleFormat = true;
-  private bool pinCurrentVisitors = true;
   public bool showDownloadButtons {get; set;} = false;
 
   public GuestListWidget(Plugin plugin)
@@ -94,17 +93,6 @@ public class GuestListWidget
     }
     // Simple or advanced table format 
     ImGui.Checkbox("Simple View", ref simpleFormat);
-    if (plugin.pluginState.currentHouse.houseId == houseId) {
-      // Put current visitors at the top 
-      ImGui.SameLine();
-      ImGui.Checkbox("Pin Current Visitors", ref pinCurrentVisitors);
-      if (ImGui.IsItemHovered()) {
-        ImGui.SetTooltip("Pin current visitors to the top of the table");
-      }
-    }
-    else {
-      pinCurrentVisitors = false;
-    }
   }
 
   private List<KeyValuePair<string, Player>> getSortedGuests(ImGuiTableSortSpecsPtr sortSpecs, long houseId)
@@ -144,10 +132,11 @@ public class GuestListWidget
     }
 
     // Filter friends to top 
-    guestList.Sort((pair1, pair2) => pair2.Value.isFriend.CompareTo(pair1.Value.isFriend));
+    if (plugin.Configuration.sortFriendsToTop)
+      guestList.Sort((pair1, pair2) => pair2.Value.isFriend.CompareTo(pair1.Value.isFriend));
 
     // Filter in house to top 
-    if (pinCurrentVisitors)
+    if (plugin.Configuration.sortCurrentVisitorsTop)
       guestList.Sort((pair1, pair2) => pair2.Value.inHouse.CompareTo(pair1.Value.inHouse));
 
     return guestList;
