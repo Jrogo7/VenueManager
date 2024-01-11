@@ -101,43 +101,50 @@ public class GuestListWidget
 
     var guestList = plugin.guestLists[houseId].guests.ToList();
 
-    switch (currentSpecs.ColumnIndex)
-    {
-      case 0: // Latest Entry
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.latestEntry.CompareTo(pair1.Value.latestEntry));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.latestEntry.CompareTo(pair2.Value.latestEntry));
-        break;
-      case 1: // Name
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.Name.CompareTo(pair1.Value.Name));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.Name.CompareTo(pair2.Value.Name));
-        break;
-      case 2: // Entry Count
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.entryCount.CompareTo(pair1.Value.entryCount));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.entryCount.CompareTo(pair2.Value.entryCount));
-        break;
-      case 3: // First Seen
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen));
-        break;
-      case 4: // Last Seen
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen));
-        break;
-      case 5: // Last Seen
-        if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) guestList.Sort((pair1, pair2) => pair2.Value.WorldName.CompareTo(pair1.Value.WorldName));
-        else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) guestList.Sort((pair1, pair2) => pair1.Value.WorldName.CompareTo(pair2.Value.WorldName));
-        break;
-      default:
-        break;
-    }
-
-    // Filter friends to top 
-    if (plugin.Configuration.sortFriendsToTop)
-      guestList.Sort((pair1, pair2) => pair2.Value.isFriend.CompareTo(pair1.Value.isFriend));
-
-    // Filter in house to top 
-    if (plugin.Configuration.sortCurrentVisitorsTop)
-      guestList.Sort((pair1, pair2) => pair2.Value.inHouse.CompareTo(pair1.Value.inHouse));
+    guestList.Sort((pair1, pair2) => {
+      // Filter friends to top 
+      if (plugin.Configuration.sortFriendsToTop && pair1.Value.isFriend != pair2.Value.isFriend && 
+        ((plugin.Configuration.sortCurrentVisitorsTop && pair1.Value.inHouse == pair2.Value.inHouse) || !plugin.Configuration.sortCurrentVisitorsTop)) {
+        return pair2.Value.isFriend.CompareTo(pair1.Value.isFriend);
+      } 
+      // Filter in house to top 
+      else if (plugin.Configuration.sortCurrentVisitorsTop && pair1.Value.inHouse != pair2.Value.inHouse) {
+        return pair2.Value.inHouse.CompareTo(pair1.Value.inHouse);
+      } 
+      // Other general sorts 
+      else {
+        switch (currentSpecs.ColumnIndex)
+        {
+          case 0: // Latest Entry
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.latestEntry.CompareTo(pair1.Value.latestEntry);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.latestEntry.CompareTo(pair2.Value.latestEntry);
+            break;
+          case 1: // Name
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.Name.CompareTo(pair1.Value.Name);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.Name.CompareTo(pair2.Value.Name);
+            break;
+          case 2: // Entry Count
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.entryCount.CompareTo(pair1.Value.entryCount);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.entryCount.CompareTo(pair2.Value.entryCount);
+            break;
+          case 3: // First Seen
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen);
+            break;
+          case 4: // Last Seen
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen);
+            break;
+          case 5: // Last Seen
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.WorldName.CompareTo(pair1.Value.WorldName);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.WorldName.CompareTo(pair2.Value.WorldName);
+            break;
+          default:
+            break;
+        }
+      }
+      return 0;
+    });
 
     return guestList;
   }
