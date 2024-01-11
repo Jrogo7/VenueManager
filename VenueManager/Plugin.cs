@@ -13,6 +13,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using System.Collections.Generic;
 using System;
 using VenueManager.UI;
+using Dalamud.Game.ClientState.Objects.Enums;
 
 namespace VenueManager
 {
@@ -315,6 +316,9 @@ namespace VenueManager
             {
               showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
             }
+            
+            // Re-mark as friend incase status changed 
+            getCurrentGuestList().guests[player.Name].isFriend = pc.StatusFlags.HasFlag(StatusFlags.Friend);
 
             // Mark last seen 
             getCurrentGuestList().guests[player.Name].lastSeen = DateTime.Now;
