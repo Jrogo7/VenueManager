@@ -53,7 +53,7 @@ public class MainWindow : Window, IDisposable
 
           ImGui.EndTabItem();
         }
-        if (ImGui.BeginTabItem("Guest Logs"))
+        if (ImGui.BeginTabItem("Logs"))
         {
           this.guestLogTab.draw();
 
