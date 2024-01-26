@@ -77,7 +77,7 @@ public class WebserviceTab
     ImGui.Separator();
     ImGui.Spacing();
 
-    var disableSend = !plugin.pluginState.userInHouse || plugin.Configuration.webserverConfig.endpoint.Length == 0;
+    var disableSend = !(plugin.pluginState.userInHouse || plugin.pluginState.isTrackingOutside) || plugin.Configuration.webserverConfig.endpoint.Length == 0;
     if (disableSend) ImGui.BeginDisabled();
     // Send the guest list now to the server
     if (ImGui.Button("Send Now"))
@@ -89,8 +89,8 @@ public class WebserviceTab
       if (plugin.Configuration.webserverConfig.endpoint.Length == 0) {
         ImGui.SetTooltip("You must enter an endpoint to POST to");
       }
-      else if (!plugin.pluginState.userInHouse) {
-        ImGui.SetTooltip("You must be in a house to send current guest log");
+      else if (!plugin.pluginState.userInHouse && !plugin.pluginState.isTrackingOutside) {
+        ImGui.SetTooltip("You must be in a house or enable outside events to send current guest log");
       }
     }
     if (disableSend) ImGui.EndDisabled();
