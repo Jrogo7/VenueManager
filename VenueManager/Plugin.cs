@@ -159,6 +159,8 @@ namespace VenueManager
 
     private void OnLogout()
     {
+      recordGuestVisitTime();
+
       // Erase territory state 
       pluginState.territory = 0;
 
@@ -167,6 +169,8 @@ namespace VenueManager
 
     private void OnTerritoryChanged(ushort territory)
     {
+      recordGuestVisitTime();
+
       // Save current user territory 
       pluginState.territory = territory;
 
@@ -211,6 +215,17 @@ namespace VenueManager
       webserviceStopwatch.Stop();
       // Unsnooze if leaving a house when snoozed 
       if (pluginState.snoozed) OnSnooze();
+    }
+
+    private void recordGuestVisitTime() {
+      // Update time in venue for all current venue users if there is one
+      if (pluginState.userInHouse || pluginState.isTrackingOutside) {
+        var currentGuestList = getCurrentGuestList();
+        foreach (var player in currentGuestList.guests) {
+          player.Value.onLeaveVenue();
+        }
+        currentGuestList.save();
+      }
     }
 
     private unsafe void OnFrameworkUpdate(IFramework framework)
@@ -308,13 +323,17 @@ namespace VenueManager
               guestListUpdated = true;
               getCurrentGuestList().guests[player.Name].inHouse = true;
               getCurrentGuestList().guests[player.Name].latestEntry = DateTime.Now;
+              getCurrentGuestList().guests[player.Name].timeCursor = DateTime.Now;
               getCurrentGuestList().guests[player.Name].entryCount++;
               showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
             }
-            // Current user just entered house and setting is enabled to notify them on existing users. 
-            else if (justEnteredHouse && this.Configuration.showChatAlertAlreadyHere)
+            // Current user just entered house
+            else if (justEnteredHouse)
             {
-              showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
+              getCurrentGuestList().guests[player.Name].timeCursor = DateTime.Now;
+              // setting is enabled to notify them on existing users. 
+              if (this.Configuration.showChatAlertAlreadyHere) 
+                showGuestEnterChatAlert(getCurrentGuestList().guests[player.Name], isSelf);
             }
             
             // Re-mark as friend incase status changed 
@@ -335,7 +354,7 @@ namespace VenueManager
           {
             if (!seenPlayers.ContainsKey(guest.Value.Name) && guest.Value.inHouse)
             {
-              guest.Value.inHouse = false;
+              guest.Value.onLeaveVenue();
               guestListUpdated = true;
               showGuestLeaveChatAlert(guest.Value);
             }

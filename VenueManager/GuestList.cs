@@ -62,11 +62,11 @@ namespace VenueManager
       FileStore.SaveClassToFile(path, this.GetType(), this);
     }
 
-    public void saveToFileCSV(string path)
+    public void saveToFileCSV(string path, bool isCurrentHouse)
     {
-      string csv = "Name,World,Is Inside,Latest Entry,First Seen,Last Seen,Entry Count\n";
+      string csv = "Name,World,Is Inside,Latest Entry,First Seen,Last Seen,Seconds Inside,Entry Count\n";
       foreach (var guest in guests) {
-        csv += guest.Value.getCSVString() + "\n";
+        csv += guest.Value.getCSVString(isCurrentHouse) + "\n";
       }
       FileStore.SaveStringToFile(path, csv);
     }

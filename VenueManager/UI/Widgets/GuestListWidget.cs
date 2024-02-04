@@ -84,7 +84,7 @@ public class GuestListWidget
         // Setup the save dialog 
         fileDialog.SaveFileDialog("Save File...", ".csv", "VenueGuestLog.csv", ".csv", (confirm, path) => {
           if (confirm && plugin.guestLists.ContainsKey(houseId)) {
-            plugin.guestLists[houseId].saveToFileCSV(path);
+            plugin.guestLists[houseId].saveToFileCSV(path, plugin.pluginState.currentHouse.houseId == houseId);
           }
           drawSaveDialog = false;
         }, startPath);
@@ -100,6 +100,7 @@ public class GuestListWidget
     ImGuiTableColumnSortSpecsPtr currentSpecs = sortSpecs.Specs;
 
     var guestList = plugin.guestLists[houseId].guests.ToList();
+    bool isCurrentHouse = plugin.pluginState.currentHouse.houseId == houseId;
 
     guestList.Sort((pair1, pair2) => {
       // Filter friends to top 
@@ -127,15 +128,19 @@ public class GuestListWidget
             if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.entryCount.CompareTo(pair1.Value.entryCount);
             else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.entryCount.CompareTo(pair2.Value.entryCount);
             break;
-          case 3: // First Seen
+          case 3: // Minutes Inside
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.getTimeInVenue(isCurrentHouse).CompareTo(pair1.Value.getTimeInVenue(isCurrentHouse));
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.getTimeInVenue(isCurrentHouse).CompareTo(pair2.Value.getTimeInVenue(isCurrentHouse));
+            break;
+          case 4: // First Seen
             if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen);
             else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen);
             break;
-          case 4: // Last Seen
+          case 5: // Last Seen
             if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen);
             else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen);
             break;
-          case 5: // Last Seen
+          case 6: // Last Seen
             if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.WorldName.CompareTo(pair1.Value.WorldName);
             else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.WorldName.CompareTo(pair2.Value.WorldName);
             break;
@@ -152,12 +157,13 @@ public class GuestListWidget
   private void drawGuestTable(long houseId) {
     ImGui.BeginChild(1);
 
-    if (ImGui.BeginTable("Guests", simpleFormat ? 2 : 6, ImGuiTableFlags.Sortable))
+    if (ImGui.BeginTable("Guests", simpleFormat ? 2 : 7, ImGuiTableFlags.Sortable))
     {
       ImGui.TableSetupColumn("Latest Entry", ImGuiTableColumnFlags.DefaultSort);
       ImGui.TableSetupColumn("Name");
       if (!simpleFormat) {
         ImGui.TableSetupColumn("Entries", ImGuiTableColumnFlags.WidthFixed, 60);
+        ImGui.TableSetupColumn("Minutes", ImGuiTableColumnFlags.WidthFixed, 60);
         ImGui.TableSetupColumn("First Seen");
         ImGui.TableSetupColumn("Last Seen");
         ImGui.TableSetupColumn("World");
@@ -188,6 +194,8 @@ public class GuestListWidget
         if (!simpleFormat) {
           ImGui.TableNextColumn();
           ImGui.TextColored(color, "" + player.Value.entryCount);
+          ImGui.TableNextColumn();
+          ImGui.TextColored(color, "" + player.Value.getTimeInVenue(plugin.pluginState.currentHouse.houseId == houseId));
           ImGui.TableNextColumn();
           ImGui.TextColored(color, player.Value.firstSeen.ToString("h:mm tt"));
           ImGui.TableNextColumn();
