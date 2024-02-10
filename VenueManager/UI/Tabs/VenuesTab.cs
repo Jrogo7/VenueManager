@@ -181,7 +181,16 @@ public class VenuesTab
 
         // Notes Section 
         ImGui.TableNextColumn();
+        if (ImGuiComponents.IconButton("##Notes" + venue.Value.houseId, FontAwesomeIcon.StickyNote))
+        {
+          plugin.ShowNotesWindow(venue.Value);
+        }
+        if (ImGui.IsItemHovered())
+        {
+          ImGui.SetTooltip($"Edit {venue.Value.name} notes");
+        }
         var notes = venue.Value.notes;
+        ImGui.SameLine();
         ImGui.InputTextWithHint($"##notes{venue.Value.name}", "Notes", ref notes, 256);
         if (notes != venue.Value.notes) {
           plugin.venueList.venues[venue.Key].notes = notes;

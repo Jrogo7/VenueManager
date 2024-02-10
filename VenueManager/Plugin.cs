@@ -42,6 +42,8 @@ namespace VenueManager
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
     private MainWindow MainWindow { get; init; }
+    private NotesWindow NotesWindow { get; init; }
+
     private Stopwatch stopwatch = new();
     private Stopwatch webserviceStopwatch = new();
     private DoorbellSound doorbell;
@@ -74,8 +76,10 @@ namespace VenueManager
       this.Configuration.Initialize(PluginInterface);
 
       MainWindow = new MainWindow(this);
+      NotesWindow = new NotesWindow(this);
 
       WindowSystem.AddWindow(MainWindow);
+      WindowSystem.AddWindow(NotesWindow);
 
       this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Open venue manager interface to see guests list and manage venues" });
       this.CommandManager.AddHandler(CommandNameAlias, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue" });
@@ -114,6 +118,7 @@ namespace VenueManager
       this.WindowSystem.RemoveAllWindows();
 
       MainWindow.Dispose();
+      NotesWindow.Dispose();
 
       this.CommandManager.RemoveHandler(CommandName);
       this.CommandManager.RemoveHandler(CommandNameAlias);
@@ -155,6 +160,12 @@ namespace VenueManager
     private void DrawUI()
     {
       this.WindowSystem.Draw();
+    }
+
+    public void ShowNotesWindow(Venue venue)
+    {
+      NotesWindow.venue = venue;
+      NotesWindow.IsOpen = true;
     }
 
     private void OnLogout()

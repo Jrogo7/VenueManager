@@ -1,9 +1,7 @@
 using System;
-using System.Linq.Expressions;
 using System.Numerics;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
 using VenueManager.Tabs;
 
 namespace VenueManager.Windows;
