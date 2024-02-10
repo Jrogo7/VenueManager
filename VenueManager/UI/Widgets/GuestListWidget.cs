@@ -117,32 +117,32 @@ public class GuestListWidget
         switch (currentSpecs.ColumnIndex)
         {
           case 0: // Latest Entry
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.latestEntry.CompareTo(pair1.Value.latestEntry);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.latestEntry.CompareTo(pair2.Value.latestEntry);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.latestEntry.CompareTo(pair1.Value.latestEntry);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.latestEntry.CompareTo(pair2.Value.latestEntry);
             break;
           case 1: // Name
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.Name.CompareTo(pair1.Value.Name);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.Name.CompareTo(pair2.Value.Name);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.Name.CompareTo(pair1.Value.Name);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.Name.CompareTo(pair2.Value.Name);
             break;
           case 2: // Entry Count
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.entryCount.CompareTo(pair1.Value.entryCount);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.entryCount.CompareTo(pair2.Value.entryCount);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.entryCount.CompareTo(pair1.Value.entryCount);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.entryCount.CompareTo(pair2.Value.entryCount);
             break;
           case 3: // Minutes Inside
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.milisecondsInVenue.CompareTo(pair1.Value.milisecondsInVenue);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.milisecondsInVenue.CompareTo(pair2.Value.milisecondsInVenue);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.milisecondsInVenue.CompareTo(pair1.Value.milisecondsInVenue);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.milisecondsInVenue.CompareTo(pair2.Value.milisecondsInVenue);
             break;
           case 4: // First Seen
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.firstSeen.CompareTo(pair2.Value.firstSeen);
             break;
           case 5: // Last Seen
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.lastSeen.CompareTo(pair1.Value.lastSeen);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.lastSeen.CompareTo(pair2.Value.lastSeen);
             break;
           case 6: // Last Seen
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.WorldName.CompareTo(pair1.Value.WorldName);
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.WorldName.CompareTo(pair2.Value.WorldName);
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair2.Value.WorldName.CompareTo(pair1.Value.WorldName);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair1.Value.WorldName.CompareTo(pair2.Value.WorldName);
             break;
           default:
             break;
