@@ -159,8 +159,6 @@ namespace VenueManager
 
     private void OnLogout()
     {
-      recordGuestVisitTime();
-
       // Erase territory state 
       pluginState.territory = 0;
 
@@ -169,8 +167,6 @@ namespace VenueManager
 
     private void OnTerritoryChanged(ushort territory)
     {
-      recordGuestVisitTime();
-
       // Save current user territory 
       pluginState.territory = territory;
 
@@ -215,17 +211,6 @@ namespace VenueManager
       webserviceStopwatch.Stop();
       // Unsnooze if leaving a house when snoozed 
       if (pluginState.snoozed) OnSnooze();
-    }
-
-    private void recordGuestVisitTime() {
-      // Update time in venue for all current venue users if there is one
-      if (pluginState.userInHouse || pluginState.isTrackingOutside) {
-        var currentGuestList = getCurrentGuestList();
-        foreach (var player in currentGuestList.guests) {
-          player.Value.onLeaveVenue();
-        }
-        currentGuestList.save();
-      }
     }
 
     private unsafe void OnFrameworkUpdate(IFramework framework)
@@ -352,12 +337,23 @@ namespace VenueManager
           // Check for guests that have left the house 
           foreach (var guest in getCurrentGuestList().guests)
           {
-            if (!seenPlayers.ContainsKey(guest.Value.Name) && guest.Value.inHouse)
+            // Guest is marked as in the house 
+            if (guest.Value.inHouse) 
             {
-              guest.Value.onLeaveVenue();
-              guestListUpdated = true;
-              showGuestLeaveChatAlert(guest.Value);
+              // Guest was not seen this loop 
+              if (!seenPlayers.ContainsKey(guest.Value.Name))
+              {
+                guest.Value.onLeaveVenue();
+                guestListUpdated = true;
+                showGuestLeaveChatAlert(guest.Value);
+              }
+              // Guest was seen this loop 
+              else 
+              {
+                guest.Value.onAccumulateTime();
+              }
             }
+            
           }
 
           // Only play doorbell sound once if there were one or more new people 

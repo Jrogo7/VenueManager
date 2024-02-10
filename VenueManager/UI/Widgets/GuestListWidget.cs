@@ -129,8 +129,8 @@ public class GuestListWidget
             else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.entryCount.CompareTo(pair2.Value.entryCount);
             break;
           case 3: // Minutes Inside
-            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.getTimeInVenue(isCurrentHouse).CompareTo(pair1.Value.getTimeInVenue(isCurrentHouse));
-            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.getTimeInVenue(isCurrentHouse).CompareTo(pair2.Value.getTimeInVenue(isCurrentHouse));
+            if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.milisecondsInVenue.CompareTo(pair1.Value.milisecondsInVenue);
+            else if (currentSpecs.SortDirection == ImGuiSortDirection.Descending) return pair1.Value.milisecondsInVenue.CompareTo(pair2.Value.milisecondsInVenue);
             break;
           case 4: // First Seen
             if (currentSpecs.SortDirection == ImGuiSortDirection.Ascending) return pair2.Value.firstSeen.CompareTo(pair1.Value.firstSeen);
