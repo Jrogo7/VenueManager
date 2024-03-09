@@ -20,7 +20,7 @@ public class GuestLogTab
 
   public unsafe void draw()
   {
-    string displayName = "";
+    string displayName = "Outdoor Event";
     if (plugin.venueList.venues.ContainsKey(selectVenue))
     {
       displayName = plugin.venueList.venues[selectVenue].name;
@@ -30,10 +30,19 @@ public class GuestLogTab
     // Combo box of all venues 
     if (ImGui.BeginCombo("##VenueForLogs", displayName))
     {
+      // Outside Venue 
+      bool is_selected = 1 == selectVenue;
+      if (ImGui.Selectable("Outdoor Event", is_selected))
+      {
+        selectVenue = 1;
+      }
+      if (is_selected)
+        ImGui.SetItemDefaultFocus();
+        
       // All Saved Venues 
       foreach (var venue in plugin.venueList.venues)
       {
-        bool is_selected = venue.Key == selectVenue;
+        is_selected = venue.Key == selectVenue;
         if (ImGui.Selectable(venue.Value.name, is_selected))
         {
           selectVenue = venue.Key;

@@ -65,9 +65,7 @@ namespace VenueManager
       this.guestLists.Add(0, new GuestList());
       this.guestLists[0].load();
       // Create default fake outside event 
-      this.guestLists.Add(1, new GuestList());
-      this.guestLists[1].houseId = 1;
-      this.guestLists[1].outsideEvent = true;
+      this.guestLists.Add(1, GuestList.getOutdoorList());
 
       PluginInterface = pluginInterface;
       this.CommandManager = commandManager;

@@ -11,6 +11,7 @@ namespace VenueManager
 
     // List of guests in the venue
     public Dictionary<string, Player> guests { get; set; } = new();
+    // FF House Id. House id 0 is unsaved house and house id 1 is outside event. 
     public long houseId { get; set; } = 0;
     public Venue venue { get; set; } = new();
     public DateTime startTime { get; set; } = DateTime.Now;
@@ -26,6 +27,16 @@ namespace VenueManager
       this.venue = new Venue(venue);
     }
 
+    public static GuestList getOutdoorList() 
+    {
+      Venue venue = new Venue();
+      venue.name = "Outdoor Event";
+      venue.houseId = 1;
+      GuestList outdoorEvent = new GuestList(1, venue);
+      outdoorEvent.outsideEvent = true;
+      return outdoorEvent;
+    }
+
     private string getFileName()
     {
       return houseId + "-" + OutputFile;
@@ -34,7 +45,7 @@ namespace VenueManager
     public void save()
     {
       // Save not supported for default guest list
-      if (this.houseId == 0 || this.houseId == 1) return;
+      if (this.houseId == 0) return;
 
       FileStore.SaveClassToFileInPluginDir(getFileName(), this.GetType(), this);
     }
@@ -42,7 +53,7 @@ namespace VenueManager
     public void load()
     {
       // Load not supported for default guest list
-      if (this.houseId == 0 || this.houseId == 1) return;
+      if (this.houseId == 0) return;
 
       // Don't attempt to load if there is no file 
       var fileInfo = FileStore.GetFileInfo(getFileName());
