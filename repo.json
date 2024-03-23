@@ -23,4 +23,26 @@
   "IconUrl": "https://raw.githubusercontent.com/Jrogo7/VenueManager/master/images/icon.png",
   "AcceptsFeedback": true,
   "DownloadCount": 255
+}, {
+  "DownloadLinkInstall": "https://github.com/Jrogo7/LocationInfo/releases/download/1.0.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/LocationInfo/releases/download/1.0.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/LocationInfo/releases/download/1.0.0/latest.zip",
+  "Author": "Jrogo",
+  "Name": "Location Info",
+  "InternalName": "LocationInfo",
+  "AssemblyVersion": "1.0.0",
+  "Punchline": "See current player coordinates.",
+  "Description": "Displays current player coordinates.",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/Jrogo7/LocationInfo",
+  "Tags": [
+  ],
+  "DalamudApiLevel": 9,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "CanUnloadAsync": false,
+  "LoadPriority": 0,
+  "IconUrl": "https://raw.githubusercontent.com/Jrogo7/LocationInfo/master/images/icon.png",
+  "AcceptsFeedback": true,
+  "DownloadCount": 0
 }]
