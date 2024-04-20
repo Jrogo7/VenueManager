@@ -296,6 +296,8 @@ namespace VenueManager
 
             // Add player to seen map 
             if (seenPlayers.ContainsKey(player.Name))
+              seenPlayers[player.Name] = true;
+            else
               seenPlayers.Add(player.Name, true);
 
             // Is the new player the current user 
