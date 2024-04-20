@@ -295,7 +295,8 @@ namespace VenueManager
             playerCount++;
 
             // Add player to seen map 
-            seenPlayers.Add(player.Name, true);
+            if (seenPlayers.ContainsKey(player.Name))
+              seenPlayers.Add(player.Name, true);
 
             // Is the new player the current user 
             var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
