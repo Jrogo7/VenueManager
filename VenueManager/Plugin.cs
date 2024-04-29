@@ -459,10 +459,12 @@ namespace VenueManager
       // Current player has re-entered the house 
       if (justEnteredHouse)
       {
-        if (pluginState.isTrackingOutside)
-          messageBuilder.AddText(" is already at the event");
-        else
-          messageBuilder.AddText(" is already inside");
+        if (this.Configuration.showChatAlertAlreadyHere) {
+          if (pluginState.isTrackingOutside)
+            messageBuilder.AddText(" is already at the event");
+          else
+            messageBuilder.AddText(" is already inside");
+        }
       }
       // Player enters house while you are already inside
       else
