@@ -505,6 +505,8 @@ namespace VenueManager
 
       var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
       if (isSelf) return;
+      // Don't show leave alerts if user just entered the building
+      if (justEnteredHouse) return;
 
       var messageBuilder = new SeStringBuilder();
       var knownVenue = venueList.venues.ContainsKey(pluginState.currentHouse.houseId);
