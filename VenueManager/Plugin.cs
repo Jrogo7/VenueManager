@@ -19,6 +19,9 @@ namespace VenueManager
 {
   public sealed class Plugin : IDalamudPlugin
   {
+    public const int MAX_POP_EVENTS = 100;
+    public const int POP_TRACK_INTERVAL = 1000;
+
     public string Name => "Venue Manager";
     private const string CommandName = "/venue";
     private const string CommandNameAlias = "/vm";
@@ -38,6 +41,7 @@ namespace VenueManager
     public PluginState pluginState { get; init; }
     public VenueList venueList { get; init; }
     public Dictionary<long, GuestList> guestLists = new();
+    public List<PopulationEvent> populationEvents = new List<PopulationEvent>();
 
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
@@ -46,6 +50,7 @@ namespace VenueManager
 
     private Stopwatch stopwatch = new();
     private Stopwatch webserviceStopwatch = new();
+    private Stopwatch popStopwatch = new();
     private DoorbellSound doorbell;
 
     // True for the first loop that a player enters a house 
@@ -101,6 +106,11 @@ namespace VenueManager
 
       // Run territory change one time on boot to register current location 
       OnTerritoryChanged(ClientState.TerritoryType);
+
+      // Prefill pop array 
+      while (populationEvents.Count < MAX_POP_EVENTS) {
+        this.populationEvents.Add(new PopulationEvent(0, 0));
+      }
     }
 
     public void Dispose()
@@ -204,12 +214,14 @@ namespace VenueManager
     {
       stopwatch.Start();
       webserviceStopwatch.Start();
+      popStopwatch.Start();
     }
 
     public void stopTimers()
     {
       stopwatch.Stop();
       webserviceStopwatch.Stop();
+      popStopwatch.Stop();
     }
 
     private void leftHouse()
@@ -366,6 +378,12 @@ namespace VenueManager
               }
             }
             
+          }
+
+          // Track population event 
+          if (popStopwatch.ElapsedMilliseconds >= POP_TRACK_INTERVAL) {
+            this.addPopEvent(seenPlayers.Count);
+            popStopwatch.Restart();
           }
 
           // Only play doorbell sound once if there were one or more new people 
@@ -562,6 +580,14 @@ namespace VenueManager
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };
       Chat.Print(entry);
+    }
+
+    // Add new event to the population event 
+    private void addPopEvent(int playerCount) {
+      populationEvents.Add(new PopulationEvent(getCurrentGuestList().houseId, playerCount));
+      while (populationEvents.Count > MAX_POP_EVENTS) {
+        populationEvents.RemoveAt(0);
+      }
     }
 
   } // Plugin

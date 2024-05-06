@@ -15,6 +15,7 @@ public class MainWindow : Window, IDisposable
   private GuestsTab guestsTab;
   private GuestLogTab guestLogTab;
   private WebserviceTab webserviceTab;
+  private StatsTab statsTab;
 
   public MainWindow(Plugin plugin) : base(
       "Venue Manager", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
@@ -31,6 +32,7 @@ public class MainWindow : Window, IDisposable
     this.guestsTab = new GuestsTab(plugin);
     this.guestLogTab = new GuestLogTab(plugin);
     this.webserviceTab = new WebserviceTab(plugin);
+    this.statsTab = new StatsTab(plugin);
   }
 
   public void Dispose()
@@ -65,6 +67,11 @@ public class MainWindow : Window, IDisposable
 
             ImGui.EndTabItem();
           }
+        }
+        // Stats tab
+        if (ImGui.BeginTabItem("Stats")) {
+          this.statsTab.draw();
+          ImGui.EndTabItem();
         }
       }
       // Render Venues Tab 
