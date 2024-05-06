@@ -16,6 +16,7 @@ public class GuestListWidget
   private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
   private bool simpleFormat = true;
   public bool showDownloadButtons {get; set;} = false;
+  private string filter = "";
 
   public GuestListWidget(Plugin plugin)
   {
@@ -93,6 +94,11 @@ public class GuestListWidget
     }
     // Simple or advanced table format 
     ImGui.Checkbox("Simple View", ref simpleFormat);
+
+    // Table filter 
+    ImGui.SameLine();
+    ImGui.PushItemWidth(200);
+    ImGui.InputTextWithHint($"##filter", "Filter Name", ref filter, 256);
   }
 
   private List<KeyValuePair<string, Player>> getSortedGuests(ImGuiTableSortSpecsPtr sortSpecs, long houseId)
@@ -101,6 +107,11 @@ public class GuestListWidget
 
     var guestList = plugin.guestLists[houseId].guests.ToList();
     bool isCurrentHouse = plugin.pluginState.currentHouse.houseId == houseId;
+
+    // Filter down if string provided
+    if (filter.Length > 0) {
+      guestList = guestList.Where(item => item.Value.Name.ToLower().Contains(filter.ToLower())).ToList();
+    }
 
     guestList.Sort((pair1, pair2) => {
       // Filter friends to top 
