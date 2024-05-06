@@ -438,9 +438,12 @@ namespace VenueManager
       // Alert type is already here 
       bool isAlreadyHere = justEnteredHouse && this.Configuration.showChatAlertAlreadyHere;
 
-      // Return if reentry alerts are disabled 
+      // Return if not showing already here alerts
+      if (justEnteredHouse && !this.Configuration.showChatAlertAlreadyHere) return;
+
+      // Return if reentry alerts are disabled. (We need to ignore this check for already here alerts)
       if (player.entryCount > 1 && !Configuration.showChatAlertReentry && !isAlreadyHere) return;
-      // Return if entry alerts are disabled 
+      // Return if entry alerts are disabled . (We need to ignore this check for already here alerts)
       if (player.entryCount == 1 && !Configuration.showChatAlertEntry && !isAlreadyHere) return;
 
       // Show text alert for guests
@@ -459,12 +462,10 @@ namespace VenueManager
       // Current player has re-entered the house 
       if (justEnteredHouse)
       {
-        if (this.Configuration.showChatAlertAlreadyHere) {
-          if (pluginState.isTrackingOutside)
-            messageBuilder.AddText(" is already at the event");
-          else
-            messageBuilder.AddText(" is already inside");
-        }
+        if (pluginState.isTrackingOutside)
+          messageBuilder.AddText(" is already at the event");
+        else
+          messageBuilder.AddText(" is already inside");
       }
       // Player enters house while you are already inside
       else
