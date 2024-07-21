@@ -11,7 +11,7 @@ namespace VenueManager
         public uint homeWorld { get; set; } = 0;
         public bool inHouse { get; set; } = false;
         public bool isFriend { get; set; } = false; 
-        public uint ObjectId { get; set; } = 0;
+        public ulong ObjectId { get; set; } = 0;
         public DateTime firstSeen;
         public DateTime lastSeen;
         public DateTime latestEntry;
@@ -22,13 +22,13 @@ namespace VenueManager
 
         public Player() {}
 
-        public static Player fromCharacter(PlayerCharacter character) {
+        public static Player fromCharacter(IPlayerCharacter character) {
           Player player = new Player();
           player.Name = character.Name.TextValue;
           player.homeWorld = character.HomeWorld.Id;
           player.inHouse = true;
           player.isFriend = character.StatusFlags.HasFlag(StatusFlags.Friend);
-          player.ObjectId = character.ObjectId;
+          player.ObjectId = character.GameObjectId;
           player.entryCount = 1;
           player.firstSeen = DateTime.Now;
           player.lastSeen = DateTime.Now;

@@ -13,7 +13,7 @@ public class GuestListWidget
   private Plugin plugin;
   private readonly FileDialogManager fileDialog = new();
   private bool drawSaveDialog = false;
-  private static unsafe string GetUserPath() => Framework.Instance()->UserPath;
+  private static unsafe string GetUserPath() => Framework.Instance()->UserPathString;
   private bool simpleFormat = true;
   public bool showDownloadButtons {get; set;} = false;
   private string filter = "";

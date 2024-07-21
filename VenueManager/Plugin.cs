@@ -9,7 +9,7 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using System.Collections.Generic;
 using System;
 using VenueManager.UI;
@@ -26,7 +26,7 @@ namespace VenueManager
     private const string CommandName = "/venue";
     private const string CommandNameAlias = "/vm";
     private const string CommandNameAlias2 = "/club";
-    [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+    [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static IFramework Framework { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;
@@ -35,8 +35,8 @@ namespace VenueManager
     [PluginService] public static IObjectTable Objects { get; private set; } = null!;
     [PluginService] public static IPluginLog Log { get; private set; } = null!;
     [PluginService] public static IChatGui Chat { get; private set; } = null!;
+    [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
 
-    private ICommandManager CommandManager { get; init; }
     public Configuration Configuration { get; init; }
     public PluginState pluginState { get; init; }
     public VenueList venueList { get; init; }
@@ -58,9 +58,7 @@ namespace VenueManager
 
     private bool running = false;
 
-    public Plugin(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] ICommandManager commandManager)
+    public Plugin()
     {
       this.pluginState = new PluginState();
       this.venueList = new VenueList();
@@ -72,9 +70,6 @@ namespace VenueManager
       // Create default fake outside event 
       this.guestLists.Add(1, GuestList.getOutdoorList());
 
-      PluginInterface = pluginInterface;
-      this.CommandManager = commandManager;
-
       this.Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
       this.Configuration.Initialize(PluginInterface);
 
@@ -84,9 +79,9 @@ namespace VenueManager
       WindowSystem.AddWindow(MainWindow);
       WindowSystem.AddWindow(NotesWindow);
 
-      this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Open venue manager interface to see guests list and manage venues" });
-      this.CommandManager.AddHandler(CommandNameAlias, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue" });
-      this.CommandManager.AddHandler(CommandNameAlias2, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue" });
+      CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Open venue manager interface to see guests list and manage venues" });
+      CommandManager.AddHandler(CommandNameAlias, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue" });
+      CommandManager.AddHandler(CommandNameAlias2, new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue" });
       var SnoozeHandler = new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Pause alerts until leaving the house." };
       var SnoozeHandlerAlias = new CommandInfo(OnCommand) { ShowInHelp = true, HelpMessage = "Alias for /venue snooze" };
       CommandManager.AddHandler(CommandName + " snooze", SnoozeHandler);
@@ -111,6 +106,13 @@ namespace VenueManager
       while (populationEvents.Count < MAX_POP_EVENTS) {
         this.populationEvents.Add(new PopulationEvent(0, 0));
       }
+
+      // This adds a button to the plugin installer entry of this plugin which allows
+      // to toggle the display status of the configuration ui
+      PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
+
+      // Adds another button that is doing the same but for the main ui of the plugin
+      PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
     }
 
     public void Dispose()
@@ -128,9 +130,9 @@ namespace VenueManager
       MainWindow.Dispose();
       NotesWindow.Dispose();
 
-      this.CommandManager.RemoveHandler(CommandName);
-      this.CommandManager.RemoveHandler(CommandNameAlias);
-      this.CommandManager.RemoveHandler(CommandNameAlias2);
+      CommandManager.RemoveHandler(CommandName);
+      CommandManager.RemoveHandler(CommandNameAlias);
+      CommandManager.RemoveHandler(CommandNameAlias2);
       CommandManager.RemoveHandler(CommandName + " snooze");
       CommandManager.RemoveHandler(CommandNameAlias + " snooze");
       CommandManager.RemoveHandler(CommandNameAlias2 + " snooze");
@@ -183,6 +185,9 @@ namespace VenueManager
 
       leftHouse();
     }
+
+    public void ToggleConfigUI() => MainWindow.Toggle();
+    public void ToggleMainUI() => MainWindow.Toggle();
 
     private void OnTerritoryChanged(ushort territory)
     {
@@ -296,7 +301,7 @@ namespace VenueManager
           foreach (var o in Objects)
           {
             // Reject non player objects 
-            if (o is not PlayerCharacter pc) continue;
+            if (o is not IPlayerCharacter pc) continue;
             var player = Player.fromCharacter(pc);
 
             // Skip player characters that do not have a name. 

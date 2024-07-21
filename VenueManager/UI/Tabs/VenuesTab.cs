@@ -4,8 +4,8 @@ using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Internal;
-using Dalamud.Plugin.Services;
+using Dalamud.Interface.Textures;
+using Dalamud.Interface.Textures.TextureWraps;
 using ImGuiNET;
 
 namespace VenueManager.Tabs;
@@ -25,7 +25,8 @@ public class VenuesTab
 
   public bool TryLoadIcon(uint iconId, [NotNullWhen(true)] out IDalamudTextureWrap? wrap, bool keepAlive = false)
   {
-    wrap = Plugin.TextureProvider.GetIcon(iconId, ITextureProvider.IconFlags.HiRes, null, keepAlive);
+    var texture = Plugin.TextureProvider.GetFromGameIcon(new GameIconLookup(iconId));
+    wrap = texture.GetWrapOrEmpty();
     return wrap != null;
   }
 
