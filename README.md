@@ -26,6 +26,8 @@ Add the following line to Dalamud Settings -> Experimental -> Custom Plugin Repo
 https://raw.githubusercontent.com/Jrogo7/VenueManager/master/repo.json
 ```
 
+Then search for "Venue Manager" on the "All Plugins" tab. 
+
 ## Commands 
 
 `/venue` -> Open Main interface  
