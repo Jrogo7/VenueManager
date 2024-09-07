@@ -69,9 +69,11 @@ public class MainWindow : Window, IDisposable
           }
         }
         // Stats tab
-        if (ImGui.BeginTabItem("Stats")) {
-          this.statsTab.draw();
-          ImGui.EndTabItem();
+        if (this.configuration.showStatsTab) {
+          if (ImGui.BeginTabItem("Stats")) {
+            this.statsTab.draw();
+            ImGui.EndTabItem();
+          }
         }
       }
       // Render Venues Tab 

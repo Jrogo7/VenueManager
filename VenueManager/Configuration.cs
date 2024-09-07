@@ -26,6 +26,7 @@ namespace VenueManager
     // Tab visibiliy options 
     public bool showGuestsTab { get; set; } = true;
     public bool showWebserviceLogging { get; set; } = false;
+    public bool showStatsTab { get; set; } = false;
     public bool showVenueTab { get; set; } = true;
 
     public bool sortFriendsToTop { get; set; } = true;
