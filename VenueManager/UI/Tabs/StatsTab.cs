@@ -1,4 +1,5 @@
-using System.Linq;
+using System.Collections.Generic;
+using System.Numerics;
 using ImGuiNET;
 using ImPlotNET;
 
@@ -17,7 +18,7 @@ public class StatsTab
   public unsafe void draw()
   {
     this.drawHelpInfo();
-    this.drawPopGraph();
+    this.drawTimeGraph();
   }
 
   public void drawHelpInfo() {
@@ -26,15 +27,15 @@ public class StatsTab
       if (plugin.venueList.venues.ContainsKey(plugin.pluginState.currentHouse.houseId))
       {
         var venue = plugin.venueList.venues[plugin.pluginState.currentHouse.houseId];
-        ImGui.Text("Players at " + venue.name);
+        ImGui.Text($"{plugin.pluginState.playersInHouse} Players at " + venue.name);
       }
       else
       {
-        ImGui.Text("Players at untracked house");
+        ImGui.Text($"{plugin.pluginState.playersInHouse} Players at untracked house");
       }
     }
     else if (plugin.pluginState.isTrackingOutside) {
-      ImGui.Text("Players at outdoor event");
+      ImGui.Text($"{plugin.pluginState.playersInHouse} Players at outdoor event");
     } 
     else
     {
@@ -47,30 +48,25 @@ public class StatsTab
     ImGui.Text("(Note: This only shows players you have loaded, the area can contain more sometimes)");
   }
 
-  public void drawPopGraph() {
-    double[] xs1 = new double[Plugin.MAX_POP_EVENTS], ys1 = new double[Plugin.MAX_POP_EVENTS];
-    for (int i = 0; i < Plugin.MAX_POP_EVENTS; i++) {
-      
-      xs1[i] = (float)i;
-      if (i >= plugin.populationEvents.Count) 
-        ys1[i] = 0;
-      else
-        ys1[i] = plugin.populationEvents.ElementAt(i).playerCount;
-    }
+  float t = 0;
+  float historySize = 300.0f;
+  Stack<float> dataStackTime = new Stack<float>(300);
+  Stack<float> dataStackPlayerCount = new Stack<float>(300);
 
-    if (ImPlot.BeginPlot($"Players in Area ({plugin.pluginState.playersInHouse})")) {
+  public void drawTimeGraph() {
+    t += ImGui.GetIO().DeltaTime;
+    dataStackTime.Push(t);
+    dataStackPlayerCount.Push(plugin.currentVisitorCount);
+
+    if (ImPlot.BeginPlot("Players in Area", new Vector2(-1,150))) {
       ImPlot.SetupAxes("Time","Players", ImPlotAxisFlags.NoTickLabels | ImPlotAxisFlags.NoLabel, ImPlotAxisFlags.NoLabel);
-      ImPlot.SetupAxesLimits(0,Plugin.MAX_POP_EVENTS-1,0,110);
-      
-      // Fills 
+      ImPlot.SetupAxisLimits(ImAxis.X1, t - historySize, t, ImPlotCond.Always);
+      ImPlot.SetupAxisLimits(ImAxis.Y1, 0, 120, ImPlotCond.Always);
       ImPlot.PushStyleVar(ImPlotStyleVar.FillAlpha, 0.25f);
-      ImPlot.PlotShaded("Players", ref xs1[0], ref ys1[0], Plugin.MAX_POP_EVENTS, 0, ImPlotShadedFlags.None);
-      ImPlot.PopStyleVar();
-      
-      // Lines 
-      ImPlot.PlotLine("Players", ref xs1[0], ref ys1[0], Plugin.MAX_POP_EVENTS);
-
+      ImPlot.PlotShaded("Players", ref dataStackTime.ToArray()[0], ref dataStackPlayerCount.ToArray()[0], dataStackTime.ToArray().Length, 0, ImPlotShadedFlags.None);
+      ImPlot.PlotLine("Players", ref dataStackTime.ToArray()[0], ref dataStackPlayerCount.ToArray()[0],  dataStackTime.ToArray().Length, 0);
       ImPlot.EndPlot();
+
     }
   }
 }

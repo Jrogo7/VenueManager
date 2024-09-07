@@ -19,7 +19,6 @@ namespace VenueManager
 {
   public sealed class Plugin : IDalamudPlugin
   {
-    public const int MAX_POP_EVENTS = 100;
     public const int POP_TRACK_INTERVAL = 1000;
 
     public string Name => "Venue Manager";
@@ -41,7 +40,7 @@ namespace VenueManager
     public PluginState pluginState { get; init; }
     public VenueList venueList { get; init; }
     public Dictionary<long, GuestList> guestLists = new();
-    public List<PopulationEvent> populationEvents = new List<PopulationEvent>();
+    public int currentVisitorCount = 0;
 
     // Windows 
     public WindowSystem WindowSystem = new("VenueManager");
@@ -101,11 +100,6 @@ namespace VenueManager
 
       // Run territory change one time on boot to register current location 
       OnTerritoryChanged(ClientState.TerritoryType);
-
-      // Prefill pop array 
-      while (populationEvents.Count < MAX_POP_EVENTS) {
-        this.populationEvents.Add(new PopulationEvent(0, 0));
-      }
 
       // This adds a button to the plugin installer entry of this plugin which allows
       // to toggle the display status of the configuration ui
@@ -385,9 +379,9 @@ namespace VenueManager
             
           }
 
-          // Track population event 
+          // Track population stats
           if (popStopwatch.ElapsedMilliseconds >= POP_TRACK_INTERVAL) {
-            this.addPopEvent(seenPlayers.Count);
+            currentVisitorCount = seenPlayers.Count;
             popStopwatch.Restart();
           }
 
@@ -585,14 +579,6 @@ namespace VenueManager
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };
       Chat.Print(entry);
-    }
-
-    // Add new event to the population event 
-    private void addPopEvent(int playerCount) {
-      populationEvents.Add(new PopulationEvent(getCurrentGuestList().houseId, playerCount));
-      while (populationEvents.Count > MAX_POP_EVENTS) {
-        populationEvents.RemoveAt(0);
-      }
     }
 
   } // Plugin
