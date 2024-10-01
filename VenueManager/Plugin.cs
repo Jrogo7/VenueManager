@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System;
 using VenueManager.UI;
 using Dalamud.Game.ClientState.Objects.Enums;
+using ImPlotNET;
+using ImGuiNET;
 
 namespace VenueManager
 {
@@ -58,7 +60,10 @@ namespace VenueManager
     private bool running = false;
 
     public Plugin()
-    {
+    {            
+      ImPlot.SetImGuiContext(ImGui.GetCurrentContext());
+      ImPlot.SetCurrentContext(ImPlot.CreateContext());
+
       this.pluginState = new PluginState();
       this.venueList = new VenueList();
       this.venueList.load();
@@ -130,6 +135,8 @@ namespace VenueManager
       CommandManager.RemoveHandler(CommandName + " snooze");
       CommandManager.RemoveHandler(CommandNameAlias + " snooze");
       CommandManager.RemoveHandler(CommandNameAlias2 + " snooze");
+
+      ImPlot.DestroyContext();
     }
 
     private void OnSnooze()
