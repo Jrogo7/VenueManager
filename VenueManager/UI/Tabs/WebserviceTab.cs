@@ -53,6 +53,18 @@ public class WebserviceTab
     ImGui.Spacing();
     ImGui.Spacing();
 
+    // Send users that left 
+    var sendUsersThatLeft = plugin.Configuration.webserverConfig.sendUsersThatLeft;
+    if (ImGui.Checkbox("Send users that left", ref sendUsersThatLeft))
+    {
+      plugin.Configuration.webserverConfig.sendUsersThatLeft = sendUsersThatLeft;
+      plugin.Configuration.Save();
+    }
+    if (ImGui.IsItemHovered())
+    {
+      ImGui.SetTooltip("Send user data for users that are no longer detected in the area");
+    }
+
     // Send data on interval 
     var sendDataOnInterval = plugin.Configuration.webserverConfig.sendDataOnInterval;
     if (ImGui.Checkbox("Send data on interval", ref sendDataOnInterval))

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace VenueManager
@@ -25,6 +26,15 @@ namespace VenueManager
     {
       this.houseId = id;
       this.venue = new Venue(venue);
+    }
+
+    public GuestList(GuestList list) 
+    {
+      this.guests = list.guests;
+      this.houseId = list.houseId;
+      this.venue = list.venue;
+      this.startTime = list.startTime;
+      this.outsideEvent = list.outsideEvent;
     }
 
     public static GuestList getOutdoorList() 
@@ -82,6 +92,12 @@ namespace VenueManager
       FileStore.SaveStringToFile(path, csv);
     }
 
+    public void removeUsersNotInHouse() 
+    {
+      var matches = guests.Where(kvp => kvp.Value.inHouse);
+      guests = matches.ToDictionary();
+    }
+
     public void sentToWebserver(Plugin plugin) {
       // Cant send payload if we do not have a url 
       if (plugin.Configuration.webserverConfig.endpoint.Length == 0) return;
@@ -91,8 +107,13 @@ namespace VenueManager
       // Ensure no player created notes are sent to the server
       this.venue.notes = "";
 
+      GuestList copy = new GuestList(this);
+
+      // Remove users that left if setting now in place 
+      if (!plugin.Configuration.webserverConfig.sendUsersThatLeft) copy.removeUsersNotInHouse();
+
       // Convert class to string
-      string output = JsonConvert.SerializeObject(this, this.GetType(), new JsonSerializerSettings { Formatting = Formatting.Indented });
+      string output = JsonConvert.SerializeObject(copy, copy.GetType(), new JsonSerializerSettings { Formatting = Formatting.Indented });
 
       // Post data to the webserver
       _ = RestUtils.PostAsync(plugin.Configuration.webserverConfig.endpoint, output, plugin);
