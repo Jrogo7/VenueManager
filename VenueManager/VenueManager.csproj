@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Authors>Jrogo</Authors>
     <Company></Company>
-    <Version>2.2.1</Version>
+    <Version>2.3.0</Version>
     <Description>Guest list and doorbell for your venue</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Jrogo7/VenueManager</PackageProjectUrl>
