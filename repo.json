@@ -4,7 +4,7 @@
   "DownloadLinkTesting": "https://github.com/Jrogo7/VenueManager/releases/download/2.3.0/latest.zip",
   "Author": "Jrogo",
   "Name": "[BETA] Venue Manager",
-  "InternalName": "VenueManager-Beta",
+  "InternalName": "VenueManager",
   "AssemblyVersion": "2.3.0",
   "Punchline": "Bookmark the venues you visit. View and manage guests for venues.",
   "Description": "Save and share venues you visit or own. Get updates and logs for visitors coming and going. Guest list management tools for venue owners to view and easily export it for use with other applications. Icon by Silv :)",
