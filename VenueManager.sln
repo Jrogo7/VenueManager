@@ -7,10 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VenueManager", "VenueManage
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta|x64 = Beta|x64
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Beta|x64.ActiveCfg = Beta|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Beta|x64.Build.0 = Beta|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|x64.ActiveCfg = Debug|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|x64.Build.0 = Debug|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.ActiveCfg = Release|x64

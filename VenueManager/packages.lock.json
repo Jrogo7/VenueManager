@@ -50,6 +50,12 @@
         "type": "Transitive",
         "resolved": "4.7.0",
         "contentHash": "ojD0PX0XhneCsUbAZVKdb7h/70vyYMDYs85lwEI+LngEONe/17A0cFaRFqZU+sOEidcVswYWikYOQ9PPfjlbtQ=="
+      },
+      "JsonPoke.MSBuild": {
+        "type": "Direct",
+        "requested": "[1.0.9, )",
+        "resolved": "1.0.9",
+        "contentHash": "0C2NW2nWDBCMuDGqKqBeLIu8ijcJp4/RkWZ50m6MdiU5yahtIaajyeMvUNmPrv+EdEZ780vvkLnvKEsGNhr/mg=="
       }
     }
   }

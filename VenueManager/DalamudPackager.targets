@@ -10,4 +10,12 @@
           VersionComponents="3"
           />
     </Target>
+
+    <Target Name="PackageBeta" AfterTargets="Build" Condition="'$(Configuration)' == 'Beta'">
+        <Move SourceFiles="$(TargetDir)\VenueManager.json" DestinationFiles="$(TargetDir)\VenueManager-Beta.json"/>
+        <JsonPoke JsonInputPath="$(TargetDir)\VenueManager-Beta.json" JValue="[BETA] VenueManager" JPath="Name"></JsonPoke>
+        <JsonPoke JsonInputPath="$(TargetDir)\VenueManager-Beta.json" JValue="VenueManager-Beta" JPath="InternalName"></JsonPoke>
+        
+        <Move SourceFiles="$(TargetDir)\VenueManager.dll" DestinationFiles="$(TargetDir)\VenueManager-Beta.dll"/>
+    </Target>
 </Project>
