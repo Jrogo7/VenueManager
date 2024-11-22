@@ -4,9 +4,15 @@
     "net8.0-windows7.0": {
       "DalamudPackager": {
         "type": "Direct",
-        "requested": "[2.1.13, )",
-        "resolved": "2.1.13",
-        "contentHash": "rMN1omGe8536f4xLMvx9NwfvpAc9YFFfeXJ1t4P4PE6Gu8WCIoFliR1sh07hM+bfODmesk/dvMbji7vNI+B/pQ=="
+        "requested": "[11.0.0, )",
+        "resolved": "11.0.0",
+        "contentHash": "bjT7XUlhIJSmsE/O76b7weUX+evvGQctbQB8aKXt94o+oPWxHpCepxAGMs7Thow3AzCyqWs7cOpp9/2wcgRRQA=="
+      },
+      "JsonPoke.MSBuild": {
+        "type": "Direct",
+        "requested": "[1.0.9, )",
+        "resolved": "1.0.9",
+        "contentHash": "0C2NW2nWDBCMuDGqKqBeLIu8ijcJp4/RkWZ50m6MdiU5yahtIaajyeMvUNmPrv+EdEZ780vvkLnvKEsGNhr/mg=="
       },
       "NAudio": {
         "type": "Direct",
@@ -50,12 +56,6 @@
         "type": "Transitive",
         "resolved": "4.7.0",
         "contentHash": "ojD0PX0XhneCsUbAZVKdb7h/70vyYMDYs85lwEI+LngEONe/17A0cFaRFqZU+sOEidcVswYWikYOQ9PPfjlbtQ=="
-      },
-      "JsonPoke.MSBuild": {
-        "type": "Direct",
-        "requested": "[1.0.9, )",
-        "resolved": "1.0.9",
-        "contentHash": "0C2NW2nWDBCMuDGqKqBeLIu8ijcJp4/RkWZ50m6MdiU5yahtIaajyeMvUNmPrv+EdEZ780vvkLnvKEsGNhr/mg=="
       }
     }
   }
