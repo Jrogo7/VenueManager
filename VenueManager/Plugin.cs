@@ -179,7 +179,7 @@ namespace VenueManager
       NotesWindow.IsOpen = true;
     }
 
-    private void OnLogout()
+    private void OnLogout(int type, int code)
     {
       // Erase territory state 
       pluginState.territory = 0;
@@ -258,7 +258,7 @@ namespace VenueManager
             try
             {
               var housingManager = HousingManager.Instance();
-              var worldId = ClientState.LocalPlayer?.CurrentWorld.Id;
+              var worldId = ClientState.LocalPlayer?.CurrentWorld.Value.RowId;
               // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
               if (pluginState.currentHouse.houseId != housingManager->GetCurrentHouseId() && worldId != null)
               {

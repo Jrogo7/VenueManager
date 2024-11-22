@@ -18,14 +18,15 @@ namespace VenueManager
         public DateTime timeCursor;
         public double milisecondsInVenue { get; set; } = 0;
         public int entryCount { get; set; } = 0;
-        public string WorldName => Plugin.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.World>()?.GetRow(homeWorld)?.Name?.RawString ?? $"World_{homeWorld}";
+        public string WorldName { get; set; } = "";
 
         public Player() {}
 
         public static Player fromCharacter(IPlayerCharacter character) {
           Player player = new Player();
           player.Name = character.Name.TextValue;
-          player.homeWorld = character.HomeWorld.Id;
+          player.homeWorld = character.HomeWorld.Value.RowId;
+          player.WorldName = character.HomeWorld.Value.Name.ToString();
           player.inHouse = true;
           player.isFriend = character.StatusFlags.HasFlag(StatusFlags.Friend);
           player.ObjectId = character.GameObjectId;
