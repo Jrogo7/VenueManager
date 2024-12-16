@@ -190,7 +190,7 @@ namespace VenueManager
     public void ToggleConfigUI() => MainWindow.Toggle();
     public void ToggleMainUI() => MainWindow.Toggle();
 
-    private void OnTerritoryChanged(ushort territory)
+    private unsafe void OnTerritoryChanged(ushort territory)
     {
       // Save current user territory 
       pluginState.territory = territory;
@@ -200,8 +200,18 @@ namespace VenueManager
       // Clear outdoor events list 
       guestLists[1].guests = new();
 
+      bool inHouse = false;
+      try
+      {
+        var housingManager = HousingManager.Instance();
+        inHouse = housingManager->IsInside();
+      }
+      catch (Exception ex) {
+        Log.Warning("Could not get housing state on territory change. " + ex.Message);
+      }
+
       // Player has entered a house 
-      if (TerritoryUtils.isHouse(territory))
+      if (inHouse)
       {
         justEnteredHouse = true;
         pluginState.userInHouse = true;

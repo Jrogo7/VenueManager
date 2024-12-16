@@ -153,9 +153,9 @@ public class VenuesTab
         ImGui.TableNextColumn();
         ImGui.TextColored(fontColor, "" + venue.Value.ward);
         ImGui.TableNextColumn();
-        ImGui.TextColored(fontColor, TerritoryUtils.isPlotType(venue.Value.type) ? "" + venue.Value.plot : "");
+        ImGui.TextColored(fontColor, venue.Value.plot > 0 ? "" + venue.Value.plot : "");
         ImGui.TableNextColumn();
-        ImGui.TextColored(fontColor, !TerritoryUtils.isPlotType(venue.Value.type) ? "" + venue.Value.room : "");
+        ImGui.TextColored(fontColor, venue.Value.room > 0 ? "" + venue.Value.room : "");
         ImGui.TableNextColumn();
         ImGui.TextColored(fontColor, venue.Value.WorldName);
         ImGui.TableNextColumn();

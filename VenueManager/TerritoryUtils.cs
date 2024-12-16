@@ -55,12 +55,12 @@ namespace VenueManager
 
     static public string getHouseType(ushort territory)
     {
-      return HouseTypeMap.ContainsKey(territory) ? HouseTypeMap[territory] : "";
+      return HouseTypeMap.ContainsKey(territory) ? HouseTypeMap[territory] : "[unknown house type]";
     }
 
     static public string getHouseLocation(ushort territory)
     {
-      return HouseLocationMap.ContainsKey(territory) ? HouseLocationMap[territory] : "";
+      return HouseLocationMap.ContainsKey(territory) ? HouseLocationMap[territory] : "[unknown location]";
     }
 
     static public bool isChamber(ushort territory)

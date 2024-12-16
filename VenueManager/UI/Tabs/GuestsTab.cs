@@ -34,9 +34,9 @@ public class GuestsTab
       }
       else
       {
-        var typeText = TerritoryUtils.isPlotType(plugin.pluginState.currentHouse.type) ?
-          "P" + plugin.pluginState.currentHouse.plot :
-          "Room" + plugin.pluginState.currentHouse.room;
+        var typeText = "";
+        if (plugin.pluginState.currentHouse.plot > 0) typeText += "P" + plugin.pluginState.currentHouse.plot;
+        if (plugin.pluginState.currentHouse.room > 0) typeText += "Room" + plugin.pluginState.currentHouse.room;
         ImGui.Text("You are in a " + TerritoryUtils.getHouseType(plugin.pluginState.currentHouse.type) + " in " +
           plugin.pluginState.currentHouse.district + " W" + plugin.pluginState.currentHouse.ward + " " + typeText);
       }

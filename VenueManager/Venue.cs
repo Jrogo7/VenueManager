@@ -35,7 +35,7 @@ namespace VenueManager
 
         public string getVenueAddress() {
           string address = DataCenter + " | " + WorldName + " | " + district + " | W" + ward;
-          if (TerritoryUtils.isPlotType(type)) {
+          if (TerritoryUtils.isPlotType(type) || plot > 0) {
             address += " | P" + plot;
             if (TerritoryUtils.isChamber(type)) {
               address += " | Chamber" + room;
