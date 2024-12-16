@@ -215,6 +215,15 @@ public class SettingsTab
 
     if (!this.configuration.soundAlerts) ImGui.EndDisabled();
     if (!this.configuration.showGuestsTab) ImGui.EndDisabled();
+
+    // =============================================================================
+    ImGui.Separator();
+    ImGui.Spacing();
+    ImGui.Text($@"Debug Info
+
+Territory Id: {plugin.pluginState.territory}
+In House: {plugin.pluginState.userInHouse}");
+
     ImGui.Unindent();
     ImGui.EndChild();
   }
