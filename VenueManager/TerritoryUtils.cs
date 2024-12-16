@@ -69,7 +69,7 @@ namespace VenueManager
       {MIST_APARTMENT, "Apartment"}, {LAVENDER_APARTMENT, "Apartment"}, {GOBLET_APARTMENT, "Apartment"}, {SHIROGANE_APARTMENT, "Apartment"}, {EMPYREUM_APARTMENT, "Apartment"},
     };
 
-    private static Dictionary<ushort, string> HouseLocationMap = new Dictionary<ushort, string>(){
+    private static Dictionary<ushort, string> HouseDistrictMap = new Dictionary<ushort, string>(){
       {MIST_SMALL, "Mist"}, {LAVENDER_SMALL, "The Lavender Beds"}, {GOBLET_SMALL, "The Goblet"}, {SHIROGANE_SMALL, "Shirogane"}, {EMPYREUM_SMALL, "Empyreum"},
       {MIST_MEDIUM, "Mist"}, {LAVENDER_MEDIUM, "The Lavender Beds"}, {GOBLET_MEDIUM, "The Goblet"}, {SHIROGANE_MEDIUM, "Shirogane"}, {EMPYREUM_MEDIUM, "Empyreum"},
       {MIST_LARGE, "Mist"}, {LAVENDER_LARGE, "The Lavender Beds"}, {GOBLET_LARGE, "The Goblet"}, {SHIROGANE_LARGE, "Shirogane"}, {EMPYREUM_LARGE, "Empyreum"},
@@ -100,9 +100,9 @@ namespace VenueManager
       return HouseTypeMap.ContainsKey(territory) ? HouseTypeMap[territory] : "[unknown house type]";
     }
 
-    static public string getHouseLocation(ushort territory)
+    static public string getHouseDistrict(ushort territory)
     {
-      return HouseLocationMap.ContainsKey(territory) ? HouseLocationMap[territory] : "[unknown location]";
+      return HouseDistrictMap.ContainsKey(territory) ? HouseDistrictMap[territory] : "[unknown district]";
     }
 
     static public bool isChamber(ushort territory)

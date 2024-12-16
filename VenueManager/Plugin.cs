@@ -278,7 +278,7 @@ namespace VenueManager
                 pluginState.currentHouse.room = housingManager->GetCurrentRoom();
                 pluginState.currentHouse.type = pluginState.territory;
                 pluginState.currentHouse.worldId = worldId ?? 0;
-                pluginState.currentHouse.district = TerritoryUtils.getHouseLocation(pluginState.territory);
+                pluginState.currentHouse.district = TerritoryUtils.getHouseDistrict(pluginState.territory);
 
                 // Load current guest list from disk if player has entered a saved venue 
                 if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId))
