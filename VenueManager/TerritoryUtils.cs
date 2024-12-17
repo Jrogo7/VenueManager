@@ -24,6 +24,7 @@ namespace VenueManager
     public static readonly ushort GOBLET_SMALL = 345;
     public static readonly ushort GOBLET_MEDIUM = 346;
     public static readonly ushort GOBLET_LARGE = 347;
+    public static readonly ushort GOBLET_LARGE_2 = 1251;
     public static readonly ushort GOBLET_CHAMBER = 386;
     public static readonly ushort GOBLET_APARTMENT = 610;
 
@@ -44,7 +45,7 @@ namespace VenueManager
     private static readonly ushort[] HouseTerritoryIds = {
       MIST_SMALL, MIST_MEDIUM, MIST_LARGE, MIST_CHAMBER, MIST_APARTMENT,
       LAVENDER_SMALL, LAVENDER_MEDIUM, LAVENDER_LARGE, LAVENDER_CHAMBER, LAVENDER_APARTMENT, 
-      GOBLET_SMALL, GOBLET_MEDIUM, GOBLET_LARGE, GOBLET_CHAMBER, GOBLET_APARTMENT,
+      GOBLET_SMALL, GOBLET_MEDIUM, GOBLET_LARGE, GOBLET_LARGE_2, GOBLET_CHAMBER, GOBLET_APARTMENT,
       SHIROGANE_SMALL, SHIROGANE_MEDIUM, SHIROGANE_LARGE, SHIROGANE_CHAMBER, SHIROGANE_APARTMENT,
       EMPYREUM_SMALL, EMPYREUM_MEDIUM, EMPYREUM_LARGE, EMPYREUM_CHAMBER, EMPYREUM_APARTMENT, 
     };
@@ -53,41 +54,58 @@ namespace VenueManager
       MIST_CHAMBER, LAVENDER_CHAMBER, GOBLET_CHAMBER, SHIROGANE_CHAMBER, EMPYREUM_CHAMBER, 
     };
 
-     private static readonly ushort[] PlotTerritoryIds = {
+    private static readonly ushort[] PlotTerritoryIds = {
       MIST_SMALL, MIST_MEDIUM, MIST_LARGE,
       LAVENDER_SMALL, LAVENDER_MEDIUM, LAVENDER_LARGE,
-      GOBLET_SMALL, GOBLET_MEDIUM, GOBLET_LARGE,
+      GOBLET_SMALL, GOBLET_MEDIUM, GOBLET_LARGE, GOBLET_LARGE_2,
       SHIROGANE_SMALL, SHIROGANE_MEDIUM, SHIROGANE_LARGE,
       EMPYREUM_SMALL, EMPYREUM_MEDIUM, EMPYREUM_LARGE, 
     };
 
-    private static Dictionary<ushort, string> HouseTypeMap = new Dictionary<ushort, string>(){
-      {MIST_SMALL, "Small House"}, {LAVENDER_SMALL, "Small House"}, {GOBLET_SMALL, "Small House"}, {SHIROGANE_SMALL, "Small House"}, {EMPYREUM_SMALL, "Small House"},
-      {MIST_MEDIUM, "Medium House"}, {LAVENDER_MEDIUM, "Medium House"}, {GOBLET_MEDIUM, "Medium House"}, {SHIROGANE_MEDIUM, "Medium House"}, {EMPYREUM_MEDIUM, "Medium House"},
-      {MIST_LARGE, "Large House"}, {LAVENDER_LARGE, "Large House"}, {GOBLET_LARGE, "Large House"}, {SHIROGANE_LARGE, "Large House"}, {EMPYREUM_LARGE, "Large House"},
-      {MIST_CHAMBER, "Chamber"}, {LAVENDER_CHAMBER, "Chamber"}, {GOBLET_CHAMBER, "Chamber"}, {SHIROGANE_CHAMBER, "Chamber"}, {EMPYREUM_CHAMBER, "Chamber"},
-      {MIST_APARTMENT, "Apartment"}, {LAVENDER_APARTMENT, "Apartment"}, {GOBLET_APARTMENT, "Apartment"}, {SHIROGANE_APARTMENT, "Apartment"}, {EMPYREUM_APARTMENT, "Apartment"},
+    private static readonly ushort[] SmallHouseTypes = {
+      MIST_SMALL, LAVENDER_SMALL, GOBLET_SMALL, SHIROGANE_SMALL, EMPYREUM_SMALL,
     };
 
-    private static Dictionary<ushort, string> HouseDistrictMap = new Dictionary<ushort, string>(){
-      {MIST_SMALL, "Mist"}, {LAVENDER_SMALL, "The Lavender Beds"}, {GOBLET_SMALL, "The Goblet"}, {SHIROGANE_SMALL, "Shirogane"}, {EMPYREUM_SMALL, "Empyreum"},
-      {MIST_MEDIUM, "Mist"}, {LAVENDER_MEDIUM, "The Lavender Beds"}, {GOBLET_MEDIUM, "The Goblet"}, {SHIROGANE_MEDIUM, "Shirogane"}, {EMPYREUM_MEDIUM, "Empyreum"},
-      {MIST_LARGE, "Mist"}, {LAVENDER_LARGE, "The Lavender Beds"}, {GOBLET_LARGE, "The Goblet"}, {SHIROGANE_LARGE, "Shirogane"}, {EMPYREUM_LARGE, "Empyreum"},
-      {MIST_CHAMBER, "Mist"}, {LAVENDER_CHAMBER, "The Lavender Beds"}, {GOBLET_CHAMBER, "The Goblet"}, {SHIROGANE_CHAMBER, "Shirogane"}, {EMPYREUM_CHAMBER, "Empyreum"},
-      {MIST_APARTMENT, "Mist"}, {LAVENDER_APARTMENT, "The Lavender Beds"}, {GOBLET_APARTMENT, "The Goblet"}, {SHIROGANE_APARTMENT, "Shirogane"}, {EMPYREUM_APARTMENT, "Empyreum"},
+    private static readonly ushort[] MediumHouseTypes = {
+      MIST_MEDIUM, LAVENDER_MEDIUM, GOBLET_MEDIUM, SHIROGANE_MEDIUM, EMPYREUM_MEDIUM
+    };
+
+    private static readonly ushort[] LargeHouseTypes = {
+      MIST_LARGE, LAVENDER_LARGE, GOBLET_LARGE, GOBLET_LARGE_2, SHIROGANE_LARGE, EMPYREUM_LARGE
+    };
+
+    private static readonly ushort[] ChamberTypes = {
+      MIST_CHAMBER, LAVENDER_CHAMBER, GOBLET_CHAMBER, SHIROGANE_CHAMBER, EMPYREUM_CHAMBER
+    };
+
+    private static readonly ushort[] AppartmentTypes = {
+      MIST_APARTMENT, LAVENDER_APARTMENT, GOBLET_APARTMENT, SHIROGANE_APARTMENT, EMPYREUM_APARTMENT
+    };
+
+    private static readonly ushort[] MistHouses = {
+      MIST_SMALL, MIST_MEDIUM, MIST_LARGE, MIST_CHAMBER, MIST_APARTMENT
+    };
+
+    private static readonly ushort[] LavenderHouses = {
+      LAVENDER_SMALL, LAVENDER_MEDIUM, LAVENDER_LARGE, LAVENDER_CHAMBER, LAVENDER_APARTMENT
+    };
+
+    private static readonly ushort[] GobletHouses = {
+      GOBLET_SMALL, GOBLET_MEDIUM, GOBLET_LARGE, GOBLET_LARGE_2, GOBLET_CHAMBER, GOBLET_APARTMENT
+    };
+
+    private static readonly ushort[] ShiroganeHouses = {
+      SHIROGANE_SMALL, SHIROGANE_MEDIUM, SHIROGANE_LARGE, SHIROGANE_CHAMBER, SHIROGANE_APARTMENT
+    };
+
+    private static readonly ushort[] EmpyreumHouses = {
+      EMPYREUM_SMALL, EMPYREUM_MEDIUM, EMPYREUM_LARGE, EMPYREUM_CHAMBER, EMPYREUM_APARTMENT
     };
 
     private static readonly uint SmallHouseIcon = 60751;
     private static readonly uint MediumHouseIcon = 60752;
     private static readonly uint LargeHouseIcon = 60753;
     private static readonly uint AppartmentHouseIcon = 60789;
-    private static Dictionary<ushort, uint> HouseIconMap = new Dictionary<ushort, uint>(){
-      {MIST_SMALL, SmallHouseIcon}, {LAVENDER_SMALL, SmallHouseIcon}, {GOBLET_SMALL, SmallHouseIcon}, {SHIROGANE_SMALL, SmallHouseIcon}, {EMPYREUM_SMALL, SmallHouseIcon},
-      {MIST_MEDIUM, MediumHouseIcon}, {LAVENDER_MEDIUM, MediumHouseIcon}, {GOBLET_MEDIUM, MediumHouseIcon}, {SHIROGANE_MEDIUM, MediumHouseIcon}, {EMPYREUM_MEDIUM, MediumHouseIcon},
-      {MIST_LARGE, LargeHouseIcon}, {LAVENDER_LARGE, LargeHouseIcon}, {GOBLET_LARGE, LargeHouseIcon}, {SHIROGANE_LARGE, LargeHouseIcon}, {EMPYREUM_LARGE, LargeHouseIcon},
-      {MIST_CHAMBER, LargeHouseIcon}, {LAVENDER_CHAMBER, LargeHouseIcon}, {GOBLET_CHAMBER, LargeHouseIcon}, {SHIROGANE_CHAMBER, LargeHouseIcon}, {EMPYREUM_CHAMBER, LargeHouseIcon},
-      {MIST_APARTMENT, AppartmentHouseIcon}, {LAVENDER_APARTMENT, AppartmentHouseIcon}, {GOBLET_APARTMENT, AppartmentHouseIcon}, {SHIROGANE_APARTMENT, AppartmentHouseIcon}, {EMPYREUM_APARTMENT, AppartmentHouseIcon},
-    };
 
     // Returns true if sent territory id is a house 
     static public bool isHouse(ushort territory)
@@ -97,12 +115,22 @@ namespace VenueManager
 
     static public string getHouseType(ushort territory)
     {
-      return HouseTypeMap.ContainsKey(territory) ? HouseTypeMap[territory] : "[unknown house type]";
+      if (SmallHouseTypes.Contains(territory)) return "Small House";
+      if (MediumHouseTypes.Contains(territory)) return "Medium House";
+      if (LargeHouseTypes.Contains(territory)) return "Large House";
+      if (ChamberTypes.Contains(territory)) return "Chamber";
+      if (AppartmentTypes.Contains(territory)) return "Apartment";
+      return "[unknown house type]";
     }
 
     static public string getHouseDistrict(ushort territory)
     {
-      return HouseDistrictMap.ContainsKey(territory) ? HouseDistrictMap[territory] : "[unknown district]";
+      if (MistHouses.Contains(territory)) return "Mist";
+      if (LavenderHouses.Contains(territory)) return "The Lavender Beds";
+      if (GobletHouses.Contains(territory)) return "The Goblet";
+      if (ShiroganeHouses.Contains(territory)) return "Shirogane";
+      if (EmpyreumHouses.Contains(territory)) return "Empyreum";
+      return "[unknown district]";
     }
 
     static public bool isChamber(ushort territory)
@@ -117,7 +145,12 @@ namespace VenueManager
 
     public static uint getHouseIcon(ushort territory)
     {
-      return HouseIconMap.ContainsKey(territory) ? HouseIconMap[territory] : 0;
+      if (SmallHouseTypes.Contains(territory)) return SmallHouseIcon;
+      if (MediumHouseTypes.Contains(territory)) return MediumHouseIcon;
+      if (LargeHouseTypes.Contains(territory)) return LargeHouseIcon;
+      if (ChamberTypes.Contains(territory)) return LargeHouseIcon;
+      if (AppartmentTypes.Contains(territory)) return AppartmentHouseIcon;
+      return 0;
     }
   }
 }
