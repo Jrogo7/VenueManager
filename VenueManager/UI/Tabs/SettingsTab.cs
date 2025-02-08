@@ -2,7 +2,20 @@ using System;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
+
+using System.Drawing;
+using System.Linq;
+using Dalamud.Game.ClientState.Keys;
+using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
+using Dalamud.Memory;
+using Dalamud.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Map = Lumina.Excel.Sheets.Map;
 
 namespace VenueManager.Tabs;
 
@@ -219,10 +232,30 @@ public class SettingsTab
     // =============================================================================
     ImGui.Separator();
     ImGui.Spacing();
+  
+    try {
+      var housingManager = HousingManager.Instance();
+
+      var mapData = Plugin.DataManager.GetExcelSheet<Map>().GetRow(AgentMap.Instance()->SelectedMapId);
+      string[] parts = mapData.PlaceName.Value.Name.ExtractText().Split(" - ");
+      string district = parts.Length == 2 ? parts[1] : "";
+
     ImGui.Text($@"Debug Info
 
 Territory Id: {plugin.pluginState.territory}
-In House: {plugin.pluginState.userInHouse}");
+In House: {plugin.pluginState.userInHouse}
+
+HouseID: {housingManager->GetCurrentIndoorHouseId()}
+Plot: {housingManager->GetCurrentPlot() + 1}
+Ward: {housingManager->GetCurrentWard() + 1}
+Room: {housingManager->GetCurrentRoom()}
+Division: {housingManager->GetCurrentDivision()}
+District: {district}
+PlaceName: {mapData.PlaceName.Value.Name.ExtractText()}
+");
+    } catch {
+
+    }
 
     ImGui.Unindent();
     ImGui.EndChild();
