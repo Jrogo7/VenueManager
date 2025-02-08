@@ -10,12 +10,14 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.Collections.Generic;
 using System;
 using VenueManager.UI;
 using Dalamud.Game.ClientState.Objects.Enums;
 using ImPlotNET;
 using ImGuiNET;
+using Map = Lumina.Excel.Sheets.Map;
 
 namespace VenueManager
 {
@@ -278,7 +280,7 @@ namespace VenueManager
                 pluginState.currentHouse.room = housingManager->GetCurrentRoom();
                 pluginState.currentHouse.type = pluginState.territory;
                 pluginState.currentHouse.worldId = worldId ?? 0;
-                pluginState.currentHouse.district = TerritoryUtils.getHouseDistrict(pluginState.territory);
+                pluginState.currentHouse.district = getDistrictName();
 
                 // Load current guest list from disk if player has entered a saved venue 
                 if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId))
@@ -596,6 +598,14 @@ namespace VenueManager
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };
       Chat.Print(entry);
+    }
+
+    // Get current district name 
+    public unsafe string getDistrictName() 
+    {
+      var mapData = DataManager.GetExcelSheet<Map>().GetRow(AgentMap.Instance()->SelectedMapId);
+      string[] parts = mapData.PlaceName.Value.Name.ExtractText().Split(" - ");
+      return parts.Length == 2 ? parts[1] : "";
     }
 
   } // Plugin
