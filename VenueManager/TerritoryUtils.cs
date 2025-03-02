@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Sheet = Lumina.Excel.Sheets;
 using System.Linq;
 
 namespace VenueManager
@@ -151,6 +151,26 @@ namespace VenueManager
       if (ChamberTypes.Contains(territory)) return LargeHouseIcon;
       if (AppartmentTypes.Contains(territory)) return AppartmentHouseIcon;
       return 0;
+    }
+
+    public static string getDistrict (long houseId) {
+      uint territoryId = (uint)((houseId >> 32) & 0xFFFF);
+      var district = Plugin.DataManager.GetExcelSheet<Sheet.TerritoryType>().GetRow(territoryId).PlaceNameZone.RowId;
+
+      switch (district) {
+        case 502: 
+          return "Mist";
+        case 505: 
+          return "Goblet";
+        case 507:
+          return "Lavender Beds";
+        case 512: 
+          return "Empyreum";
+        case 513: 
+          return "Shirogane";
+        default: 
+          return "";
+      }
     }
   }
 }

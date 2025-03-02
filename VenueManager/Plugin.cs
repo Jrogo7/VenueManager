@@ -280,7 +280,7 @@ namespace VenueManager
                 pluginState.currentHouse.room = housingManager->GetCurrentRoom();
                 pluginState.currentHouse.type = pluginState.territory;
                 pluginState.currentHouse.worldId = worldId ?? 0;
-                pluginState.currentHouse.district = getDistrictName();
+                pluginState.currentHouse.district = TerritoryUtils.getDistrict(housingManager->GetCurrentIndoorHouseId());
 
                 // Load current guest list from disk if player has entered a saved venue 
                 if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId))
@@ -598,14 +598,6 @@ namespace VenueManager
       messageBuilder.Add(new PlayerPayload(player.Name, player.homeWorld));
       var entry = new XivChatEntry() { Message = messageBuilder.Build() };
       Chat.Print(entry);
-    }
-
-    // Get current district name 
-    public unsafe string getDistrictName() 
-    {
-      var mapData = DataManager.GetExcelSheet<Map>().GetRow(AgentMap.Instance()->SelectedMapId);
-      string[] parts = mapData.PlaceName.Value.Name.ExtractText().Split(" - ");
-      return parts.Length == 2 ? parts[1] : "";
     }
 
   } // Plugin
