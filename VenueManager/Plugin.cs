@@ -278,8 +278,7 @@ namespace VenueManager
                 pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
                 pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
                 pluginState.currentHouse.room = housingManager->GetCurrentRoom();
-                pluginState.currentHouse.type = pluginState.territory;
-                pluginState.currentHouse.worldId = worldId ?? 0;
+                pluginState.currentHouse.type = (ushort)HousingManager.GetOriginalHouseTerritoryTypeId();
                 pluginState.currentHouse.district = TerritoryUtils.getDistrict(housingManager->GetCurrentIndoorHouseId());
 
                 // Load current guest list from disk if player has entered a saved venue 
