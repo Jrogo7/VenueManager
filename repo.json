@@ -45,13 +45,13 @@
   "AcceptsFeedback": true,
   "DownloadCount": 0
 }, {
-  "DownloadLinkInstall": "https://github.com/Jrogo7/PlayerCoords/releases/download/1.4.0/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/Jrogo7/PlayerCoords/releases/download/1.4.0/latest.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/PlayerCoords/releases/download/1.4.0/latest.zip",
+  "DownloadLinkInstall": "https://github.com/Jrogo7/PlayerCoords/releases/download/2.0.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/PlayerCoords/releases/download/2.0.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/PlayerCoords/releases/download/2.0.0/latest.zip",
   "Author": "Jrogo",
   "Name": "Player Coords",
   "InternalName": "PlayerCoords",
-  "AssemblyVersion": "1.4.0",
+  "AssemblyVersion": "2.0.0",
   "Punchline": "Get the coordinate information for all nearby players",
   "Description": "Allows you to get the coordinate information for all nearby players",
   "ApplicableVersion": "any",
@@ -59,7 +59,7 @@
   "Tags": [
     "players"
   ],
-  "DalamudApiLevel": 12,
+  "DalamudApiLevel": 13,
   "LoadRequiredState": 0,
   "LoadSync": false,
   "CanUnloadAsync": false,
