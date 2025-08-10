@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
-using ImGuiNET;
-using ImPlotNET;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Bindings.ImPlot;
 
 namespace VenueManager.Tabs;
 

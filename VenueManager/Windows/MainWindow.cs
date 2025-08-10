@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using VenueManager.Tabs;
 
 namespace VenueManager.Windows;

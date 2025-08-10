@@ -15,8 +15,8 @@ using System.Collections.Generic;
 using System;
 using VenueManager.UI;
 using Dalamud.Game.ClientState.Objects.Enums;
-using ImPlotNET;
-using ImGuiNET;
+using Dalamud.Bindings.ImPlot;
+using Dalamud.Bindings.ImGui;
 using Map = Lumina.Excel.Sheets.Map;
 
 namespace VenueManager
@@ -272,14 +272,14 @@ namespace VenueManager
               var housingManager = HousingManager.Instance();
               var worldId = ClientState.LocalPlayer?.CurrentWorld.Value.RowId;
               // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
-              if (pluginState.currentHouse.houseId != housingManager->GetCurrentIndoorHouseId() && worldId != null)
+              if (pluginState.currentHouse.houseId != (long)housingManager->GetCurrentIndoorHouseId().Id && worldId != null)
               {
-                pluginState.currentHouse.houseId = housingManager->GetCurrentIndoorHouseId();
+                pluginState.currentHouse.houseId = (long)housingManager->GetCurrentIndoorHouseId().Id;
                 pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
                 pluginState.currentHouse.ward = housingManager->GetCurrentWard() + 1; // Game stores ward as -1 
                 pluginState.currentHouse.room = housingManager->GetCurrentRoom();
                 pluginState.currentHouse.type = (ushort)HousingManager.GetOriginalHouseTerritoryTypeId();
-                pluginState.currentHouse.district = TerritoryUtils.getDistrict(housingManager->GetCurrentIndoorHouseId());
+                pluginState.currentHouse.district = TerritoryUtils.getDistrict((long)housingManager->GetCurrentIndoorHouseId().Id);
 
                 // Load current guest list from disk if player has entered a saved venue 
                 if (venueList.venues.ContainsKey(pluginState.currentHouse.houseId))

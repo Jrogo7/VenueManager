@@ -6,7 +6,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Textures;
 using Dalamud.Interface.Textures.TextureWraps;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace VenueManager.Tabs;
 
@@ -143,7 +143,7 @@ public class VenuesTab
         }
         ImGui.TableNextColumn();
         if (TryLoadIcon(TerritoryUtils.getHouseIcon(venue.Value.type), out var iconHandle))
-          ImGui.Image(iconHandle.ImGuiHandle, new Vector2(ImGui.GetFrameHeight()));
+          ImGui.Image(iconHandle.Handle, new Vector2(ImGui.GetFrameHeight()));
         else
           ImGui.Dummy(new Vector2(ImGui.GetFrameHeight()));
         ImGui.TableNextColumn();

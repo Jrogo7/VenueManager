@@ -6,7 +6,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using VenueManager.Widgets;
 
 namespace VenueManager.Tabs;

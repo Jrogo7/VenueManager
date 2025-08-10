@@ -3,7 +3,7 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 using System.Drawing;
 using System.Linq;
