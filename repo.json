@@ -36,7 +36,7 @@
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Jrogo7/LocationInfo",
   "Tags": ["tools"],
-  "DalamudApiLevel": 12,
+  "DalamudApiLevel": 13,
   "LoadRequiredState": 0,
   "LoadSync": false,
   "CanUnloadAsync": false,
