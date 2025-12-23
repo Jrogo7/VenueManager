@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/13.0.0">
+<Project Sdk="Dalamud.NET.Sdk/14.0.1">
   <PropertyGroup>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Authors>Jrogo</Authors>
     <Company></Company>
-    <Version>3.0.2</Version>
+    <Version>3.0.3</Version>
     <Description>Guest list and doorbell for your venue</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Jrogo7/VenueManager</PackageProjectUrl>
@@ -58,6 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="DalamudPackager" Version="13.0.0" />
+    <PackageReference Update="DalamudPackager" Version="14.0.1" />
   </ItemGroup>
 </Project>
