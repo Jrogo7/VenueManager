@@ -10,7 +10,6 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Game.Text;
 using System.Diagnostics;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using System.Collections.Generic;
 using System;
 using VenueManager.UI;
@@ -36,6 +35,7 @@ namespace VenueManager
     [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
     // Game Objects 
     [PluginService] public static IObjectTable Objects { get; private set; } = null!;
+    [PluginService] public static IPlayerState PlayerState  { get; private set; } = null!;
     [PluginService] public static IPluginLog Log { get; private set; } = null!;
     [PluginService] public static IChatGui Chat { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
@@ -270,9 +270,9 @@ namespace VenueManager
             try
             {
               var housingManager = HousingManager.Instance();
-              var worldId = ClientState.LocalPlayer?.CurrentWorld.Value.RowId;
+              var worldId = PlayerState.CurrentWorld.Value.RowId;
               // If the user has transitioned into a new house. Store that house information. Ensure we have a world to set it to 
-              if (pluginState.currentHouse.houseId != (long)housingManager->GetCurrentIndoorHouseId().Id && worldId != null)
+              if (pluginState.currentHouse.houseId != (long)housingManager->GetCurrentIndoorHouseId().Id)
               {
                 pluginState.currentHouse.houseId = (long)housingManager->GetCurrentIndoorHouseId().Id;
                 pluginState.currentHouse.plot = housingManager->GetCurrentPlot() + 1; // Game stores plot as -1 
@@ -330,10 +330,11 @@ namespace VenueManager
               seenPlayers.Add(player.Name, true);
 
             // Is the new player the current user 
-            var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
+            
+            var isSelf = PlayerState.CharacterName == player.Name;
 
             // Store Player name 
-            if (ClientState.LocalPlayer?.Name.TextValue.Length > 0) pluginState.playerName = ClientState.LocalPlayer?.Name.TextValue ?? "";
+            if (PlayerState.CharacterName != null && PlayerState.CharacterName.Length > 0) pluginState.playerName = PlayerState.CharacterName ?? "";
 
             // New Player has entered the house 
             if (!getCurrentGuestList().guests.ContainsKey(player.Name))
@@ -539,7 +540,7 @@ namespace VenueManager
       // Don't show alerts if snoozed 
       if (pluginState.snoozed) return;
 
-      var isSelf = ClientState.LocalPlayer?.Name.TextValue == player.Name;
+      var isSelf = PlayerState.CharacterName == player.Name;
       if (isSelf) return;
       // Don't show leave alerts if user just entered the building
       if (justEnteredHouse) return;
