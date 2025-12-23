@@ -4,7 +4,7 @@
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Authors>Jrogo</Authors>
     <Company></Company>
-    <Version>3.0.3</Version>
+    <Version>3.1.0</Version>
     <Description>Guest list and doorbell for your venue</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Jrogo7/VenueManager</PackageProjectUrl>
