@@ -24,13 +24,13 @@
   "AcceptsFeedback": true,
   "DownloadCount": 576
 }, {
-  "DownloadLinkInstall": "https://github.com/Jrogo7/LocationInfo/releases/download/3.1.1/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/Jrogo7/LocationInfo/releases/download/3.1.1/latest.zip",
-  "DownloadLinkTesting": "https://github.com/Jrogo7/LocationInfo/releases/download/3.1.1/latest.zip",
+  "DownloadLinkInstall": "https://github.com/Jrogo7/LocationInfo/releases/download/3.2.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Jrogo7/LocationInfo/releases/download/3.2.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Jrogo7/LocationInfo/releases/download/3.2.0/latest.zip",
   "Author": "Jrogo",
   "Name": "Location Info",
   "InternalName": "LocationInfo",
-  "AssemblyVersion": "3.1.1",
+  "AssemblyVersion": "3.2.0",
   "Punchline": "See current player coordinates.",
   "Description": "Displays current player coordinates.",
   "ApplicableVersion": "any",
