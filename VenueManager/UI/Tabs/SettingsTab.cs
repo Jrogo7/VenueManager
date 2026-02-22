@@ -96,7 +96,7 @@ public class SettingsTab
     }
 
     var sortFriendsToTop = this.configuration.sortFriendsToTop;
-    if (ImGui.Checkbox("Pin frients to top", ref sortFriendsToTop))
+    if (ImGui.Checkbox("Pin friends to top", ref sortFriendsToTop))
     {
       this.configuration.sortFriendsToTop = sortFriendsToTop;
       this.configuration.Save();
