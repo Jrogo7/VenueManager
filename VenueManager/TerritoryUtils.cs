@@ -62,23 +62,23 @@ namespace VenueManager
       EMPYREUM_SMALL, EMPYREUM_MEDIUM, EMPYREUM_LARGE, 
     };
 
-    private static readonly ushort[] SmallHouseTypes = {
+    private static readonly uint[] SmallHouseTypes = {
       MIST_SMALL, LAVENDER_SMALL, GOBLET_SMALL, SHIROGANE_SMALL, EMPYREUM_SMALL,
     };
 
-    private static readonly ushort[] MediumHouseTypes = {
+    private static readonly uint[] MediumHouseTypes = {
       MIST_MEDIUM, LAVENDER_MEDIUM, GOBLET_MEDIUM, SHIROGANE_MEDIUM, EMPYREUM_MEDIUM
     };
 
-    private static readonly ushort[] LargeHouseTypes = {
+    private static readonly uint[] LargeHouseTypes = {
       MIST_LARGE, LAVENDER_LARGE, GOBLET_LARGE, GOBLET_LARGE_2, SHIROGANE_LARGE, EMPYREUM_LARGE
     };
 
-    private static readonly ushort[] ChamberTypes = {
+    private static readonly uint[] ChamberTypes = {
       MIST_CHAMBER, LAVENDER_CHAMBER, GOBLET_CHAMBER, SHIROGANE_CHAMBER, EMPYREUM_CHAMBER
     };
 
-    private static readonly ushort[] AppartmentTypes = {
+    private static readonly uint[] AppartmentTypes = {
       MIST_APARTMENT, LAVENDER_APARTMENT, GOBLET_APARTMENT, SHIROGANE_APARTMENT, EMPYREUM_APARTMENT
     };
 
@@ -113,7 +113,7 @@ namespace VenueManager
       return HouseTerritoryIds.Contains(territory);
     }
 
-    static public string getHouseType(ushort territory)
+    static public string getHouseType(uint territory)
     {
       if (SmallHouseTypes.Contains(territory)) return "Small House";
       if (MediumHouseTypes.Contains(territory)) return "Medium House";

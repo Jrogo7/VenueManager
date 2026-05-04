@@ -15,7 +15,7 @@ namespace VenueManager
         // Current Player Name 
         public string playerName { get; set; } = "";
         // Territory that the current user is in
-        public ushort territory { get; set; } = 0;
+        public uint territory { get; set; } = 0;
 
         public PluginState()
         {
